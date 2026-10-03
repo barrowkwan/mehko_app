@@ -31,38 +31,105 @@ Backend: **Supabase free** — 500 MB DB, ~200 concurrent Realtime connections, 
 ### 1. Hosted Supabase project
 1. <https://supabase.com/dashboard> → **New project** (remember the **database password**). Note the **Project ref** (the `xxxx` in `xxxx.supabase.co`).
 2. **Project Settings → API:** copy the **Project URL**, **anon (public) key** and **service_role key**.
-3. **Authentication → URL Configuration:** *Site URL* = your Render URL (step 2.4 below, e.g. `https://mehko-app.onrender.com`); add `https://<your-render-url>/auth/callback` to *Redirect URLs*.
-4. **Authentication → Sign In / Providers:** enable and configure Google/Facebook/GitHub/Apple — see [social-login-setup.md](social-login-setup.md). The provider callback is `https://<project-ref>.supabase.co/auth/v1/callback`.
-5. Account → **Access Tokens:** create a token for CI (`SUPABASE_ACCESS_TOKEN`).
+3. *(Done later in step 2.5, once you know the Render URL: Site URL, Redirect URLs, login providers.)*
+4. Account → **Access Tokens:** create a token for CI (`SUPABASE_ACCESS_TOKEN`) — see step 3.
 
-The first deploy applies `supabase/migrations/` to this project automatically (you don't run SQL by hand). The dev seed is **not** applied.
+Migrations are applied with `supabase db push` (step 2.0 once by hand, then automatically by CI). The dev seed is **not** applied to hosted projects.
 
 ### 2. Render service
-1. <https://dashboard.render.com> → **New → Blueprint** → connect GitHub repo `barrowkwan/mehko_app` → Render reads [render.yaml](../render.yaml) and proposes the `mehko-app` free web service.
-2. When prompted, enter the env vars (marked `sync: false`):
-   - `NEXT_PUBLIC_SUPABASE_URL` = Project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = anon key
-   - `SUPABASE_SERVICE_ROLE_KEY` = service_role key (secret!)
-   - `CRON_SECRET` = a long random string (`openssl rand -hex 32`)
-   - `NEXT_PUBLIC_AUTH_PROVIDERS` (already defaulted) = the providers you enabled in Supabase
-3. Apply. The first build starts; Render's own auto-deploy is off, GitHub Actions triggers later deploys.
-4. Note the service URL (`https://<name>.onrender.com`), then finish step 1.3 above.
-5. Service → **Settings → Deploy Hook:** copy the URL.
 
-### 3. GitHub repository settings (Settings → Secrets and variables → Actions)
+**2.0 Apply the database schema once, from your machine (recommended; ~2 min).** The app errors on every page until the tables exist, and doing it by hand first also proves the migration works on hosted Supabase.
+```bash
+cd home_business
+supabase login                                   # opens a browser
+supabase link --project-ref <PROJECT_REF>        # paste the database password when asked
+supabase db push                                 # answer Y; applies supabase/migrations/*
+```
+`<PROJECT_REF>`: Supabase dashboard → **Project Settings → General → Reference ID** (also the `xxxx` in `https://xxxx.supabase.co`). Check **Table Editor** afterwards: `merchants`, `offerings`, `orders`, … should exist. (CI's `supabase db push` later only applies *new* migrations; Supabase records which ones ran.)
 
-| Kind | Name | Value |
+**2.1 Collect the Supabase values** (dashboard → **Project Settings → API** / **API Keys**):
+
+| You need | Where | Becomes |
 | --- | --- | --- |
-| Secret | `SUPABASE_ACCESS_TOKEN` | token from step 1.5 |
-| Secret | `SUPABASE_DB_PASSWORD` | the database password from step 1.1 |
-| Secret | `SUPABASE_PROJECT_REF` | project ref |
-| Secret | `RENDER_DEPLOY_HOOK_URL` | deploy hook URL from step 2.5 |
-| Secret | `CRON_SECRET` | same value as in Render |
-| Variable | `SITE_URL` | `https://<name>.onrender.com` (or your custom domain) |
-| Variable | `DEPLOY_ENABLED` | `true` (set this last) |
+| Project URL (`https://xxxx.supabase.co`) | API page, top | `NEXT_PUBLIC_SUPABASE_URL` |
+| `anon` public key | API Keys → **Legacy API keys** tab → `anon` (if your project only shows the new keys, use the **Publishable** key) | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| `service_role` key | same tab → `service_role` → *Reveal* (new keys: the **Secret** key) | `SUPABASE_SERVICE_ROLE_KEY` |
 
-### 4. Go
-Push to `main` (or re-run the latest workflow). Watch **Actions**: `test` and `integration` must pass, then `deploy` migrates the DB and triggers Render. Then open the site, sign in, and use **Merchant → Become a merchant**.
+> The legacy `anon`/`service_role` keys are what this project was tested with locally. The new `sb_publishable_…`/`sb_secret_…` keys should work with supabase-js but have not been tried here. The service_role/secret key bypasses all security rules — never put it in the browser, in git, or in a `NEXT_PUBLIC_*` variable.
+
+Also generate the cron secret and keep it handy (you need it in Render **and** GitHub):
+```bash
+openssl rand -hex 32
+```
+
+**2.2 Create the Render account.** Go to <https://dashboard.render.com> → **Sign up with GitHub**. (Free "Hobby" workspace; no credit card.)
+
+**2.3 Create the service from the blueprint.**
+1. Dashboard → **New +** → **Blueprint**.
+2. **Connect GitHub** → authorize Render → choose **Only select repositories** → `mehko_app` → Save.
+3. Back in Render pick the repo `barrowkwan/mehko_app`, branch `main` → **Connect**. Render reads `render.yaml` and shows one web service, `mehko-app`, plan **Free**.
+4. Fill the prompted variables with the values from 2.1 (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`). Leave `NEXT_PUBLIC_AUTH_PROVIDERS` unless you enabled different providers. **These `NEXT_PUBLIC_*` values are baked in at build time**, so they must be right before the first build; if you change one later, trigger a new deploy.
+5. Click **Deploy Blueprint**. The first build starts right away (about 3–6 min). Watch **Logs**; it ends with "Your service is live 🎉".
+
+**2.4 Note your site URL.** Top of the service page: `https://mehko-app-xxxx.onrender.com` (the suffix may differ). Open `<url>/login` — you should see the sign-in buttons (the first load after idle can take ~60 s).
+
+**2.5 Tell Supabase about that URL** (otherwise logins redirect to localhost). Supabase dashboard → **Authentication → URL Configuration**:
+- **Site URL** = your Render URL.
+- **Redirect URLs** → Add: `https://<your-render-url>/auth/callback`.
+
+Then enable at least one login provider (**Authentication → Sign In / Providers**; guide: [social-login-setup.md](social-login-setup.md)). The OAuth callback you give Google/Facebook/etc. is `https://<PROJECT_REF>.supabase.co/auth/v1/callback`.
+
+**2.6 Copy the deploy hook.** Render → your service → **Settings** → scroll to **Deploy Hook** → copy the URL (`https://api.render.com/deploy/srv-…?key=…`). Treat it as a secret.
+
+### 3. GitHub repository settings
+
+Open <https://github.com/barrowkwan/mehko_app/settings/secrets/actions> (repo → **Settings → Secrets and variables → Actions**).
+
+**Secrets tab → New repository secret** (add each):
+
+| Name | Value / where to get it |
+| --- | --- |
+| `SUPABASE_ACCESS_TOKEN` | <https://supabase.com/dashboard/account/tokens> → **Generate new token**, name it `github-ci`, copy it (shown once) |
+| `SUPABASE_DB_PASSWORD` | The database password you chose when creating the project. Forgot it? Project Settings → **Database** → *Reset database password* (then use the new one everywhere) |
+| `SUPABASE_PROJECT_REF` | Project Settings → General → **Reference ID** |
+| `RENDER_DEPLOY_HOOK_URL` | The whole URL from step 2.6 |
+| `CRON_SECRET` | The same string you used in Render (step 2.1) |
+
+**Variables tab → New repository variable:**
+
+| Name | Value |
+| --- | --- |
+| `SITE_URL` | Your Render URL, no trailing slash needed |
+| `DEPLOY_ENABLED` | `true` — **add this last**; it switches the deploy and daily jobs on |
+
+*(Optional shortcut after `gh auth login`: `gh secret set SUPABASE_ACCESS_TOKEN` etc., and `gh variable set DEPLOY_ENABLED --body true`.)*
+
+### 4. Go — first automated deploy
+
+1. Trigger a run on `main` now that `DEPLOY_ENABLED=true`:
+   ```bash
+   git commit --allow-empty -m "Enable deploy" && git push
+   ```
+2. GitHub → **Actions** → the new **CI** run. Expect `test` ✅, `integration` ✅, then **`deploy`**:
+   - *Apply database migrations* — "Remote database is up to date" is normal if you did step 2.0.
+   - *Trigger Render deploy* — succeeds when Render accepts the hook.
+3. Render → **Events/Logs**: a new deploy for that commit builds (~3–6 min) and goes live. (If the first build from 2.3 is still running, Render queues this one.)
+4. Smoke test: open `<SITE_URL>/login` → sign in → **Merchant → Become a merchant** → add a pickup point and a food → create an offering → open `/` in a second browser/account and place an order.
+5. Run the daily job once: **Actions → Daily job → Run workflow**. Expect ✅. It returns `{"updated": N}` and fills weather/holiday data.
+
+### If something fails
+
+| Symptom | Cause / fix |
+| --- | --- |
+| `deploy` job shows **Skipped** | `DEPLOY_ENABLED` isn't exactly `true` (Variables tab, not Secrets), or the run wasn't a push to `main` |
+| `supabase link` / `db push`: *access token* or *unauthorized* | `SUPABASE_ACCESS_TOKEN` wrong/expired |
+| `db push`: *password authentication failed* | `SUPABASE_DB_PASSWORD` wrong (reset it in Supabase, update the secret) |
+| Render hook step: `curl: (22) … 401/404` | `RENDER_DEPLOY_HOOK_URL` incomplete — it must include `?key=…` |
+| Render build fails | Open Render **Logs**; most common: a missing `NEXT_PUBLIC_SUPABASE_*` variable |
+| Site loads but pages show errors | Migrations not applied (do 2.0), or wrong Supabase URL/key in Render |
+| Login bounces to `localhost` or errors after provider | Supabase **Site URL / Redirect URLs** not set (2.5), or provider not enabled/configured |
+| Daily job fails with 401 | `CRON_SECRET` differs between GitHub and Render |
+| Daily job fails with a timeout | Render cold start; re-run (the job already retries for ~2 min) |
 
 ## Day-to-day
 - Merge to `main` → tested → migrated → deployed. Pull requests only run tests.
