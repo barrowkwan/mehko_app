@@ -3,8 +3,6 @@
 -- which enforce the ordering cutoff. Payments are not implemented yet; orders carry
 -- payment_status / payment_ref placeholders so they can be added later.
 
-create extension if not exists pgcrypto;
-
 -- ───────────────────────── tables ─────────────────────────
 
 create table profiles (
@@ -77,7 +75,10 @@ create table orders (
   customer_id uuid not null references profiles (id) on delete cascade,
   offering_id uuid not null references offerings (id),
   status text not null default 'placed' check (status in ('placed', 'cancelled', 'picked_up')),
-  qr_token text not null unique default encode(gen_random_bytes(18), 'hex'),
+  -- 64 hex chars from two v4 UUIDs (gen_random_uuid is core Postgres and cryptographically random).
+  -- Deliberately not pgcrypto's gen_random_bytes: on hosted Supabase that lives in the `extensions`
+  -- schema, which is not on the search_path when migrations are pushed.
+  qr_token text not null unique default replace(gen_random_uuid()::text || gen_random_uuid()::text, '-', ''),
   picked_up_at timestamptz,
   payment_status text not null default 'none', -- future: pending | paid | refunded
   payment_ref text,

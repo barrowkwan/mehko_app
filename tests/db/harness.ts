@@ -1,7 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
-import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 
 const root = join(__dirname, "../..");
 
@@ -34,8 +33,7 @@ export const IDS = {
 };
 
 export async function createDb() {
-  const db = new PGlite({ extensions: { pgcrypto } });
-  await db.exec("create extension if not exists pgcrypto;");
+  const db = new PGlite();
   await db.exec(SUPABASE_STUBS);
 
   const dir = join(root, "supabase/migrations");
