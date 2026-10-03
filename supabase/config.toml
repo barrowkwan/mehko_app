@@ -15,7 +15,7 @@ sql_paths = ["./seed.sql"]
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["http://localhost:3000/auth/callback"]
 
-# Social login only. Set the env vars below before `supabase start`; see README.
+# Social login only. Put the env vars below in supabase/.env before `supabase start`; see docs/social-login-setup.md.
 [auth.external.google]
 enabled = true
 client_id = "env(GOOGLE_CLIENT_ID)"
@@ -25,6 +25,11 @@ secret = "env(GOOGLE_CLIENT_SECRET)"
 enabled = true
 client_id = "env(FACEBOOK_CLIENT_ID)"
 secret = "env(FACEBOOK_CLIENT_SECRET)"
+
+[auth.external.github]
+enabled = true
+client_id = "env(GITHUB_CLIENT_ID)"
+secret = "env(GITHUB_CLIENT_SECRET)"
 
 [auth.external.apple]
 enabled = true

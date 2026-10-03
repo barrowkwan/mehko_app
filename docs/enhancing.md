@@ -35,9 +35,7 @@ Hooks exist: `orders.payment_status` (`none`), `orders.payment_ref`, `food_items
 
 ## Add an OAuth provider
 
-1. `supabase/config.toml`: new `[auth.external.<provider>]` block + env vars.
-2. `app/login/login-buttons.tsx`: add to `PROVIDERS` (id must be a Supabase provider name).
-3. Document credentials in the root README.
+See [social-login-setup.md](social-login-setup.md) for provider-specific steps. In code: `supabase/config.toml` (`[auth.external.<provider>]` + env vars), add to `ALL_PROVIDERS` in `app/login/login-buttons.tsx` (id must be a Supabase provider name), include it in `NEXT_PUBLIC_AUTH_PROVIDERS`, document credentials.
 
 ## Change weather buckets / thresholds
 

@@ -16,9 +16,7 @@ Multi-merchant food pre-order & pickup app (Next.js 16 + Supabase). Merchants pu
 1. `npm install`
 2. Install the [Supabase CLI](https://supabase.com/docs/guides/cli), then `supabase start` (applies `supabase/migrations`, runs `supabase/seed.sql`).
 3. Copy `.env.example` to `.env.local` and fill in the URL / anon key / service-role key printed by `supabase start`; set `CRON_SECRET` to any random string.
-4. Social login: create OAuth apps and export the credentials before `supabase start`
-   (`GOOGLE_CLIENT_ID/SECRET`, `FACEBOOK_CLIENT_ID/SECRET`, `APPLE_CLIENT_ID/SECRET`; see `supabase/config.toml`).
-   Redirect URI for each provider: `http://127.0.0.1:54321/auth/v1/callback`. Remove providers you don't want from `config.toml` and `app/login/login-buttons.tsx`.
+4. Social login (Google, Facebook, GitHub, Apple): follow [docs/social-login-setup.md](docs/social-login-setup.md) — it covers creating each OAuth app, the callback URLs, where credentials go (`supabase/.env` locally), and `NEXT_PUBLIC_AUTH_PROVIDERS` to choose which buttons appear. Instagram isn't supported; Yahoo is possible via custom OIDC.
 5. `npm run dev` → <http://localhost:3000>. Sign in, then use **Merchant → Become a merchant**.
 6. Weather/holiday snapshots: call `GET /api/cron/fetch-context` daily with `Authorization: Bearer $CRON_SECRET` (Vercel Cron, pg_cron + pg_net, or any scheduler).
 
