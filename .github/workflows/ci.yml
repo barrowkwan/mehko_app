@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint, typecheck, unit + DB tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      # Unit tests + tests/db (real migration on in-process Postgres). Integration tests are skipped here.
+      - run: npm test
+      - name: Build
+        run: npm run build
+        env:
+          # Dummy values: the build doesn't contact Supabase.
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
+
+  integration:
+    name: Integration tests (local Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase
+        # Placeholders satisfy the env() references in config.toml; OAuth isn't exercised in CI.
+        env:
+          GOOGLE_CLIENT_ID: ci
+          GOOGLE_CLIENT_SECRET: ci
+          FACEBOOK_CLIENT_ID: ci
+          FACEBOOK_CLIENT_SECRET: ci
+          GITHUB_CLIENT_ID: ci
+          GITHUB_CLIENT_SECRET: ci
+          APPLE_CLIENT_ID: ci
+          APPLE_CLIENT_SECRET: ci
+        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor
+      - name: Export Supabase keys
+        run: |
+          supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY)=' | sed 's/"//g' > "$RUNNER_TEMP/sb.env"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$(grep '^API_URL=' "$RUNNER_TEMP/sb.env" | cut -d= -f2-)"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(grep '^ANON_KEY=' "$RUNNER_TEMP/sb.env" | cut -d= -f2-)"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$(grep '^SERVICE_ROLE_KEY=' "$RUNNER_TEMP/sb.env" | cut -d= -f2-)"
+          } >> "$GITHUB_ENV"
+      - name: Integration tests
+        run: npx vitest run tests/integration
+        env:
+          SUPABASE_INTEGRATION: "1"
+      - name: Supabase logs on failure
+        if: failure()
+        run: docker ps -a && docker logs supabase_realtime_neighborhood-eats --tail 100 || true
