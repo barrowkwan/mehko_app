@@ -20,6 +20,10 @@ Multi-merchant food pre-order & pickup app (Next.js 16 + Supabase). Merchants pu
 5. `npm run dev` → <http://localhost:3000>. Sign in, then use **Merchant → Become a merchant**.
 6. Weather/holiday snapshots: call `GET /api/cron/fetch-context` daily with `Authorization: Bearer $CRON_SECRET` (Vercel Cron, pg_cron + pg_net, or any scheduler).
 
+## CI/CD
+
+GitHub Actions runs lint, typecheck, unit/DB tests, build and live-Supabase integration tests on every push/PR. Pushes to `main` can auto-deploy to a free Render service + hosted Supabase — see [docs/deployment.md](docs/deployment.md) (one-time setup; disabled until `DEPLOY_ENABLED=true`).
+
 ## Commands
 
 `npm run dev` · `npm run build` · `npm test` (Vitest) · `npm run typecheck` · `npm run lint`

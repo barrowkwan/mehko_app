@@ -1,0 +1,25 @@
+# Render Blueprint: free Node web service. Deploys are triggered by GitHub Actions
+# (deploy hook) after CI passes, so Render's own auto-deploy is off.
+services:
+  - type: web
+    runtime: node
+    name: mehko-app
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /login
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # NEXT_PUBLIC_* are inlined at build time, so they must be set before the first deploy.
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_AUTH_PROVIDERS
+        value: google,facebook,apple

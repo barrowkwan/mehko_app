@@ -10,6 +10,7 @@
 | `order_lines` is `security_invoker` | Merchants automatically only see their own sales |
 | Cutoff stored as absolute `timestamptz`; the form converts `datetime-local` using the merchant's **browser** timezone | Simple; the DB trigger validates against the pickup point's timezone. Merchants traveling across timezones could mis-set the cutoff |
 | Cron route instead of a Supabase Edge Function | Shares/tests `lib/context-fetch.ts` with the app; any scheduler can call it |
+| Render free + hosted Supabase free, deployed by GitHub Actions deploy hook | Vercel Hobby forbids commercial use; Render free allows it and needs no card. Trade-off: cold starts, Supabase pauses (daily job keeps it awake), no backups |
 | Leaflet + OpenStreetMap, circle markers | No API key; avoids Leaflet's bundled marker-icon asset issue under bundlers |
 | `types/database.ts` generated from the local DB | Typed embeds and RPCs; was hand-written first and matched except view columns (generated as nullable) |
 | PGlite for DB tests + opt-in live-stack integration tests | PGlite: fast, no Docker, stubbed auth schema/roles. Integration tests cover what PGlite can't (Auth, PostgREST, Realtime) |
@@ -31,5 +32,6 @@
 - **Service-role key** is only used in `lib/supabase/admin.ts` for the cron route; never import it from client code.
 - **`vitest` v5 needs `@types/node` ≥ 22**; the repo pins `^24`.
 - **Realtime cold start**: right after the stack (or first subscriber) starts, an immediate first `postgres_changes` event can be missed. The map loads the current row on mount and the merchant pushes updates every ≥10 s, so users recover on the next update; tests retry.
+- **Clean-checkout typecheck**: `PageProps<...>`/`LayoutProps<...>` come from `.next/types`, so `npm run typecheck` runs `next typegen` first (CI caught this).
 - **`next build` type-checks `tests/`** — run `npm run typecheck` after editing tests.
 - **Verified against a live local Supabase** (migration, seed, RLS, RPCs, QR, Realtime, SSR pages with a session cookie, cron route with real Open-Meteo/Nager). **Still unverified**: real OAuth logins (need provider credentials), camera QR scanning and the Leaflet map in a real browser, geolocation on a phone.

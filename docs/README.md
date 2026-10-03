@@ -9,6 +9,7 @@ Start here when fixing a bug or adding a feature. Read in this order, stopping w
 | [features.md](features.md) | Find the exact routes/files/DB objects/tests behind a feature (the fastest way to locate code) |
 | [enhancing.md](enhancing.md) | Follow step-by-step recipes for common changes (payments, new report, new provider, schema change…) |
 | [social-login-setup.md](social-login-setup.md) | Set up Google / Facebook / GitHub / Apple (and why Instagram isn't possible, how Yahoo could work) |
+| [deployment.md](deployment.md) | Deploy for free (Render + hosted Supabase) and how the CI/CD pipeline works |
 | [decisions.md](decisions.md) | Learn *why* things are the way they are, past bugs, and gotchas |
 
 Setup, commands and env vars are in the root [README.md](../README.md).

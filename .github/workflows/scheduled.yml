@@ -1,0 +1,26 @@
+name: Daily job
+
+# Calls the app's weather/holiday snapshot endpoint once a day. It also touches the database, which
+# keeps a free Supabase project from being paused for inactivity, and wakes the free Render service.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  fetch-context:
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call /api/cron/fetch-context
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          # Free Render services sleep when idle; allow a slow cold start.
+          curl --fail --silent --show-error --max-time 120 \
+            --retry 5 --retry-delay 20 --retry-all-errors \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${SITE_URL%/}/api/cron/fetch-context"

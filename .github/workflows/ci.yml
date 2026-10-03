@@ -74,3 +74,41 @@ jobs:
       - name: Supabase logs on failure
         if: failure()
         run: docker ps -a && docker logs supabase_realtime_neighborhood-eats --tail 100 || true
+
+  deploy:
+    name: Deploy (Supabase migrations → Render)
+    needs: [test, integration]
+    # Only on pushes to main, and only once you've set the repo variable DEPLOY_ENABLED=true
+    # (see docs/deployment.md). Until then CI just runs the tests.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Apply database migrations to hosted Supabase
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          # Placeholders: config.toml references these via env(); only the DB is touched here.
+          GOOGLE_CLIENT_ID: ci
+          GOOGLE_CLIENT_SECRET: ci
+          FACEBOOK_CLIENT_ID: ci
+          FACEBOOK_CLIENT_SECRET: ci
+          GITHUB_CLIENT_ID: ci
+          GITHUB_CLIENT_SECRET: ci
+          APPLE_CLIENT_ID: ci
+          APPLE_CLIENT_SECRET: ci
+        run: |
+          supabase link --project-ref "$SUPABASE_PROJECT_REF"
+          supabase db push
+      - name: Trigger Render deploy of this commit
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl --fail --silent --show-error -X POST "${RENDER_DEPLOY_HOOK_URL}&ref=${GITHUB_SHA}"
