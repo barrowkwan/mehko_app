@@ -11,8 +11,8 @@
 | Cutoff stored as absolute `timestamptz`; the form converts `datetime-local` using the merchant's **browser** timezone | Simple; the DB trigger validates against the pickup point's timezone. Merchants traveling across timezones could mis-set the cutoff |
 | Cron route instead of a Supabase Edge Function | Shares/tests `lib/context-fetch.ts` with the app; any scheduler can call it |
 | Leaflet + OpenStreetMap, circle markers | No API key; avoids Leaflet's bundled marker-icon asset issue under bundlers |
-| Hand-written `types/database.ts` | Supabase CLI wasn't available; regenerate later |
-| PGlite for DB tests | Runs the real migration with no Docker; auth schema/roles are stubbed in `tests/db/harness.ts` |
+| `types/database.ts` generated from the local DB | Typed embeds and RPCs; was hand-written first and matched except view columns (generated as nullable) |
+| PGlite for DB tests + opt-in live-stack integration tests | PGlite: fast, no Docker, stubbed auth schema/roles. Integration tests cover what PGlite can't (Auth, PostgREST, Realtime) |
 
 ## Past bugs (found by tests) — don't reintroduce
 
@@ -30,4 +30,6 @@
 - **Customers can't read other customers' orders** — use `offering_stock` for remaining quantities, never aggregate `order_items` from the client.
 - **Service-role key** is only used in `lib/supabase/admin.ts` for the cron route; never import it from client code.
 - **`vitest` v5 needs `@types/node` ≥ 22**; the repo pins `^24`.
-- **Unverified in a real browser/stack**: OAuth providers, camera scanning, live map, Supabase itself (tests use PGlite). Smoke-test these after `supabase start`.
+- **Realtime cold start**: right after the stack (or first subscriber) starts, an immediate first `postgres_changes` event can be missed. The map loads the current row on mount and the merchant pushes updates every ≥10 s, so users recover on the next update; tests retry.
+- **`next build` type-checks `tests/`** — run `npm run typecheck` after editing tests.
+- **Verified against a live local Supabase** (migration, seed, RLS, RPCs, QR, Realtime, SSR pages with a session cookie, cron route with real Open-Meteo/Nager). **Still unverified**: real OAuth logins (need provider credentials), camera QR scanning and the Leaflet map in a real browser, geolocation on a phone.

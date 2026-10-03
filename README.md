@@ -30,15 +30,16 @@ Multi-merchant food pre-order & pickup app (Next.js 16 + Supabase). Merchants pu
 
 - Orders are written only through the `place_order` / `update_order` / `cancel_order` RPCs (security definer), which enforce the cutoff and stock limits in the database; `confirm_pickup` verifies the QR token belongs to the caller's merchant and is idempotent.
 - RLS isolates data: customers see their own orders, merchants only orders on their offerings; `order_lines` is a `security_invoker` view so reports are merchant-scoped.
-- `types/database.ts` is hand-maintained to match the migration; replace it with `supabase gen types typescript --local > types/database.ts` once the CLI is set up.
+- `types/database.ts` is generated: after any migration run `supabase gen types typescript --local > types/database.ts` (Postgres views come out with nullable columns; handle that where views are read).
 - Next.js 16: the auth gate is `proxy.ts` (formerly `middleware.ts`).
 
 ## Not done / next
 
 - Payments (hook points: `orders.payment_*`, `food_items.price_cents`).
 - Push notifications; native apps.
-- Playwright e2e (needs a running Supabase stack and OAuth test accounts).
+- Playwright browser e2e and real OAuth logins (OAuth needs your provider credentials).
 
 ## Tests
 
-`npm test` runs unit tests (cutoff, reports, weather/holiday lookup) and `tests/db/`, which applies the real migration and seed to an in-process Postgres ([PGlite](https://pglite.dev)) with stubbed Supabase auth/roles. They cover cutoff and stock enforcement, RLS isolation between customers and merchants, QR pickup, and live-location rules. PGlite isn't Supabase itself, so still smoke-test against `supabase start`.
+- `npm test` — unit tests (cutoff, reports, weather/holiday lookup) and `tests/db/`, which applies the real migration and seed to an in-process Postgres ([PGlite](https://pglite.dev)) with stubbed Supabase auth/roles. Covers cutoff and stock enforcement, RLS isolation, QR pickup and live-location rules. No Docker needed.
+- `SUPABASE_INTEGRATION=1 npx vitest run tests/integration` — runs against a live `supabase start` stack (real Auth sessions, PostgREST, RPCs, Realtime). Creates and deletes its own users. Defaults to the local demo keys.

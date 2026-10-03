@@ -13,9 +13,9 @@ Always finish with: `npm test && npm run typecheck && npm run lint && npm run bu
 ## Schema change
 
 1. New file `supabase/migrations/<timestamp>_<name>.sql`; enable RLS + policies for new tables.
-2. Update `types/database.ts` (Row/Insert/Update + `Relationships` for each FK, or embeds will type as arrays).
+2. `supabase db reset` (applies migrations + seed), then `supabase gen types typescript --local > types/database.ts`. View columns are generated nullable — map them where read (see `app/merchant/reports/page.tsx`).
 3. Update [data-model.md](data-model.md); extend `supabase/seed.sql` if useful.
-4. Add DB tests; `tests/db/harness.ts` applies every migration in filename order automatically.
+4. Add DB tests; `tests/db/harness.ts` applies every migration in filename order automatically. For anything touching Auth/Realtime/PostgREST also extend `tests/integration/api.test.ts` and run it against `supabase start`.
 
 ## Add payments
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireMerchant } from "@/lib/auth";
-import { DIMENSIONS, topFoodsBy, type Dimension } from "@/lib/reports";
+import { DIMENSIONS, topFoodsBy, type Dimension, type OrderLine } from "@/lib/reports";
 import { formatDate } from "@/lib/format";
 
 export default async function ReportsPage({ searchParams }: PageProps<"/merchant/reports">) {
@@ -14,7 +14,17 @@ export default async function ReportsPage({ searchParams }: PageProps<"/merchant
     .eq("merchant_id", merchant.id)
     .limit(10000);
 
-  const groups = topFoodsBy(lines ?? [], by);
+  // View columns are typed nullable by Postgres; rows from a valid join always have these set.
+  const rows: OrderLine[] = (lines ?? []).map((l) => ({
+    food_name: l.food_name ?? "Unknown",
+    qty: l.qty ?? 0,
+    pickup_date: l.pickup_date ?? "",
+    pickup_point_name: l.pickup_point_name ?? "Unknown",
+    is_holiday: l.is_holiday ?? false,
+    holiday_name: l.holiday_name,
+    weather_bucket: l.weather_bucket,
+  }));
+  const groups = topFoodsBy(rows, by);
   const max = Math.max(1, ...groups.flatMap((g) => g.foods.map((f) => f.qty)));
 
   return (

@@ -35,10 +35,11 @@ Supabase
 | `lib/cutoff.ts`, `lib/format.ts` | Pure helpers |
 | `lib/reports.ts` | Pure report aggregation (`topFoodsBy`) |
 | `lib/context-fetch.ts` | Open-Meteo + Nager.Date clients, `weatherBucket` |
-| `types/database.ts` | Hand-maintained DB types (regenerate with the Supabase CLI later) |
+| `types/database.ts` | Generated DB types (`supabase gen types typescript --local`) |
 | `supabase/migrations/` | Schema, RLS, RPCs, triggers, views |
 | `supabase/seed.sql`, `config.toml` | Dev seed; auth provider config |
 | `tests/db/` | PGlite tests of the real migration + seed |
+| `tests/integration/` | Live-Supabase tests (opt-in, `SUPABASE_INTEGRATION=1`) |
 | `lib/__tests__/` | Unit tests |
 
 ## Key flows

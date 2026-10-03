@@ -25,7 +25,7 @@ Setup, commands and env vars are in the root [README.md](../README.md).
 ## Working rules for changes
 
 1. Business rules (cutoff, stock, ownership) belong in the **database** (RPC/RLS/trigger), with the app only calling them. Add a test in `tests/db/`.
-2. Schema change = **new migration file** in `supabase/migrations/` (never edit an applied one) + update `types/database.ts` + update [data-model.md](data-model.md).
+2. Schema change = **new migration file** in `supabase/migrations/` (never edit an applied one) + regenerate `types/database.ts` + update [data-model.md](data-model.md).
 3. Pure logic goes in `lib/` with a unit test in `lib/__tests__/`.
 4. Before finishing: `npm test && npm run typecheck && npm run lint && npm run build`.
 5. Next.js 16 differs from older versions — read `node_modules/next/dist/docs/` before using a Next API (see [AGENTS.md](../AGENTS.md)).

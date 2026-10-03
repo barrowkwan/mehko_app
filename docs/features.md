@@ -14,9 +14,9 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | 8 | Order history (customer) | ✅ | `/orders` | RSC query | RLS on `orders` | RLS tests |
 | 9 | QR per order + pickup confirm | ✅ | order page (QR image), `/merchant/scan` | `confirmPickup`, `scanner.tsx` | `orders.qr_token`, `confirm_pickup` | QR tests |
 | 10 | Customer history (merchant) | ✅ | `/merchant/customers`, `/[id]` | RSC queries | `profiles_merchant_sees_customers` policy | RLS test |
-| 11 | Optional live location | ✅ | `/merchant/offerings/[id]` (toggle), `/orders/[id]` (map) | `updateLocation`, `LocationToggle`, `LiveMap` | `location_shares`, `can_share_location`, Realtime | location test; **map/GPS manual** |
+| 11 | Optional live location | ✅ | `/merchant/offerings/[id]` (toggle), `/orders/[id]` (map) | `updateLocation`, `LocationToggle`, `LiveMap` | `location_shares`, `can_share_location`, Realtime | DB + live Realtime tests; **map/GPS manual** |
 | 12 | Reports (date/location/holiday/weather) | ✅ | `/merchant/reports` | `lib/reports.ts` | `order_lines` view | `lib/__tests__/reports.test.ts` |
-| 13 | Weather + holiday data | ✅ | — | `lib/context-fetch.ts`, `app/api/cron/fetch-context` | `offering_context` | `lib/__tests__/context-fetch.test.ts` (mocked HTTP) |
+| 13 | Weather + holiday data | ✅ | — | `lib/context-fetch.ts`, `app/api/cron/fetch-context` | `offering_context` | `lib/__tests__/context-fetch.test.ts` (mocked HTTP); route manually verified against real APIs |
 | 14 | PWA | ✅ | `app/manifest.ts`, `public/icons/icon.svg` | — | — | manual |
 | 15 | Payments | 🔌 | — | — | `orders.payment_status/payment_ref`, `food_items.price_cents` | — |
 | 16 | Notifications, native apps, e2e tests | ⛔ | — | — | — | — |
@@ -40,7 +40,7 @@ Useful as a dependency map: each step only needs the ones above it.
 
 ## Known gaps / ideas
 
-- No e2e (Playwright) tests; OAuth, camera scan and live map are manually verified only.
+- No browser e2e (Playwright) tests; OAuth, camera scan and the Leaflet map are not automated.
 - Merchants can't edit an offering after creation (only publish/close); no offering delete.
 - No image upload for foods (`image_url` column unused).
 - Closing/cancelling an offering doesn't notify customers.
