@@ -19,7 +19,7 @@ Until you complete the setup below, CI runs tests only — the deploy job and th
 | Option | Free? | Commercial use? | Verdict |
 | --- | --- | --- | --- |
 | **Render free web service** (chosen) | Yes, no card | Allowed | Runs the app as a normal Node server. **Sleeps after ~15 min idle** → first request after a quiet period takes ~30–60 s |
-| Vercel Hobby | Yes | **No — non-commercial only** ([fair-use policy](https://vercel.com/docs/limits/fair-use-guidelines)); business use needs Pro ($20/user/mo) | Best Next.js experience; use it only for a hobby project |
+| Vercel Hobby | Yes | **No — non-commercial only** ([Vercel fair-use rules, summarized here](https://justinmckelvey.com/blog/is-vercel-free)); business use needs Pro ($20/user/mo) | Best Next.js experience; use it only for a hobby project |
 | Google Cloud Run | Generous free tier | Allowed | Scales to zero; needs a billing account (card) and a Dockerfile |
 | Cloudflare Workers (OpenNext) | Yes (100k req/day) | Allowed | Newest/least proven path for Next 16; free-plan worker size limit may be too small |
 | Netlify | Credit-based free plan | Check terms | Possible; not evaluated here |
