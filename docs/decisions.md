@@ -22,6 +22,7 @@
 - **`supabase db push` failed on hosted: `function gen_random_bytes does not exist`.** pgcrypto lives in the `extensions` schema on hosted Supabase, which isn't on the search_path during pushed migrations (the local stack and PGlite hid this). The QR token default now uses core `gen_random_uuid()` only; no extensions. Lesson: don't depend on extension functions in migrations without schema-qualifying them, and check migrations against `set search_path = public`.
 - **CI: `supabase/setup-cli` `version: latest` hit a GitHub API rate limit.** The Supabase CLI version is pinned in `.github/workflows/ci.yml` (both jobs). Bump it deliberately; keep it close to the CLI you use locally.
 - **CI: `supabase db push` couldn't connect (IPv6).** GitHub runners are IPv4-only and the direct DB host is IPv6-only on the free plan; CI uses the session-pooler string in `SUPABASE_DB_URL`.
+- **Login redirected to `https://localhost:10000` on Render.** Behind a reverse proxy, `request.url` / `request.nextUrl.origin` in route handlers is the server's internal address. Route handlers that redirect (`/auth/callback`, `/auth/signout`) now use `publicOrigin()` (`lib/origin.ts`, from `x-forwarded-host`/`Host` + `x-forwarded-proto`). `proxy.ts` redirects were unaffected. Rule: never build redirect URLs from `request.url` in route handlers.
 - **Cutoff check by timezone hack.** Validation lives in trigger `check_offering_schedule`, evaluated in the pickup point's timezone — not in TypeScript.
 
 ## Gotchas
