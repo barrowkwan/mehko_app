@@ -4,7 +4,7 @@ Two independent tools. **Uptime** answers "is the site up and is the database re
 
 ## 1. Uptime monitoring
 
-**Endpoint:** `GET https://mehko-app.onrender.com/api/health` (public, no login)
+**Endpoint:** `GET https://mehko-app.onrender.com/api/health` (public, no login). It runs a tiny real query (`profiles?select=id&limit=1`, empty for anonymous callers thanks to row-level security) with the public key.
 - `200` `{"status":"ok","app":"up","database":"ok"}` — site is up **and** Supabase answers.
 - `503` `{"status":"degraded","database":"down"}` — site is up but Supabase is unreachable or misconfigured (this is what a **paused free-tier Supabase project** looks like).
 - No answer / timeout — the site itself is down or Render is cold-starting (free Render sleeps after ~15 min idle; a first request can take ~1 minute).
@@ -38,14 +38,13 @@ Two independent tools. **Uptime** answers "is the site up and is the database re
 1. Create a free account and organization at <https://sentry.io> (choose the data region), then **Create Project** → platform **Next.js**. Skip the "wizard" and don't install anything: the code is already in the repo.
 2. Copy the project's **DSN** (Settings → Projects → your project → *Client Keys (DSN)*). A DSN is not a secret; it only lets someone *send* events.
 3. In **Render → mehko-app → Environment** add `NEXT_PUBLIC_SENTRY_DSN=<your DSN>` → *Save, rebuild and deploy* (it is baked in at build time).
-4. Verify (after the deploy finishes), replacing `<CRON_SECRET>` with your secret:
+4. Verify (after the deploy finishes). One command runs all checks and prints PASS/FAIL for each (it never prints your secret):
    ```bash
-   curl -s -H "Authorization: Bearer <CRON_SECRET>" "https://mehko-app.onrender.com/api/cron/sentry-test?mode=message"
-   # {"sentryEnabled":true,"eventId":"…"}  → a test message appears in Sentry within a minute
-   curl -s -o /dev/null -w "%{http_code}\n" -H "Authorization: Bearer <CRON_SECRET>" "https://mehko-app.onrender.com/api/cron/sentry-test?mode=throw"
-   # 500 → a deliberate "Sentry test" error appears in Sentry (proves automatic server error capture)
+   CRON_SECRET='<the same value as in Render>' scripts/verify-sentry.sh
+   # or for another host: CRON_SECRET=… scripts/verify-sentry.sh https://your-domain.example
    ```
-   `"sentryEnabled":false` means the DSN was not present at build time.
+   It checks (1) `/api/health` is 200, (2) a test message is sent and `"sentryEnabled":true` (if `false`, the DSN was not present at build time), (3) a deliberate server error returns 500. Within about a minute Sentry → **Issues** shows two events: *"Sentry test message…"* and *"Sentry test: deliberate server error…"*.
+   Manual equivalent: `curl -H "Authorization: Bearer $CRON_SECRET" "https://mehko-app.onrender.com/api/cron/sentry-test?mode=message"` (and `?mode=throw`).
 5. In Sentry: **Alerts → Create Alert → Issues**: "when a new issue is created" → email you. Optionally set a spike alert.
 6. Resolve or archive the two test issues.
 

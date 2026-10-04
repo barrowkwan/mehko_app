@@ -5,13 +5,18 @@ const base = { url: "https://abc.supabase.co", key: "anon-key" };
 const res = (status: number) => ({ ok: status >= 200 && status < 300, status }) as Response;
 
 describe("checkSupabase", () => {
-  it("is ok when the REST endpoint answers 2xx, and calls it with the key", async () => {
+  it("is ok when the table query answers 2xx, and calls it with the key only in the apikey header", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(res(200));
     const r = await checkSupabase({ ...base, fetchImpl: fetchImpl as unknown as typeof fetch });
     expect(r).toMatchObject({ ok: true });
     const [url, init] = fetchImpl.mock.calls[0];
-    expect(url).toBe("https://abc.supabase.co/rest/v1/");
-    expect((init.headers as Record<string, string>).apikey).toBe("anon-key");
+    // A real (RLS-protected, so empty for anonymous callers) table query. Hosted Supabase refuses the REST
+    // root (/rest/v1/) for anything but the service_role key, so the root can't be used as a health probe.
+    expect(url).toBe("https://abc.supabase.co/rest/v1/profiles?select=id&limit=1");
+    const headers = init.headers as Record<string, string>;
+    expect(headers.apikey).toBe("anon-key");
+    // Publishable keys (sb_publishable_…) are not JWTs and must not be sent as a Bearer token.
+    expect(headers.Authorization).toBeUndefined();
   });
   it("is not ok on 401/403 (misconfigured key) and 5xx (provider trouble)", async () => {
     for (const status of [401, 403, 500, 503, 404]) {

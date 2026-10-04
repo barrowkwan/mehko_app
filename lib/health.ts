@@ -1,7 +1,9 @@
 export type HealthResult = { ok: boolean; reason?: string; ms: number };
 
-// Is the Supabase REST API reachable with our key? Also catches a paused free-tier project
-// (the request fails or returns 5xx) and a broken key (401/403). Never exposes the URL or key.
+// Can we run a tiny query against Supabase with our public key? Uses a real table (RLS makes it return an
+// empty list for anonymous callers) because hosted Supabase rejects the REST root for non-service keys.
+// Also catches a paused free-tier project (request fails or 5xx) and a broken key (401/403).
+// Never exposes the URL or key.
 export async function checkSupabase(opts: {
   url: string | undefined;
   key: string | undefined;
@@ -15,7 +17,7 @@ export async function checkSupabase(opts: {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetchImpl(`${url.replace(/\/$/, "")}/rest/v1/`, {
+    const res = await fetchImpl(`${url.replace(/\/$/, "")}/rest/v1/profiles?select=id&limit=1`, {
       headers: { apikey: key },
       signal: controller.signal,
       cache: "no-store",
