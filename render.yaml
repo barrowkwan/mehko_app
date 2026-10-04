@@ -26,5 +26,8 @@ services:
         sync: false
       - key: NEXT_PUBLIC_OPERATOR_NAME
         sync: false
+      # Error monitoring (optional; off until a DSN is set). See docs/monitoring.md.
+      - key: NEXT_PUBLIC_SENTRY_DSN
+        sync: false
       - key: NEXT_PUBLIC_AUTH_PROVIDERS
         value: google,facebook,apple

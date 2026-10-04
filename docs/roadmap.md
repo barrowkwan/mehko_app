@@ -39,12 +39,12 @@ Decided with the product owner: **multi-language first (done), payments last** (
 **Done when:** a restore from last night's dump into `supabase start` is verified and documented.
 **Note:** goes away as a need if you upgrade to Supabase Pro (daily backups) — see OPS-5.
 
-### OPS-2 · Uptime monitoring & alerts — P1 · S
+### OPS-2 · Uptime monitoring & alerts — P1 · S — **endpoint ready (`/api/health`); you create the monitor** (see [monitoring.md](monitoring.md#1-uptime-monitoring))
 **Why:** nothing tells you the site is down; Render free also sleeps after ~15 min.
 **Do:** free uptime monitor (e.g. UptimeRobot/Better Stack) hitting `/login` every 5 min with email alert. A 5–10 min ping also keeps the free service awake (744 h/month fits the 750 free hours, but only if it's your only free service).
 **Done when:** you get an alert when the site is stopped and no cold starts during the day.
 
-### OPS-3 · Error monitoring — P1 · S
+### OPS-3 · Error monitoring — P1 · S — **implemented, off until you set `NEXT_PUBLIC_SENTRY_DSN`** (see [monitoring.md](monitoring.md#2-error-monitoring-with-sentry))
 **Why:** server action/RPC errors are only in Render logs. Unmapped DB errors are `console.error`ed (`lib/db-errors.ts`).
 **Do:** Sentry (free tier) for Next.js (server + client), source maps in CI, alert on new errors.
 

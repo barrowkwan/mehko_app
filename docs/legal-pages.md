@@ -31,7 +31,7 @@ Set these in **Render → mehko-app → Environment** (they are inlined at **bui
 ## Keeping the text true
 The policy states facts about the app. **When you change any of these, update both documents (all four languages) and `LEGAL_UPDATED`:**
 - new data collected (phone number, photos, payment details, analytics, push tokens),
-- new third-party services (email provider, error monitoring, analytics, payment processor, a different host/database),
+- new third-party services (email provider, analytics, payment processor, a different host/database; Sentry error monitoring is already listed),
 - changes to live location (history kept, background tracking in the mobile apps),
 - changes to retention (backup retention is 30 days — see `docs/backup-restore.md`), account deletion behavior, minimum age,
 - payments (the text currently says the service processes no payments and charges no fees).
