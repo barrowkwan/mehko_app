@@ -14,7 +14,7 @@ export default async function MerchantDashboard() {
   const since = yesterdayUtc();
   const { data: offerings } = await supabase
     .from("offerings")
-    .select("id, group_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), orders(status)")
+    .select("id, offering_no, group_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), orders(status)")
     .eq("merchant_id", merchant.id)
     .neq("status", "closed") // the dashboard is the working view: closed offerings live in History
     .gte("pickup_date", since)
@@ -46,7 +46,10 @@ export default async function MerchantDashboard() {
                 href={`/merchant/offerings/${o.id}`}
                 className="flex flex-col gap-1 px-4 py-3 hover:bg-orange-50 sm:flex-row sm:items-center sm:gap-4 dark:hover:bg-neutral-900"
               >
-                <span className="font-semibold sm:w-48 sm:shrink-0">{formatDate(o.pickup_date, locale)}</span>
+                <span className="sm:w-48 sm:shrink-0">
+                  <span className="block font-semibold">{formatDate(o.pickup_date, locale)}</span>
+                  <span className="block font-mono text-xs text-neutral-500">{o.offering_no}</span>
+                </span>
                 <span className="min-w-0 flex-1 text-sm">
                   {slots.map((s) => {
                     const c = count([s]);

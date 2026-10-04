@@ -19,7 +19,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
   const { data: offering } = await supabase
     .from("offerings")
     .select(
-      `id, group_id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
+      `id, offering_no, group_id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
        merchant:merchants(name, description, translations),
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))`,
@@ -65,6 +65,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
             {localized(offering.merchant.description, offering.merchant.translations, locale, "description")}
           </p>
         )}
+        <p className="font-mono text-xs text-neutral-500">{t("offeringNumber", { number: offering.offering_no })}</p>
         <p>
           {formatDate(offering.pickup_date, locale)}, {formatTime(offering.pickup_start, locale)}–{formatTime(offering.pickup_end, locale)}
         </p>

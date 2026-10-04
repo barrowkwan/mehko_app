@@ -53,7 +53,8 @@
     "pickupOptions": "Other pickup options",
     "pickupOptionsHelp": "Pick the slot that suits you; the foods and limits are the same.",
     "here": "(viewing)",
-    "timesHere": "{count} pickup times here"
+    "timesHere": "{count} pickup times here",
+    "offeringNumber": "Offering {number}"
   },
   "orderForm": {
     "quantityOf": "Quantity of {name}",
@@ -280,7 +281,8 @@
     "addSlotSubmit": "Add slot",
     "prepAllSlots": "Totals include all {count} pickup slots.",
     "prepBySlot": "By pickup slot",
-    "noOrdersYet": "no orders yet"
+    "noOrdersYet": "no orders yet",
+    "offeringNumber": "Offering {number}"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",

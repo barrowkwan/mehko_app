@@ -16,7 +16,7 @@ export default async function OfferingsPage({ searchParams }: { searchParams: Pr
   const locale = await getLocale();
   const { data: offerings } = await supabase
     .from("offerings")
-    .select("id, group_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), offering_items(food_item:food_items(name, translations)), orders(status)")
+    .select("id, offering_no, group_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), offering_items(food_item:food_items(name, translations)), orders(status)")
     .eq("merchant_id", merchant.id)
     .order("pickup_date", { ascending: false });
   const all = offerings ?? [];
@@ -75,6 +75,7 @@ export default async function OfferingsPage({ searchParams }: { searchParams: Pr
                     {t("slotsSummary", { count: slots.length })} · {places.join(", ")}
                   </p>
                 )}
+                <p className="font-mono text-xs text-neutral-500">{o.offering_no}</p>
                 <p className="text-sm">{t("ordersCount", { count: slots.flatMap((x) => x.orders).filter((x) => x.status !== "cancelled").length })}</p>
                 <p className="text-sm text-neutral-500">{o.offering_items.map((i) => i.food_item && localized(i.food_item.name, i.food_item.translations, locale, "name")).join(", ")}</p>
               </Link>

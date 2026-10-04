@@ -67,7 +67,7 @@ isOneToOne: true
       referencedColumns: ["offering_id"]
     }
                   ]
-                },"merchant_order_counters": {
+                },"merchant_offering_counters": {
                   Row: {
                     "last_no": number,"merchant_id": string
                   }
@@ -79,7 +79,7 @@ isOneToOne: true
                   }
                   Relationships: [
                     {
-      foreignKeyName: "merchant_order_counters_merchant_id_fkey"
+      foreignKeyName: "merchant_offering_counters_merchant_id_fkey"
       columns: ["merchant_id"]
 isOneToOne: true
       referencedRelation: "merchants"
@@ -186,15 +186,34 @@ isOneToOne: false
       referencedColumns: ["offering_id"]
     }
                   ]
-                },"offerings": {
+                },"offering_order_counters": {
                   Row: {
-                    "created_at": string,"cutoff_at": string,"group_id": string | null,"id": string,"instructions": string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
+                    "last_no": number,"merchant_id": string,"offering_no": string
                   }
                   Insert: {
-                    "created_at"?: string,"cutoff_at": string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
+                    "last_no"?: number,"merchant_id": string,"offering_no": string
                   }
                   Update: {
-                    "created_at"?: string,"cutoff_at"?: string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
+                    "last_no"?: number,"merchant_id"?: string,"offering_no"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "offering_order_counters_merchant_id_fkey"
+      columns: ["merchant_id"]
+isOneToOne: false
+      referencedRelation: "merchants"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"offerings": {
+                  Row: {
+                    "created_at": string,"cutoff_at": string,"group_id": string | null,"id": string,"instructions": string | null,"merchant_id": string,"offering_no": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
+                  }
+                  Insert: {
+                    "created_at"?: string,"cutoff_at": string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id": string,"offering_no"?: string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
+                  }
+                  Update: {
+                    "created_at"?: string,"cutoff_at"?: string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"offering_no"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {

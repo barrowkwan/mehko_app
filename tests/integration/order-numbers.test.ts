@@ -33,15 +33,14 @@ async function signUp(name: string) {
 }
 
 describe.skipIf(!process.env.SUPABASE_INTEGRATION)("order numbers on live Supabase", () => {
-  let merchantCode: string;
+  let offeringNo: string;
   let offeringId: string;
   let itemId: string;
   const customers: Awaited<ReturnType<typeof signUp>>[] = [];
 
   beforeAll(async () => {
     const mer = await signUp("onmerchant");
-    const m = must(await mer.client.from("merchants").insert({ owner_id: mer.id, name: `Numbers Kitchen ${run}` }).select("id, code").single());
-    merchantCode = m.code;
+    const m = must(await mer.client.from("merchants").insert({ owner_id: mer.id, name: `Numbers Kitchen ${run}` }).select("id").single());
     const pointId = must(await mer.client.from("pickup_points").insert({ merchant_id: m.id, name: "Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
     const foodId = must(await mer.client.from("food_items").insert({ merchant_id: m.id, name: "Buns" }).select("id").single()).id;
     offeringId = must(
@@ -51,6 +50,7 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("order numbers on live Supaba
         .select("id")
         .single(),
     ).id;
+    offeringNo = must(await mer.client.from("offerings").select("offering_no").eq("id", offeringId).single()).offering_no;
     itemId = must(await mer.client.from("offering_items").insert({ offering_id: offeringId, food_item_id: foodId }).select("id").single()).id;
     for (let i = 0; i < 6; i++) customers.push(await signUp(`oncust${i}`));
   }, 60_000);
@@ -59,7 +59,7 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("order numbers on live Supaba
     for (const id of created) await admin.auth.admin.deleteUser(id);
   });
 
-  it("six simultaneous orders get six distinct consecutive numbers", async () => {
+  it("six simultaneous orders get six distinct consecutive numbers within the offering", async () => {
     const results = await Promise.all(
       customers.map((c) => c.client.rpc("place_order", { p_offering: offeringId, p_items: [{ offering_item_id: itemId, qty: 1 }] })),
     );
@@ -67,6 +67,6 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("order numbers on live Supaba
     const rows = must(await admin.from("orders").select("order_no").eq("offering_id", offeringId));
     const numbers = rows.map((r) => r.order_no).sort();
     expect(new Set(numbers).size).toBe(6);
-    expect(numbers).toEqual([1, 2, 3, 4, 5, 6].map((n) => `${merchantCode}-${String(n).padStart(8, "0")}`));
+    expect(numbers).toEqual([1, 2, 3, 4, 5, 6].map((n) => `${offeringNo}-${String(n).padStart(6, "0")}`));
   });
 });

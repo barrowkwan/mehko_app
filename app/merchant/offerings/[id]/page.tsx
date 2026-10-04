@@ -22,7 +22,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const { data: o } = await supabase
     .from("offerings")
     .select(
-      `id, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
+      `id, offering_no, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item_id, food_item:food_items(name, translations))`,
     )
@@ -90,6 +90,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
         <h1 className="text-xl font-bold">
           {formatDate(o.pickup_date, locale)}, {formatTime(o.pickup_start, locale)}–{formatTime(o.pickup_end, locale)}
         </h1>
+        <p className="font-mono text-xs text-neutral-500">{t("offeringNumber", { number: o.offering_no })}</p>
         <p className="text-neutral-500">
           {o.pickup_point?.name}
           {o.pickup_point?.address ? ` · ${o.pickup_point.address}` : ""}

@@ -53,7 +53,8 @@
     "pickupOptions": "Otras opciones de recogida",
     "pickupOptionsHelp": "Elige la franja que más te convenga; los productos y los límites son los mismos.",
     "here": "(viendo)",
-    "timesHere": "{count} horarios de recogida aquí"
+    "timesHere": "{count} horarios de recogida aquí",
+    "offeringNumber": "Oferta {number}"
   },
   "orderForm": {
     "quantityOf": "Cantidad de {name}",
@@ -280,7 +281,8 @@
     "addSlotSubmit": "Añadir franja",
     "prepAllSlots": "Los totales incluyen las {count} franjas de recogida.",
     "prepBySlot": "Por franja de recogida",
-    "noOrdersYet": "aún no hay pedidos"
+    "noOrdersYet": "aún no hay pedidos",
+    "offeringNumber": "Oferta {number}"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",

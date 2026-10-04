@@ -53,7 +53,8 @@
     "pickupOptions": "其他取餐選項",
     "pickupOptionsHelp": "選擇適合您的時段；餐點和限量相同。",
     "here": "（目前）",
-    "timesHere": "此處有 {count} 個取餐時間"
+    "timesHere": "此處有 {count} 個取餐時間",
+    "offeringNumber": "場次編號 {number}"
   },
   "orderForm": {
     "quantityOf": "{name} 的數量",
@@ -280,7 +281,8 @@
     "addSlotSubmit": "新增時段",
     "prepAllSlots": "合計包含全部 {count} 個取餐時段。",
     "prepBySlot": "依取餐時段",
-    "noOrdersYet": "尚無訂單"
+    "noOrdersYet": "尚無訂單",
+    "offeringNumber": "場次編號 {number}"
   },
   "location": {
     "onlyPickupDay": "自取當天才能開啟即時位置分享。",

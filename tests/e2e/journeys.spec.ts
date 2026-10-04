@@ -41,8 +41,8 @@ test("customer orders, edits, switches language and cancels", async ({ page, con
   await expect(page).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
   await expect(page.getByAltText("Order QR code")).toBeVisible();
   await expect(page.getByText("no peanuts")).toBeVisible();
-  // Every order has a human-friendly number: <merchant code>-<8 digits>.
-  await expect(page.getByText(/Order number: m\d{5}-00000001/)).toBeVisible();
+  // Every order has a human-friendly number: <merchant code>-<offering no.>-<order no.>.
+  await expect(page.getByText(/Order number: m\d{5}-000001-000001/)).toBeVisible();
   // The cutoff is shown in the customer's own timezone, and "left" counts what others (and I) have taken: 10 - 2.
   await expect(page.getByText(/You can change this order until .*P[DS]T/)).toBeVisible();
   await expect(page.getByText("8 left")).toBeVisible();
@@ -248,6 +248,8 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await mp.getByRole("button", { name: "Publish offering" }).click();
   await mp.waitForURL(/\/merchant\/offerings\/[0-9a-f-]{36}$/);
   await expect(mp.getByRole("heading", { name: "Pickup slots" })).toBeVisible();
+  // One offering number for the whole offering (both pickup slots), shown on its page and in History.
+  await expect(mp.getByText(/^Offering m\d{5}-\d{6}$/)).toBeVisible();
   // The offerings list shows the two slots as ONE row with a short summary.
   await mp.goto("/merchant/offerings");
   const rows = mp.locator("li", { hasText: "Slot Buns" });
@@ -290,7 +292,7 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(m.getByRole("heading", { name: "Prep list" }).locator("..").getByText("2× Slot Buns").first()).toBeVisible();
   await expect(m.getByText("By pickup slot")).toBeVisible();
   await expect(m.getByRole("heading", { name: "Orders (1)" })).toBeVisible();
-  await expect(m.getByText(/^m\d{5}-00000001$/)).toBeVisible(); // the same order number the customer sees
+  await expect(m.getByText(/^m\d{5}-000001-000001$/)).toBeVisible(); // the same order number the customer sees
   // Dashboard: one card for the offering, with orders per slot.
   await m.goto("/merchant");
   const dash = m.locator("main ul > li", { hasText: "Gate" });
