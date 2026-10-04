@@ -1,0 +1,68 @@
+name: Database backup
+
+# Daily encrypted dump of the hosted Supabase data (schemas public + auth), kept as a workflow artifact.
+# The repo is PUBLIC and artifacts of public repos are downloadable by anyone, so the dump is ALWAYS
+# encrypted (AES-256, PBKDF2) with the BACKUP_PASSPHRASE secret before upload. Restore: docs/backup-restore.md.
+on:
+  schedule:
+    - cron: "37 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    # Same switch as deploys: only run once the production setup is enabled.
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+
+      - name: Check secrets
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          [ -n "$SUPABASE_DB_URL" ] || { echo "::error::SUPABASE_DB_URL secret is missing"; exit 1; }
+          [ "${#BACKUP_PASSPHRASE}" -ge 20 ] || { echo "::error::BACKUP_PASSPHRASE secret is missing or shorter than 20 characters"; exit 1; }
+
+      - name: Dump data (public + auth, without session/token tables)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          # config.toml references these via env(); only the dump runs here.
+          GOOGLE_CLIENT_ID: ci
+          GOOGLE_CLIENT_SECRET: ci
+          FACEBOOK_CLIENT_ID: ci
+          FACEBOOK_CLIENT_SECRET: ci
+          GITHUB_CLIENT_ID: ci
+          GITHUB_CLIENT_SECRET: ci
+          APPLE_CLIENT_ID: ci
+          APPLE_CLIENT_SECRET: ci
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only --use-copy -s public,auth \
+            -x auth.sessions,auth.refresh_tokens,auth.flow_state,auth.audit_log_entries,auth.one_time_tokens,auth.mfa_amr_claims,auth.mfa_challenges,auth.mfa_factors,auth.mfa_recovery_code_sets \
+            -f backup.sql
+          # Sanity checks: a real dump has the app's tables and some size.
+          test "$(wc -c < backup.sql)" -gt 2000
+          grep -q '^COPY "public"."orders"' backup.sql
+          grep -q '^COPY "auth"."users"' backup.sql
+          echo "Dump size: $(wc -c < backup.sql) bytes, tables: $(grep -c '^COPY ' backup.sql)"
+
+      - name: Encrypt (never upload plaintext)
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass env:BACKUP_PASSPHRASE -in backup.sql -out "backup-$(date -u +%F).sql.enc"
+          shred -u backup.sql || rm -f backup.sql
+          ls -l backup-*.sql.enc
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: backup-*.sql.enc
+          retention-days: 30
+          if-no-files-found: error

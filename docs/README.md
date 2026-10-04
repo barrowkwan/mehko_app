@@ -12,6 +12,7 @@ Start here when fixing a bug or adding a feature. Read in this order, stopping w
 | [deployment.md](deployment.md) | Deploy for free (Render + hosted Supabase) and how the CI/CD pipeline works |
 | [i18n.md](i18n.md) | Languages, how the locale is chosen, adding strings/languages, merchant translations |
 | [roadmap.md](roadmap.md) | Backlog of future work and recommendations (not started); [plans/](plans/README.md) holds plans for items in progress |
+| [backup-restore.md](backup-restore.md) | Daily encrypted DB backups: setup, restore steps, rehearsal |
 | [decisions.md](decisions.md) | Learn *why* things are the way they are, past bugs, and gotchas |
 
 Setup, commands and env vars are in the root [README.md](../README.md).

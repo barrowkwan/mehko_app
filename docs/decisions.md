@@ -27,6 +27,7 @@
 - **CI: `supabase db push` couldn't connect (IPv6).** GitHub runners are IPv4-only and the direct DB host is IPv6-only on the free plan; CI uses the session-pooler string in `SUPABASE_DB_URL`.
 - **Login redirected to `https://localhost:10000` on Render.** Behind a reverse proxy, `request.url` / `request.nextUrl.origin` in route handlers is the server's internal address. Route handlers that redirect (`/auth/callback`, `/auth/signout`) now use `publicOrigin()` (`lib/origin.ts`, from `x-forwarded-host`/`Host` + `x-forwarded-proto`). `proxy.ts` redirects were unaffected. Rule: never build redirect URLs from `request.url` in route handlers.
 - **Times were shown in the server's timezone (UTC on Render).** Cutoff times are now formatted in the pickup point's timezone with the zone name (`formatInstant`), and "today"/"pickup day" use `todayIn(pickupTz)` instead of the server date.
+- **Backups must be encrypted:** the repo is public and artifacts of public repos are downloadable by anyone; the backup workflow encrypts the dump (openssl AES-256/PBKDF2) before upload and excludes session/token tables. Don't upload plaintext dumps anywhere public.
 - **Cutoff check by timezone hack.** Validation lives in trigger `check_offering_schedule`, evaluated in the pickup point's timezone — not in TypeScript.
 
 ## Gotchas
