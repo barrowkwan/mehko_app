@@ -42,16 +42,31 @@ The app only talks to **Supabase Auth**; Supabase talks to each provider. So for
 
 ## 1. Google (recommended first test)
 
-1. Go to <https://console.cloud.google.com/> and create/select a project.
-2. **APIs & Services → OAuth consent screen** (now "Google Auth Platform"): choose **External**, set app name, support email, developer email. Scopes: `openid`, `email`, `profile` (non-sensitive, no verification needed).
-3. While the app is in **Testing**, only listed **Test users** can sign in. Add your Google address(es), or click **Publish app** to allow anyone (no review needed for these scopes).
-4. **Credentials → Create credentials → OAuth client ID → Web application**.
-   - *Authorized JavaScript origins:* `http://localhost:3000` (and your production origin).
-   - *Authorized redirect URIs:* the Supabase callback URL(s) from the table above.
-5. Copy the **Client ID** and **Client secret** → `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (or the Supabase dashboard).
-6. Add `google` to `NEXT_PUBLIC_AUTH_PROVIDERS`.
+Google's console has two separate things: the **consent screen** (what users see; set up once) and a **Client** (the credential that gives you the Client ID and secret). You need both. Menu labels below are for the current "Google Auth Platform" UI; older consoles call the same things *OAuth consent screen* and *Credentials → Create credentials → OAuth client ID*.
 
-Common errors: `redirect_uri_mismatch` → the URI in step 4 must match the Supabase callback exactly; `access_denied` in Testing mode → add yourself as a test user.
+**A. Project**
+1. Go to <https://console.cloud.google.com/>, open the project picker (top bar) → **New project** → name it (e.g. `mehko-app`) → **Create**, and make sure it's selected.
+
+**B. Consent screen** (left menu: **Google Auth Platform**; if it says "not configured yet", click **Get started**)
+2. *App information:* App name (e.g. `Mehko`), User support email (your Gmail) → Next.
+3. *Audience:* choose **External** → Next.
+4. *Contact information:* your email → Next.
+5. Tick the agreement → **Continue** → **Create**.
+6. Left menu **Audience**: while *Publishing status* is **Testing**, only people listed under **Test users** can sign in. Click **Add users** and add your Google address (and anyone else testing), or click **Publish app** to let any Google user sign in (no review needed for basic sign-in).
+7. Left menu **Data Access** (scopes): the basic `openid`, `.../auth/userinfo.email` and `.../auth/userinfo.profile` are enough and need no verification. Nothing to add if they already show; otherwise **Add or remove scopes** and tick those three.
+
+**C. Create the Client** (this is the step that gives you the credentials)
+8. Left menu **Clients** → **+ Create client**.
+9. *Application type:* **Web application**. *Name:* e.g. `Mehko web`.
+10. *Authorized JavaScript origins* → **+ Add URI** → your Render URL, e.g. `https://mehko-app-xxxx.onrender.com` (no trailing slash, no path). For local dev also add `http://localhost:3000`.
+11. *Authorized redirect URIs* → **+ Add URI** → the **Supabase** callback: `https://<PROJECT_REF>.supabase.co/auth/v1/callback` (for local Supabase add `http://127.0.0.1:54321/auth/v1/callback`). This must be the Supabase URL, **not** your Render URL, and match exactly.
+12. Click **Create**. A dialog shows the **Client ID** and **Client secret**. **Copy both now** — Google may not show the secret again (you can also download the JSON, or create a new secret under the client later).
+
+**D. Supabase**
+13. Supabase dashboard → **Authentication → Sign In / Providers → Google** → enable → paste Client ID and Client secret → **Save**. (Local: `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in `supabase/.env`.)
+14. `google` is in the app's default `NEXT_PUBLIC_AUTH_PROVIDERS`, so the button already shows.
+
+Common errors: `redirect_uri_mismatch` → the URI in step 11 must match the Supabase callback exactly; `access_denied` / "app not verified" in Testing mode → add yourself as a test user (step 6); "provider is not enabled" from Supabase → step 13 not done on the hosted project (`config.toml` only configures the local stack).
 
 ## 2. Facebook
 
