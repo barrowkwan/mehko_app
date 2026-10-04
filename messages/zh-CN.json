@@ -241,7 +241,10 @@
     "slotsHelp": "这些时段共用截止时间、食品和限量。每个时段有各自的订单、备餐清单和实时位置。",
     "thisSlot": "（当前时段）",
     "addSlotTitle": "添加取餐时段",
-    "addSlotSubmit": "添加时段"
+    "addSlotSubmit": "添加时段",
+    "prepAllSlots": "合计包含全部 {count} 个取餐时段。",
+    "prepBySlot": "按取餐时段",
+    "noOrdersYet": "暂无订单"
   },
   "location": {
     "onlyPickupDay": "自取当天才能开启实时位置共享。",

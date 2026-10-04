@@ -241,7 +241,10 @@
     "slotsHelp": "These slots share the cutoff, foods and limits. Each has its own orders, prep list and live location.",
     "thisSlot": "(this slot)",
     "addSlotTitle": "Add a pickup slot",
-    "addSlotSubmit": "Add slot"
+    "addSlotSubmit": "Add slot",
+    "prepAllSlots": "Totals include all {count} pickup slots.",
+    "prepBySlot": "By pickup slot",
+    "noOrdersYet": "no orders yet"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",

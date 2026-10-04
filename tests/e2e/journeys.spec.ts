@@ -190,6 +190,17 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(p.locator("p", { hasText: "South Gate" })).toBeVisible();
   await expect(p.getByText("0 left")).toBeVisible();
   await ctx.close();
+
+  // The merchant sees the ordered quantity from whichever slot they open, plus a per-slot breakdown.
+  const mctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(mctx, baseURL!, mer.email);
+  const m = await mctx.newPage();
+  await m.goto("/merchant/offerings");
+  await m.locator("li", { hasText: "Slot Buns" }).getByRole("link").click();
+  await expect(m.getByRole("heading", { name: "Prep list" }).locator("..").getByText("2× Slot Buns").first()).toBeVisible();
+  await expect(m.getByText("By pickup slot")).toBeVisible();
+  await expect(m.getByRole("heading", { name: "Orders (1)" })).toBeVisible();
+  await mctx.close();
 });
 
 test("same pickup point at two times: merchant gets a warning, customer sees both times clearly", async ({ browser, baseURL }) => {

@@ -24,7 +24,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     .select(
       `id, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item:food_items(name, translations))`,
+       offering_items(id, quantity_limit, food_item_id, food_item:food_items(name, translations))`,
     )
     .eq("id", id)
     .eq("merchant_id", merchant.id)
@@ -43,26 +43,45 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     supabase.from("pickup_points").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
   ]);
 
-  const { data: orders } = await supabase
-    .from("orders")
-    .select("id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
-    .eq("offering_id", id)
-    .neq("status", "cancelled")
-    .order("created_at");
+  // Orders of the WHOLE offering: customers may have chosen any of its pickup slots.
+  const slotIds = slots?.length ? slots.map((s) => s.id) : [id];
+  const [{ data: orders }, { data: slotItems }] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("id, offering_id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
+      .in("offering_id", slotIds)
+      .neq("status", "cancelled")
+      .order("created_at"),
+    supabase.from("offering_items").select("id, food_item_id").in("offering_id", slotIds),
+  ]);
 
-  const totals = new Map<string, number>();
-  for (const ord of orders ?? [])
-    for (const it of ord.order_items) totals.set(it.offering_item_id, (totals.get(it.offering_item_id) ?? 0) + it.qty);
+  // offering_items differ per slot, so total by food.
+  const foodOf = new Map((slotItems ?? []).map((i) => [i.id, i.food_item_id]));
+  const totalsByFood = (list: NonNullable<typeof orders>) => {
+    const m = new Map<string, number>();
+    for (const ord of list)
+      for (const it of ord.order_items) {
+        const food = foodOf.get(it.offering_item_id);
+        if (food) m.set(food, (m.get(food) ?? 0) + it.qty);
+      }
+    return m;
+  };
+  const totals = totalsByFood(orders ?? []);
   const notes = (orders ?? []).filter((ord) => ord.note);
-  const names = new Map(
-    o.offering_items.map((i) => [i.id, i.food_item ? localized(i.food_item.name, i.food_item.translations, locale, "name") : tc("item")]),
+  const foodNames = new Map(
+    o.offering_items.map((i) => [i.food_item_id, i.food_item ? localized(i.food_item.name, i.food_item.translations, locale, "name") : tc("item")]),
   );
+  const slotLabel = new Map(
+    (slots ?? []).map((s) => [s.id, `${formatTime(s.pickup_start, locale)}–${formatTime(s.pickup_end, locale)} · ${s.pickup_point?.name ?? ""}`]),
+  );
+  const multi = (slots?.length ?? 0) > 1;
+  const thisSlotOrders = (orders ?? []).filter((ord) => ord.offering_id === id);
 
   const tz = o.pickup_point?.timezone ?? "UTC";
   const today = todayIn(tz);
   const isPickupDay = today === o.pickup_date;
   const past = today > o.pickup_date;
-  const canDelete = (orders?.length ?? 0) === 0; // cancelled orders are not listed; they go with the offering
+  const canDelete = thisSlotOrders.length === 0; // cancelled orders are not listed; they go with the offering
   const status = o.status as "draft" | "published" | "closed";
 
   return (
@@ -157,11 +176,28 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
         <ul className="list-disc pl-5">
           {o.offering_items.map((i) => (
             <li key={i.id}>
-              {totals.get(i.id) ?? 0}× {names.get(i.id)}
+              {totals.get(i.food_item_id) ?? 0}× {foodNames.get(i.food_item_id)}
               {i.quantity_limit ? ` ${t("limit", { count: i.quantity_limit })}` : ""}
             </li>
           ))}
         </ul>
+        {multi && (
+          <>
+            <p className="mt-1 text-xs text-neutral-500">{t("prepAllSlots", { count: slots!.length })}</p>
+            <h3 className="mt-3 text-sm font-semibold">{t("prepBySlot")}</h3>
+            <ul className="flex flex-col gap-1 text-sm">
+              {slots!.map((s) => {
+                const perFood = totalsByFood((orders ?? []).filter((ord) => ord.offering_id === s.id));
+                const lines = [...perFood].map(([food, qty]) => `${qty}× ${foodNames.get(food)}`);
+                return (
+                  <li key={s.id}>
+                    <span className="font-medium">{slotLabel.get(s.id)}</span>: {lines.length ? lines.join(", ") : t("noOrdersYet")}
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
       </section>
 
       {notes.length > 0 && (
@@ -170,7 +206,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
           <ul className="flex flex-col gap-1 text-sm">
             {notes.map((ord) => (
               <li key={ord.id}>
-                <span className="font-medium">{ord.customer?.display_name ?? tc("customer")}:</span>{" "}
+                <span className="font-medium">{ord.customer?.display_name ?? tc("customer")}:</span>{multi ? ` (${slotLabel.get(ord.offering_id)}) ` : " "}
                 <span className="whitespace-pre-line">{ord.note}</span>
               </li>
             ))}
@@ -194,8 +230,9 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
                   {tOrders(ord.status as "placed" | "cancelled" | "picked_up")}
                 </span>
               </p>
+              {multi && <p className="text-xs text-neutral-500">{slotLabel.get(ord.offering_id)}</p>}
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                {ord.order_items.map((i) => `${i.qty}× ${names.get(i.offering_item_id)}`).join(", ")}
+                {ord.order_items.map((i) => `${i.qty}× ${foodNames.get(foodOf.get(i.offering_item_id) ?? "")}`).join(", ")}
               </p>
               {ord.note && (
                 <p className="mt-1 text-sm">

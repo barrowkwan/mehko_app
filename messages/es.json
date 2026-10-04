@@ -241,7 +241,10 @@
     "slotsHelp": "Estas franjas comparten el cierre, los productos y los límites. Cada una tiene sus propios pedidos, lista de preparación y ubicación en vivo.",
     "thisSlot": "(esta franja)",
     "addSlotTitle": "Añadir una franja de recogida",
-    "addSlotSubmit": "Añadir franja"
+    "addSlotSubmit": "Añadir franja",
+    "prepAllSlots": "Los totales incluyen las {count} franjas de recogida.",
+    "prepBySlot": "Por franja de recogida",
+    "noOrdersYet": "aún no hay pedidos"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
