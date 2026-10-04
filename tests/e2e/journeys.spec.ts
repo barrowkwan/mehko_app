@@ -153,6 +153,8 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   const review = mp.getByRole("dialog");
   await expect(review.getByText("Slot Buns — limit 2")).toBeVisible();
   await expect(review.getByText("North Gate")).toBeVisible();
+  await expect(review.getByText("Invalid Date")).toHaveCount(0); // every slot uses the offering's date
+  await expect(review.getByText(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun),/)).toHaveCount(1); // the date is shown once
   await expect(review.getByText("South Gate")).toBeVisible();
   await expect(review.getByText("Order cutoff (your time)")).toBeVisible();
   await review.getByRole("button", { name: "Back to edit" }).click();

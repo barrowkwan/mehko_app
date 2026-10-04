@@ -35,7 +35,7 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
       ];
       for (const key of d.keys()) {
         const m = /^(slot_\d+_)point$/.exec(key);
-        if (m) slots.push({ point: points[String(d.get(key))] ?? "", date: String(d.get(`${m[1]}date`)), start: String(d.get(`${m[1]}start`)), end: String(d.get(`${m[1]}end`)) });
+        if (m) slots.push({ point: points[String(d.get(key))] ?? "", date: String(d.get("pickup_date")), start: String(d.get(`${m[1]}start`)), end: String(d.get(`${m[1]}end`)) });
       }
       const seen = new Set<string>();
       let duplicate: string | undefined;
@@ -106,10 +106,11 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
               <div>
                 <dt className="font-semibold">{t("pickup")}</dt>
                 <dd>
+                  <p className="font-medium">{formatDate(summary.slots[0].date, locale)}</p>
                   <ul className="flex flex-col gap-1">
                     {summary.slots.map((s, i) => (
                       <li key={i}>
-                        <span className="font-medium">{formatDate(s.date, locale)}</span>, {formatTime(s.start, locale)}–{formatTime(s.end, locale)}
+                        {formatTime(s.start, locale)}–{formatTime(s.end, locale)}
                         <span className="block text-neutral-500">{s.point}</span>
                       </li>
                     ))}
