@@ -13,7 +13,10 @@ Size: **S** ≤ half a day · **M** 1–3 days · **L** a week or more. Priority
 
 ## In progress
 
-_Nothing yet._ (Link plans here: `- [FEAT-1 Edit & clone offerings](plans/feat-1-edit-clone-offerings.md) — started YYYY-MM-DD`)
+- _Phase A (in progress):_ OPS-1, SEC-5, SEC-1 are being implemented first (below).
+- **Planned (after Phase A):** [MOB · Native iOS + Android apps with Expo (Plan A)](plans/mobile-native-expo.md) — detailed plan, milestones M-1…M5, security gate.
+
+(Link plans here: `- [FEAT-1 Edit & clone offerings](plans/feat-1-edit-clone-offerings.md) — started YYYY-MM-DD`)
 
 ## Suggested order
 
@@ -23,6 +26,7 @@ Decided with the product owner: **multi-language first (done), payments last** (
 2. **Phase B – Merchant usefulness:** FEAT-1 edit/clone offerings → FEAT-2 food photos → FEAT-3 order notes & pickup instructions → FEAT-10 map picker for pickup points.
 3. **Phase C – Keep customers informed:** NOTIF-1 email → NOTIF-2 web push.
 4. **Phase D – Quality & scale:** QA-1 browser e2e tests, OPS-6 staging, OPS-7 deploy approval gate, reports upgrades.
+4b. **Mobile (after Phase A):** [MOB plan](plans/mobile-native-expo.md) — native iOS/Android apps next to the web app; its prerequisites are OPS-1, OPS-2/3, SEC-1, **SEC-5**, SEC-7.
 5. **Phase E – Payments (last):** PAY-2 prices → PAY-1 manual cash/Venmo/Zelle tracking → PAY-3 cards only if asked.
 
 ---
@@ -177,8 +181,11 @@ Server actions and `/api/cron/fetch-context` (secret-protected already). Supabas
 ### SEC-3 · Security headers (CSP etc.) — P2 · S
 Careful with Leaflet tiles (OpenStreetMap), Supabase websockets/HTTPS, inline styles.
 
-### SEC-5 · Account deletion & data export — P3 · M
-GDPR/CCPA-style. Cascades exist (`profiles` → orders); decide what merchants keep.
+### SEC-5 · Account deletion & data export — **P1** · M  (store requirement)
+Apple 5.1.1(v) and Google Play require **in-app account deletion** for apps with account creation (social-login accounts count). GDPR/CCPA-style too. **Policy:** deletion is blocked while a merchant has upcoming offerings with active orders (close/cancel first); otherwise deleting the account removes the profile, orders, and the merchant with its foods/offerings/pickup points and their past orders (FK cascades fixed in a migration). The auth user is deleted server-side with the admin API (web server action now; an authenticated HTTP endpoint for mobile later). Data export is a later follow-up.
+
+### SEC-8 · Mobile security gate — P1 with MOB · —
+The 14-point checklist in [plans/mobile-native-expo.md](plans/mobile-native-expo.md#security-gate-before-each-testflightplay-externalstore-submission) must pass before every TestFlight/Play-external/store submission (encrypted session storage, PKCE, no secrets in bundle, EAS Update code signing, minimal permissions, RLS regression tests…).
 
 ### SEC-6 · Public vs private repo — P3 · decision
 Repo is public (code visible, Actions free). Private: Actions free-minutes cap (~2000/mo) — CI takes a few minutes per run; required-reviewer environments need a paid plan.
@@ -188,7 +195,6 @@ Google: **Publish app** (out of Testing). Facebook: privacy URL (SEC-1) then swi
 
 ## Platform ideas (maybe never)
 
-- Native mobile app (Expo) reusing the Supabase backend.
 - Privacy-friendly analytics.
 - Locale-prefixed URLs if per-language SEO ever matters.
 - Right-to-left language support.

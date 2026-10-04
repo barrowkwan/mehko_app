@@ -32,6 +32,11 @@ Links to the roadmap entry, decisions, constraints (free-tier limits, i18n, RLS)
 - In:
 - Out (deferred → add to roadmap):
 
+## Platform split (once the mobile app exists)
+- **Shared** (`packages/*`: logic, validation, error codes, messages):
+- **Web** (Next.js UI):
+- **Mobile** (Expo UI):
+
 ## Design
 Data model (new migration file name), RLS/RPC rules, routes/components touched, i18n keys (all 4 languages), error mapping (`lib/db-errors.ts`).
 
