@@ -9,7 +9,8 @@ export type OrderFormItem = {
   offeringItemId: string;
   name: string;
   description: string | null;
-  remaining: number | null; // null = unlimited
+  remaining: number | null; // null = unlimited; shown as "N left"
+  max?: number | null; // most the customer can set (defaults to remaining; an existing order may exceed it by its own quantity)
   qty: number;
   imageUrl?: string | null;
 };
@@ -42,7 +43,7 @@ export function OrderForm({
               type="number"
               name={`qty_${it.offeringItemId}`}
               min={0}
-              max={it.remaining ?? undefined}
+              max={(it.max ?? it.remaining) ?? undefined}
               defaultValue={it.qty}
               aria-label={t("orderForm.quantityOf", { name: it.name })}
               className="w-20 rounded border border-neutral-300 bg-transparent p-2 dark:border-neutral-700"

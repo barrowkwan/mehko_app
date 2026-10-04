@@ -1,9 +1,10 @@
+import { LocalInstantText } from "@/components/local-instant";
 import QRCode from "qrcode";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { isPastCutoff } from "@/lib/cutoff";
-import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
+import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
 import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
@@ -96,7 +97,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
         {editable ? (
           <>
             <p className="mb-2 text-sm text-orange-700">
-              {t("canChangeUntil", { time: formatInstant(off.cutoff_at, locale, tz) })}
+              <LocalInstantText messageKey="order.canChangeUntil" iso={off.cutoff_at} fallbackTimeZone={tz} />
             </p>
             <OrderForm
               action={updateOrder.bind(null, id)}
@@ -108,7 +109,9 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
                 description: i.food_item?.description
                   ? localized(i.food_item.description, i.food_item.translations, locale, "description")
                   : null,
-                remaining: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) + (mine.get(i.id) ?? 0) : null,
+                remaining: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) : null,
+                // You can raise your own quantity by what is still left (your current quantity is already yours).
+                max: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) + (mine.get(i.id) ?? 0) : null,
                 qty: mine.get(i.id) ?? 0,
                 imageUrl: foodPhotoUrl(i.food_item?.image_path),
               }))}

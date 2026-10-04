@@ -1,8 +1,9 @@
+import { LocalInstantText } from "@/components/local-instant";
 import { notFound, redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { isPastCutoff } from "@/lib/cutoff";
-import { formatDate, formatInstant, formatTime } from "@/lib/format";
+import { formatDate, formatTime } from "@/lib/format";
 import { localized } from "@/lib/locale";
 import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
@@ -59,7 +60,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
           {t("pickup", { place: `${place?.name ?? ""}${place?.address ? ` · ${place.address}` : ""}` })}
         </p>
         <p className="text-sm text-orange-700">
-          {closed ? t("closed") : t("orderBy", { time: formatInstant(offering.cutoff_at, locale, tz) })}
+          {closed ? t("closed") : <LocalInstantText messageKey="offering.orderBy" iso={offering.cutoff_at} fallbackTimeZone={tz} />}
         </p>
         {offering.instructions && (
           <div className="mt-2 rounded border border-neutral-200 p-3 text-sm dark:border-neutral-800">

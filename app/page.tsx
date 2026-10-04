@@ -1,7 +1,8 @@
+import { LocalInstantText } from "@/components/local-instant";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
-import { formatDate, formatInstant, formatTime } from "@/lib/format";
+import { formatDate, formatTime } from "@/lib/format";
 import { localized } from "@/lib/locale";
 
 export default async function Home() {
@@ -48,7 +49,7 @@ export default async function Home() {
                   .join(", ")}
               </p>
               <p className="mt-2 text-xs text-orange-700">
-                {t("orderBy", { time: formatInstant(o.cutoff_at, locale, o.pickup_point?.timezone ?? "UTC") })}
+                <LocalInstantText messageKey="home.orderBy" iso={o.cutoff_at} fallbackTimeZone={o.pickup_point?.timezone ?? "UTC"} />
               </p>
             </Link>
           </li>

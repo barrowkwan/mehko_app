@@ -1,8 +1,9 @@
+import { LocalInstantText } from "@/components/local-instant";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
-import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
+import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { LocationToggle } from "@/components/location-toggle";
@@ -61,7 +62,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
           {o.pickup_point?.name}
           {o.pickup_point?.address ? ` · ${o.pickup_point.address}` : ""}
         </p>
-        <p className="text-sm">{t("cutoffLine", { time: formatInstant(o.cutoff_at, locale, tz), status: tStatus(status) })}</p>
+        <p className="text-sm"><LocalInstantText messageKey="offeringDetail.cutoffLine" iso={o.cutoff_at} fallbackTimeZone={tz} values={{ status: tStatus(status) }} /></p>
         <div className="mt-2 flex gap-3 text-sm">
           {status !== "published" && (
             <form action={setOfferingStatus.bind(null, id, "published")}>

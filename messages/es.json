@@ -137,7 +137,9 @@
     "timezoneRequired": "La zona horaria es obligatoria",
     "timezoneUnknown": "Zona horaria desconocida (usa un nombre IANA como America/New_York)",
     "mapHint": "Haz clic en el mapa (o arrastra el marcador) para fijar el punto de recogida, o escribe las coordenadas.",
-    "locationFailed": "No se pudo obtener tu ubicación. Permite el acceso a la ubicación o haz clic en el mapa."
+    "locationFailed": "No se pudo obtener tu ubicación. Permite el acceso a la ubicación o haz clic en el mapa.",
+    "changeTimezone": "Cambiar zona horaria",
+    "saveTimezone": "Guardar zona horaria"
   },
   "foods": {
     "title": "Comidas",

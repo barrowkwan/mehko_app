@@ -9,6 +9,9 @@ const must = <T>(r: { data: T; error: { message: string } | null }): NonNullable
 
 test.afterAll(removeUsers);
 
+// The pickup point in these tests is set to UTC; a customer in California must still see their own time.
+test.use({ timezoneId: "America/Los_Angeles" });
+
 test("customer orders, edits, switches language and cancels", async ({ page, context, baseURL }) => {
   const mer = await createUser("e2emerchant");
   const cust = await createUser("e2ecustomer");
@@ -36,6 +39,9 @@ test("customer orders, edits, switches language and cancels", async ({ page, con
   await expect(page).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
   await expect(page.getByAltText("Order QR code")).toBeVisible();
   await expect(page.getByText("no peanuts")).toBeVisible();
+  // The cutoff is shown in the customer's own timezone, and "left" counts what others (and I) have taken: 10 - 2.
+  await expect(page.getByText(/You can change this order until .*P[DS]T/)).toBeVisible();
+  await expect(page.getByText("8 left")).toBeVisible();
 
   // Edit the quantity.
   await page.locator(`input[name="qty_${itemId}"]`).fill("3");

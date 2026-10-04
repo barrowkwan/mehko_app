@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
-import { addPickupPoint, setPickupPointActive } from "../actions";
+import { addPickupPoint, setPickupPointActive, updatePickupPointTimezone } from "../actions";
 import { GeoFill } from "./geo-fill";
+import { TimezoneField } from "./timezone-field";
 
 export default async function PickupPointsPage() {
   const { supabase, merchant } = await requireMerchant();
@@ -13,7 +14,6 @@ export default async function PickupPointsPage() {
     .select("*")
     .eq("merchant_id", merchant.id)
     .order("created_at");
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <main className="flex flex-col gap-6 p-4">
@@ -27,6 +27,12 @@ export default async function PickupPointsPage() {
                 {p.address} · {p.lat.toFixed(5)}, {p.lng.toFixed(5)} · {p.timezone}
               </p>
             </div>
+            <details className="text-sm">
+              <summary className="cursor-pointer text-orange-600">{t("changeTimezone")}</summary>
+              <ActionForm action={updatePickupPointTimezone.bind(null, p.id)} submitLabel={t("saveTimezone")} className="mt-2 flex flex-col gap-2">
+                <TimezoneField defaultValue={p.timezone} />
+              </ActionForm>
+            </details>
             <form action={setPickupPointActive.bind(null, p.id, !p.active)}>
               <button className="text-sm text-orange-600 hover:underline">{p.active ? tc("disable") : tc("enable")}</button>
             </form>
@@ -43,9 +49,7 @@ export default async function PickupPointsPage() {
             <input name="address" className={inputClass} />
           </Field>
           <GeoFill />
-          <Field label={t("timezone")}>
-            <input name="timezone" defaultValue={tz} required className={inputClass} />
-          </Field>
+          <TimezoneField />
         </ActionForm>
       </section>
     </main>

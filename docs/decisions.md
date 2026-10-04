@@ -55,3 +55,8 @@
 - **Clean-checkout typecheck**: `PageProps<...>`/`LayoutProps<...>` come from `.next/types`, so `npm run typecheck` runs `next typegen` first (CI caught this).
 - **`next build` type-checks `tests/`** — run `npm run typecheck` after editing tests.
 - **Verified against a live local Supabase** (migration, seed, RLS, RPCs, QR, Realtime, SSR pages with a session cookie, cron route with real Open-Meteo/Nager). **Still unverified**: real OAuth logins (need provider credentials), camera QR scanning and the Leaflet map in a real browser, geolocation on a phone.
+
+## Times and stock shown to customers (found in the first real-device test, 2026-10-04)
+- **Cutoff times are shown in the viewer's browser timezone** (`components/local-instant.tsx`; the server renders the pickup point's timezone first, the browser then swaps in its own). Pickup *date/time* stays wall-clock at the pickup place. Emails have no browser, so they use the pickup point's timezone.
+- **Pickup-point timezone defaults to the merchant's browser.** The server page used `Intl...resolvedOptions().timeZone`, which is the *server's* zone (UTC on Render), so every point was saved as UTC. Existing points can be fixed with "Change timezone" on the pickup-points page.
+- **"N left" is the true remaining stock.** On the order page we had shown remaining + the customer's own quantity (the most they could set), which looked like nothing had been taken. The input's `max` keeps the old value.

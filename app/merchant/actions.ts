@@ -89,6 +89,23 @@ export async function addPickupPoint(_prev: FormState, formData: FormData): Prom
   return undefined;
 }
 
+// Fixes a point's timezone (e.g. points created before the form used the browser's timezone).
+export async function updatePickupPointTimezone(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const t = await getTranslations("pickupPoints");
+  const timezone = String(formData.get("timezone") ?? "").trim();
+  if (!timezone) return { error: t("timezoneRequired") };
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: timezone });
+  } catch {
+    return { error: t("timezoneUnknown") };
+  }
+  const { supabase } = await requireMerchant();
+  const { error } = await supabase.from("pickup_points").update({ timezone }).eq("id", id);
+  if (error) return { error: await dbError(error.message) };
+  revalidatePath("/merchant/pickup-points");
+  return { saved: true };
+}
+
 export async function setPickupPointActive(id: string, active: boolean): Promise<void> {
   const { supabase } = await requireMerchant();
   await supabase.from("pickup_points").update({ active }).eq("id", id);
