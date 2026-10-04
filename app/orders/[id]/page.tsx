@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/auth";
 import { isPastCutoff } from "@/lib/cutoff";
 import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { groupSlotsByPoint } from "@/lib/slots";
 import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
 import { LiveMapLoader } from "@/components/live-map-loader";
@@ -43,7 +44,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
     editable && off.group_id
       ? await supabase
           .from("offerings")
-          .select("id, pickup_date, pickup_start, pickup_end, pickup_point:pickup_points(name)")
+          .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, pickup_point:pickup_points(name)")
           .eq("group_id", off.group_id)
           .eq("status", "published")
           .order("pickup_date")
@@ -117,10 +118,14 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
                 <p className="mb-2 text-xs text-neutral-500">{t("changeSlotHelp")}</p>
                 <ActionForm action={changeOrderSlot.bind(null, id)} submitLabel={t("changeSlotSubmit")} className="flex flex-col gap-2">
                   <select name="slot" defaultValue={order.offering_id} className={inputClass}>
-                    {slots.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
-                      </option>
+                    {groupSlotsByPoint(slots).map((g) => (
+                      <optgroup key={g.pointId} label={g.slots[0].pickup_point?.name ?? ""}>
+                        {g.slots.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </ActionForm>

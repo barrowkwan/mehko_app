@@ -50,7 +50,8 @@
     "instructionsTitle": "取餐說明",
     "pickupOptions": "其他取餐選項",
     "pickupOptionsHelp": "選擇適合您的時段；餐點和限量相同。",
-    "here": "（目前）"
+    "here": "（目前）",
+    "timesHere": "此處有 {count} 個取餐時間"
   },
   "orderForm": {
     "quantityOf": "{name} 的數量",
@@ -212,8 +213,8 @@
       "instructions": "取餐說明",
       "back": "返回修改",
       "publish": "發布",
-      "duplicateTitle": "取餐點重複",
-      "duplicateBody": "「{point}」被選擇了多次。同一個取餐點在一個優惠中只能使用一次。請移除重複項或選擇其他取餐點。"
+      "duplicateTitle": "同一取餐點被多次使用",
+      "duplicateBody": "「{point}」在當天被用於多個取餐時間（例如上午和晚上）。顧客會分別看到每個時間。請確認這是您想要的。"
     }
   },
   "offeringDetail": {
@@ -314,8 +315,7 @@
     "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。",
     "noteTooLong": "備註太長（最多 300 個字元）。",
     "pickupPointNotFound": "找不到取餐點。",
-    "slotsSameDate": "所有取餐時段必須在同一天。",
-    "slotPointDuplicate": "同一個取餐點在一個優惠中只能使用一次。請選擇其他取餐點或移除重複項。"
+    "slotsSameDate": "所有取餐時段必須在同一天。"
   },
   "account": {
     "title": "帳戶",

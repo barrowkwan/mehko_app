@@ -80,20 +80,14 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
       {summary && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="review-title">
           <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-xl bg-white p-5 text-neutral-900 shadow-xl sm:rounded-xl dark:bg-neutral-900 dark:text-neutral-100">
-            {summary.duplicate ? (
-              <>
-                <h2 id="review-title" className="text-lg font-bold text-red-700">{t("duplicateTitle")}</h2>
-                <p className="my-3 text-sm">{t("duplicateBody", { point: summary.duplicate })}</p>
-                <div className="flex justify-end">
-                  <button type="button" onClick={() => setSummary(null)} className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-700">
-                    {t("back")}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
             <h2 id="review-title" className="text-lg font-bold">{t("title")}</h2>
             <p className="mb-4 text-sm text-neutral-500">{t("intro")}</p>
+            {summary.duplicate && (
+              <div role="alert" className="mb-4 rounded-lg border border-yellow-500 bg-yellow-50 p-3 text-sm text-yellow-900 dark:bg-yellow-950 dark:text-yellow-100">
+                <p className="font-semibold">{t("duplicateTitle")}</p>
+                <p>{t("duplicateBody", { point: summary.duplicate })}</p>
+              </div>
+            )}
 
             <dl className="flex flex-col gap-4 text-sm">
               <div>
@@ -142,8 +136,6 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
                 {t("publish")}
               </button>
             </div>
-              </>
-            )}
           </div>
         </div>
       )}

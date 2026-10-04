@@ -1,3 +1,4 @@
+import { PickupSlotList } from "@/components/pickup-slot-list";
 import { LocalInstantText } from "@/components/local-instant";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -12,7 +13,7 @@ export default async function Home() {
   const { data: offerings } = await supabase
     .from("offerings")
     .select(
-      `id, group_id, pickup_date, pickup_start, pickup_end, cutoff_at,
+      `id, group_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at,
        merchant:merchants(id, name, translations),
        pickup_point:pickup_points(name, address, timezone),
        offering_items(food_item:food_items(name, translations))`,
@@ -88,15 +89,9 @@ export default async function Home() {
               ) : (
                 <div className={cardClass}>
                   {body}
-                  <ul className="mt-2 flex flex-col gap-1">
-                    {slots.map((s) => (
-                      <li key={s.id}>
-                        <Link href={`/offerings/${s.id}`} className="block rounded border border-neutral-200 px-3 py-2 hover:border-orange-500 dark:border-neutral-800">
-                          {slotLine(s)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="mt-2">
+                    <PickupSlotList slots={slots} />
+                  </div>
                   {foods}
                 </div>
               )}

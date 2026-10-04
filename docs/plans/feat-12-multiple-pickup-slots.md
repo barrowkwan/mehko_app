@@ -7,7 +7,8 @@
 A merchant can offer the same foods at more than one pickup point and/or time in one offering. A customer picks one slot per order and can move the order to another slot until the cutoff.
 
 ## Decisions (product owner)
-- **All slots of an offering are on the same date** (different points and/or times; each pickup point can be used only ONCE per offering; migration `20261013000000_slot_point_unique.sql` — a trigger, so offerings that already repeat a point stay editable). Added after the first release (migration `20261012000000_slots_same_date.sql`): the date is a shared part, so moving it moves every upcoming slot. Other days = separate offerings.
+- **All slots of an offering are on the same date** (migration `20261012000000_slots_same_date.sql`): the date is a shared part, so moving it moves every upcoming slot. Other days = separate offerings.
+- **The same pickup point may be used more than once on that day** (e.g. morning and evening). Migrations 20261013/20261014 briefly forbade it and then reverted. Instead: the merchant gets a **warning in the review** ("make sure this is intended"), and customers see the place once with a badge ("2 pickup times here") and one coloured button per time (`components/pickup-slot-list.tsx`, `lib/slots.ts`); the order page groups the slot picker by place.
 - **One cutoff** for the whole offering. **Food limits are shared** across all slots (one pool). **One slot per order**; another slot = another order.
 
 ## Design: a slot is an offering row

@@ -50,7 +50,8 @@
     "instructionsTitle": "Instrucciones de recogida",
     "pickupOptions": "Otras opciones de recogida",
     "pickupOptionsHelp": "Elige la franja que más te convenga; los productos y los límites son los mismos.",
-    "here": "(viendo)"
+    "here": "(viendo)",
+    "timesHere": "{count} horarios de recogida aquí"
   },
   "orderForm": {
     "quantityOf": "Cantidad de {name}",
@@ -212,8 +213,8 @@
       "instructions": "Instrucciones de recogida",
       "back": "Volver a editar",
       "publish": "Publicar oferta",
-      "duplicateTitle": "Punto de recogida repetido",
-      "duplicateBody": "«{point}» está elegido más de una vez. Cada punto de recogida solo puede usarse una vez en una oferta. Quita el repetido o elige otro punto."
+      "duplicateTitle": "Mismo punto de recogida usado más de una vez",
+      "duplicateBody": "«{point}» se usa para más de un horario de recogida ese día (por ejemplo mañana y tarde). Los clientes verán cada horario por separado. Asegúrate de que es lo que quieres."
     }
   },
   "offeringDetail": {
@@ -314,8 +315,7 @@
     "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
     "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo).",
     "pickupPointNotFound": "Punto de recogida no encontrado.",
-    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día.",
-    "slotPointDuplicate": "Cada punto de recogida solo puede usarse una vez en una oferta. Elige otro punto o quita el repetido."
+    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día."
   },
   "account": {
     "title": "Cuenta",

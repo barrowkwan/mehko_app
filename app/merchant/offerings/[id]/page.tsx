@@ -43,10 +43,6 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     supabase.from("pickup_points").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
   ]);
 
-  // A pickup point can be used only once per offering: offer only the ones not used by a slot yet.
-  const usedPoints = new Set([o.pickup_point_id, ...(slots ?? []).map((s) => s.pickup_point_id)]);
-  const availablePoints = (points ?? []).filter((p) => !usedPoints.has(p.id));
-
   const { data: orders } = await supabase
     .from("orders")
     .select("id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
@@ -122,11 +118,11 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
             </ul>
           </>
         )}
-        {!past && availablePoints.length > 0 && (
+        {!past && points && points.length > 0 && (
           <details>
             <summary className="cursor-pointer text-sm font-medium text-orange-600">{t("addSlotTitle")}</summary>
             <ActionForm action={addOfferingSlot.bind(null, id)} submitLabel={t("addSlotSubmit")} className="mt-2 flex flex-col gap-3">
-              <SlotFields points={availablePoints} prefix="slot_0_" />
+              <SlotFields points={points} prefix="slot_0_" />
             </ActionForm>
           </details>
         )}

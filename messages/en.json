@@ -50,7 +50,8 @@
     "instructionsTitle": "Pickup instructions",
     "pickupOptions": "Other pickup options",
     "pickupOptionsHelp": "Pick the slot that suits you; the foods and limits are the same.",
-    "here": "(viewing)"
+    "here": "(viewing)",
+    "timesHere": "{count} pickup times here"
   },
   "orderForm": {
     "quantityOf": "Quantity of {name}",
@@ -212,8 +213,8 @@
       "instructions": "Pickup instructions",
       "back": "Back to edit",
       "publish": "Publish offering",
-      "duplicateTitle": "Pickup point used twice",
-      "duplicateBody": "“{point}” is chosen more than once. Each pickup point can be used only once in an offering. Remove the repeat or choose a different point."
+      "duplicateTitle": "Same pickup point used more than once",
+      "duplicateBody": "“{point}” is used for more than one pickup time on this day (for example morning and evening). Customers will see each time separately. Make sure this is what you want."
     }
   },
   "offeringDetail": {
@@ -314,8 +315,7 @@
     "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again.",
     "noteTooLong": "The note is too long (300 characters at most).",
     "pickupPointNotFound": "Pickup point not found.",
-    "slotsSameDate": "All pickup slots must be on the same date.",
-    "slotPointDuplicate": "Each pickup point can be used only once in an offering. Choose a different point or remove the repeat."
+    "slotsSameDate": "All pickup slots must be on the same date."
   },
   "account": {
     "title": "Account",
