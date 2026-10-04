@@ -11,7 +11,7 @@ export default async function OrdersPage() {
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      `id, status, created_at,
+      `id, order_no, status, created_at,
        offering:offerings(pickup_date, pickup_start, merchant:merchants(name, translations), pickup_point:pickup_points(name)),
        order_items(qty, offering_item:offering_items(food_item:food_items(name, translations)))`,
     )
@@ -33,6 +33,7 @@ export default async function OrdersPage() {
                 <p className="font-semibold">
                   {o.offering?.merchant && localized(o.offering.merchant.name, o.offering.merchant.translations, locale, "name")}
                 </p>
+                <span className="font-mono text-xs text-neutral-500">{o.order_no}</span>
                 <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">
                   {t(`status.${o.status as "placed" | "cancelled" | "picked_up"}`)}
                 </span>

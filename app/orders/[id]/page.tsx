@@ -24,7 +24,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   const { data: order } = await supabase
     .from("orders")
     .select(
-      `id, status, qr_token, offering_id, note,
+      `id, order_no, status, qr_token, offering_id, note,
        offering:offerings(group_id, pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
          merchant:merchants(name, translations),
          pickup_point:pickup_points(name, address, lat, lng, timezone),
@@ -74,7 +74,8 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
           {off.pickup_point?.name}
           {off.pickup_point?.address ? ` · ${off.pickup_point.address}` : ""}
         </p>
-        <p className="mt-1 text-sm">
+        <p className="mt-1 text-sm text-neutral-500">{t("orderNumber", { number: order.order_no })}</p>
+        <p className="text-sm">
           {t("statusLabel")} <strong>{tStatus(order.status as "placed" | "cancelled" | "picked_up")}</strong>
         </p>
       </div>

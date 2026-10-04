@@ -87,7 +87,8 @@
     "noteTitle": "Tu nota para el comerciante",
     "changeSlotTitle": "Cambiar la franja de recogida",
     "changeSlotHelp": "Mueve este pedido a otra franja de recogida antes del cierre.",
-    "changeSlotSubmit": "Mover mi pedido"
+    "changeSlotSubmit": "Mover mi pedido",
+    "orderNumber": "Número de pedido: {number}"
   },
   "map": {
     "sharing": "El comerciante está compartiendo su ubicación en vivo.",
@@ -128,7 +129,8 @@
     "countryUS": "Estados Unidos (US)",
     "websiteInvalid": "Introduce una dirección web válida, p. ej. https://example.com",
     "emailInvalid": "Introduce un correo electrónico válido.",
-    "phoneInvalid": "Introduce un teléfono válido (solo dígitos, espacios y + ( ) - .)."
+    "phoneInvalid": "Introduce un teléfono válido (solo dígitos, espacios y + ( ) - .).",
+    "merchantId": "ID de comerciante: {code}"
   },
   "translations": {
     "title": "Traducciones (opcional)",
@@ -298,8 +300,8 @@
     "instructions": "Escanea el código QR del pedido del cliente.",
     "manualPlaceholder": "O introduce el código manualmente",
     "confirm": "Confirmar",
-    "confirmed": "Recogida confirmada para {name}.",
-    "already": "Ya recogido ({name})."
+    "confirmed": "Recogida confirmada para {name} ({orderNo}).",
+    "already": "Ya recogido ({name}, {orderNo})."
   },
   "customers": {
     "title": "Clientes",
@@ -417,7 +419,8 @@
       "when": "{date}, {start}–{end}",
       "footerReason": "Recibes este correo por tu actividad en {site}.",
       "unsubscribe": "Darme de baja de estos correos"
-    }
+    },
+    "orderNumber": "Número de pedido: {number}"
   },
   "unsubscribe": {
     "title": "Cancelar suscripción a los correos",

@@ -13,6 +13,7 @@ export default async function MerchantProfilePage() {
   return (
     <main className="flex max-w-md flex-col gap-4 p-4">
       <h1 className="text-xl font-bold">{tp("title")}</h1>
+      <p className="text-sm text-neutral-500">{tp("merchantId", { code: merchant.code })}</p>
       <ActionForm action={updateMerchantProfile} submitLabel={tp("submit")}>
         <Field label={t("name")}>
           <input name="name" defaultValue={merchant.name} required className={inputClass} />

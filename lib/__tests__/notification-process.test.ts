@@ -11,7 +11,7 @@ const content = {
   type: "order_confirmed" as const,
   data: {
     recipientName: "Nina", merchantName: "Mei", items: [{ name: "Dumplings", qty: 2 }], pickupDate: "2026-10-09", pickupStart: "17:00", pickupEnd: "19:00",
-    timezone: "UTC", pickupPoint: { name: "Park", address: null }, cutoffAt: "2026-10-08T20:00:00Z", instructions: null, orderUrl: "https://eats.example.com/orders/1",
+    timezone: "UTC", pickupPoint: { name: "Park", address: null }, cutoffAt: "2026-10-08T20:00:00Z", instructions: null, orderUrl: "https://eats.example.com/orders/1", orderNo: "m00001-00000001",
   },
 };
 const loaded = (over: Partial<{ email: string | null; wantsEmail: boolean; locale: "en" | "es" }> = {}): Loaded => ({

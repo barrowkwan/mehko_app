@@ -87,7 +87,8 @@
     "noteTitle": "Your note to the merchant",
     "changeSlotTitle": "Change pickup slot",
     "changeSlotHelp": "Move this order to another pickup slot before the cutoff.",
-    "changeSlotSubmit": "Move my order"
+    "changeSlotSubmit": "Move my order",
+    "orderNumber": "Order number: {number}"
   },
   "map": {
     "sharing": "Merchant is sharing their live location.",
@@ -128,7 +129,8 @@
     "countryUS": "United States (US)",
     "websiteInvalid": "Enter a valid website address, e.g. https://example.com",
     "emailInvalid": "Enter a valid email address.",
-    "phoneInvalid": "Enter a valid phone number (digits, spaces and + ( ) - . only)."
+    "phoneInvalid": "Enter a valid phone number (digits, spaces and + ( ) - . only).",
+    "merchantId": "Merchant ID: {code}"
   },
   "translations": {
     "title": "Translations (optional)",
@@ -298,8 +300,8 @@
     "instructions": "Scan the QR code on the customer's order.",
     "manualPlaceholder": "Or enter code manually",
     "confirm": "Confirm",
-    "confirmed": "Pickup confirmed for {name}.",
-    "already": "Already picked up ({name})."
+    "confirmed": "Pickup confirmed for {name} ({orderNo}).",
+    "already": "Already picked up ({name}, {orderNo})."
   },
   "customers": {
     "title": "Customers",
@@ -417,7 +419,8 @@
       "when": "{date}, {start}–{end}",
       "footerReason": "You receive this email because of your activity on {site}.",
       "unsubscribe": "Unsubscribe from these emails"
-    }
+    },
+    "orderNumber": "Order number: {number}"
   },
   "unsubscribe": {
     "title": "Unsubscribe from emails",

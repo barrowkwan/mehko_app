@@ -51,6 +51,7 @@ export function Scanner() {
           {result.ok
             ? t(result.alreadyPickedUp ? "scan.already" : "scan.confirmed", {
                 name: result.customerName ?? t("common.customer"),
+                orderNo: result.orderNo,
               })
             : result.error}
         </div>

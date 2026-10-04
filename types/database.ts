@@ -67,15 +67,34 @@ isOneToOne: true
       referencedColumns: ["offering_id"]
     }
                   ]
-                },"merchants": {
+                },"merchant_order_counters": {
                   Row: {
-                    "contact_email": string | null,"contact_phone": string | null,"country_code": string,"created_at": string,"description": string | null,"id": string,"logo_path": string | null,"name": string,"owner_id": string,"translations": NonNullable<Json>,"website": string | null
+                    "last_no": number,"merchant_id": string
                   }
                   Insert: {
-                    "contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name": string,"owner_id": string,"translations"?: NonNullable<Json>,"website"?: string | null
+                    "last_no"?: number,"merchant_id": string
                   }
                   Update: {
-                    "contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name"?: string,"owner_id"?: string,"translations"?: NonNullable<Json>,"website"?: string | null
+                    "last_no"?: number,"merchant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "merchant_order_counters_merchant_id_fkey"
+      columns: ["merchant_id"]
+isOneToOne: true
+      referencedRelation: "merchants"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"merchants": {
+                  Row: {
+                    "code": string,"contact_email": string | null,"contact_phone": string | null,"country_code": string,"created_at": string,"description": string | null,"id": string,"logo_path": string | null,"name": string,"owner_id": string,"translations": NonNullable<Json>,"website": string | null
+                  }
+                  Insert: {
+                    "code"?: string,"contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name": string,"owner_id": string,"translations"?: NonNullable<Json>,"website"?: string | null
+                  }
+                  Update: {
+                    "code"?: string,"contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name"?: string,"owner_id"?: string,"translations"?: NonNullable<Json>,"website"?: string | null
                   }
                   Relationships: [
                     {
@@ -219,13 +238,13 @@ isOneToOne: false
                   ]
                 },"orders": {
                   Row: {
-                    "created_at": string,"customer_id": string,"id": string,"note": string | null,"offering_id": string,"payment_ref": string | null,"payment_status": string,"picked_up_at": string | null,"qr_token": string,"status": string,"updated_at": string
+                    "created_at": string,"customer_id": string,"id": string,"note": string | null,"offering_id": string,"order_no": string,"payment_ref": string | null,"payment_status": string,"picked_up_at": string | null,"qr_token": string,"status": string,"updated_at": string
                   }
                   Insert: {
-                    "created_at"?: string,"customer_id": string,"id"?: string,"note"?: string | null,"offering_id": string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
+                    "created_at"?: string,"customer_id": string,"id"?: string,"note"?: string | null,"offering_id": string,"order_no"?: string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"customer_id"?: string,"id"?: string,"note"?: string | null,"offering_id"?: string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
+                    "created_at"?: string,"customer_id"?: string,"id"?: string,"note"?: string | null,"offering_id"?: string,"order_no"?: string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -354,7 +373,7 @@ isOneToOne: false
                            },
 "confirm_pickup":
 { Args: { "p_token": string }; Returns: {
-              "already_picked_up": boolean,"customer_name": string,"order_id": string
+              "already_picked_up": boolean,"customer_name": string,"order_id": string,"order_no": string
             }[]
                            },
 "duplicate_offering":
@@ -362,6 +381,9 @@ isOneToOne: false
                            },
 "enqueue_due_notifications":
 { Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"format_code":
+{ Args: { "n": number,"prefix": string,"width": number }; Returns: string
                            },
 "has_order_in":
 { Args: { "p_offering": string }; Returns: boolean
@@ -374,6 +396,9 @@ isOneToOne: false
                            },
 "is_merchant_owner":
 { Args: { "m": string }; Returns: boolean
+                           },
+"next_merchant_code":
+{ Args: Record<PropertyKey, never>; Returns: string
                            },
 "offering_merchant":
 { Args: { "o": string }; Returns: string

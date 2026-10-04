@@ -469,7 +469,7 @@ export async function updateLocation(
 // ───────── QR pickup ─────────
 
 export type PickupResult =
-  | { ok: true; customerName: string | null; alreadyPickedUp: boolean }
+  | { ok: true; customerName: string | null; alreadyPickedUp: boolean; orderNo: string }
   | { ok: false; error: string };
 
 export async function confirmPickup(token: string): Promise<PickupResult> {
@@ -479,5 +479,5 @@ export async function confirmPickup(token: string): Promise<PickupResult> {
   const row = data?.[0];
   if (!row) return { ok: false, error: (await getTranslations("errors"))("unknownQr") };
   revalidatePath("/merchant", "layout");
-  return { ok: true, customerName: row.customer_name, alreadyPickedUp: row.already_picked_up };
+  return { ok: true, customerName: row.customer_name, alreadyPickedUp: row.already_picked_up, orderNo: row.order_no };
 }

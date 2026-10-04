@@ -87,7 +87,8 @@
     "noteTitle": "您給商家的備註",
     "changeSlotTitle": "變更取餐時段",
     "changeSlotHelp": "在截止時間前，將此訂單改到其他取餐時段。",
-    "changeSlotSubmit": "移動我的訂單"
+    "changeSlotSubmit": "移動我的訂單",
+    "orderNumber": "訂單編號：{number}"
   },
   "map": {
     "sharing": "商家正在分享即時位置。",
@@ -128,7 +129,8 @@
     "countryUS": "美國 (US)",
     "websiteInvalid": "請輸入有效的網址，例如 https://example.com",
     "emailInvalid": "請輸入有效的電子郵件地址。",
-    "phoneInvalid": "請輸入有效的電話號碼（僅限數字、空格以及 + ( ) - .）。"
+    "phoneInvalid": "請輸入有效的電話號碼（僅限數字、空格以及 + ( ) - .）。",
+    "merchantId": "商家編號：{code}"
   },
   "translations": {
     "title": "翻譯（選填）",
@@ -298,8 +300,8 @@
     "instructions": "請掃描顧客訂單上的 QR 碼。",
     "manualPlaceholder": "或手動輸入取餐碼",
     "confirm": "確認",
-    "confirmed": "已確認 {name} 取餐。",
-    "already": "已經取過餐（{name}）。"
+    "confirmed": "已確認 {name} 取餐（{orderNo}）。",
+    "already": "已取餐（{name}，{orderNo}）。"
   },
   "customers": {
     "title": "顧客",
@@ -417,7 +419,8 @@
       "when": "{date}，{start}–{end}",
       "footerReason": "您收到此郵件，是因為您在 {site} 上的活動。",
       "unsubscribe": "取消訂閱這些郵件"
-    }
+    },
+    "orderNumber": "訂單編號：{number}"
   },
   "unsubscribe": {
     "title": "取消訂閱郵件",

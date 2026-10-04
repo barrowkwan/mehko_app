@@ -91,7 +91,7 @@ export function createSupabaseStore(admin: Admin, siteUrl: string): Store {
         await admin
           .from("orders")
           .select(
-            `id, status,
+            `id, order_no, status,
              offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
                merchant:merchants(name, translations),
                pickup_point:pickup_points(name, address, timezone),
@@ -112,6 +112,7 @@ export function createSupabaseStore(admin: Admin, siteUrl: string): Store {
         content: {
           type: row.type,
           data: {
+            orderNo: order.order_no,
             recipientName: who.name,
             merchantName: localized(o.merchant!.name, o.merchant!.translations, locale, "name"),
             items: order.order_items.map((i) => ({ name: names.get(i.offering_item_id) ?? "?", qty: i.qty })),

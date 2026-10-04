@@ -41,6 +41,8 @@ test("customer orders, edits, switches language and cancels", async ({ page, con
   await expect(page).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
   await expect(page.getByAltText("Order QR code")).toBeVisible();
   await expect(page.getByText("no peanuts")).toBeVisible();
+  // Every order has a human-friendly number: <merchant code>-<8 digits>.
+  await expect(page.getByText(/Order number: m\d{5}-00000001/)).toBeVisible();
   // The cutoff is shown in the customer's own timezone, and "left" counts what others (and I) have taken: 10 - 2.
   await expect(page.getByText(/You can change this order until .*P[DS]T/)).toBeVisible();
   await expect(page.getByText("8 left")).toBeVisible();
@@ -288,6 +290,7 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(m.getByRole("heading", { name: "Prep list" }).locator("..").getByText("2× Slot Buns").first()).toBeVisible();
   await expect(m.getByText("By pickup slot")).toBeVisible();
   await expect(m.getByRole("heading", { name: "Orders (1)" })).toBeVisible();
+  await expect(m.getByText(/^m\d{5}-00000001$/)).toBeVisible(); // the same order number the customer sees
   // Dashboard: one card for the offering, with orders per slot.
   await m.goto("/merchant");
   const dash = m.locator("main ul > li", { hasText: "Gate" });
@@ -417,6 +420,7 @@ test("merchant profile: logo, website, contact details, US-only country; custome
   await signIn(mctx, baseURL!, mer.email);
   const m = await mctx.newPage();
   await m.goto("/merchant/profile");
+  await expect(m.getByText(/^Merchant ID: m\d{5}$/)).toBeVisible();
 
   // Country is a drop-down with only the United States.
   await expect(m.locator('select[name="country_code"] option')).toHaveCount(1);

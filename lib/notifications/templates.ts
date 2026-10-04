@@ -9,6 +9,7 @@ export type PickupPoint = { name: string; address: string | null };
 export type Line = { name: string; qty: number };
 
 export type OrderEmailData = {
+  orderNo: string;
   recipientName: string | null;
   merchantName: string;
   items: Line[];
@@ -110,6 +111,7 @@ export function renderEmail(input: RenderInput & { locale: Locale; messages: Rec
     p(d.recipientName ? t("greeting", { name: d.recipientName }) : t("greetingAnon"));
     p(t(`${key}.intro`, { merchant: d.merchantName }));
     block(t("orderConfirmed.pickup"), [when(d), place(d.pickupPoint)]);
+    p(t("orderNumber", { number: d.orderNo }));
     if (input.type === "order_confirmed") {
       h(t("orderConfirmed.yourOrder"));
       list(lines(d.items));

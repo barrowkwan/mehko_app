@@ -48,7 +48,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const [{ data: orders }, { data: slotItems }] = await Promise.all([
     supabase
       .from("orders")
-      .select("id, offering_id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
+      .select("id, order_no, offering_id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
       .in("offering_id", slotIds)
       .neq("status", "cancelled")
       .order("created_at"),
@@ -224,6 +224,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
         <ul className="flex flex-col gap-2">
           {orders?.map((ord) => (
             <li key={ord.id} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+              <p className="font-mono text-xs text-neutral-500">{ord.order_no}</p>
               <p className="font-medium">
                 {ord.customer?.display_name ?? tc("customer")}
                 <span className="ml-2 rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">

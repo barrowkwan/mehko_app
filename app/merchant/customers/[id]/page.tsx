@@ -14,7 +14,7 @@ export default async function CustomerHistoryPage({ params }: PageProps<"/mercha
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      `id, status, created_at, customer:profiles(display_name),
+      `id, order_no, status, created_at, customer:profiles(display_name),
        offering:offerings!inner(merchant_id, pickup_date, pickup_point:pickup_points(name)),
        order_items(qty, offering_item:offering_items(food_item:food_items(name, translations)))`,
     )
@@ -29,6 +29,7 @@ export default async function CustomerHistoryPage({ params }: PageProps<"/mercha
       <ul className="flex flex-col gap-2">
         {orders.map((o) => (
           <li key={o.id} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+            <p className="font-mono text-xs text-neutral-500">{o.order_no}</p>
             <p className="font-medium">
               {o.offering && formatDate(o.offering.pickup_date, locale)} · {o.offering?.pickup_point?.name}
               <span className="ml-2 rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">

@@ -87,7 +87,8 @@
     "noteTitle": "您给商家的备注",
     "changeSlotTitle": "更改取餐时段",
     "changeSlotHelp": "在截止时间前，将此订单改到其他取餐时段。",
-    "changeSlotSubmit": "移动我的订单"
+    "changeSlotSubmit": "移动我的订单",
+    "orderNumber": "订单号：{number}"
   },
   "map": {
     "sharing": "商家正在共享实时位置。",
@@ -128,7 +129,8 @@
     "countryUS": "美国 (US)",
     "websiteInvalid": "请输入有效的网址，例如 https://example.com",
     "emailInvalid": "请输入有效的邮箱地址。",
-    "phoneInvalid": "请输入有效的电话号码（仅限数字、空格以及 + ( ) - .）。"
+    "phoneInvalid": "请输入有效的电话号码（仅限数字、空格以及 + ( ) - .）。",
+    "merchantId": "商家编号：{code}"
   },
   "translations": {
     "title": "翻译（可选）",
@@ -298,8 +300,8 @@
     "instructions": "请扫描顾客订单上的二维码。",
     "manualPlaceholder": "或手动输入取餐码",
     "confirm": "确认",
-    "confirmed": "已确认 {name} 取餐。",
-    "already": "已经取过餐（{name}）。"
+    "confirmed": "已确认 {name} 取餐（{orderNo}）。",
+    "already": "已取餐（{name}，{orderNo}）。"
   },
   "customers": {
     "title": "顾客",
@@ -417,7 +419,8 @@
       "when": "{date}，{start}–{end}",
       "footerReason": "您收到此邮件，是因为您在 {site} 上的活动。",
       "unsubscribe": "退订这些邮件"
-    }
+    },
+    "orderNumber": "订单号：{number}"
   },
   "unsubscribe": {
     "title": "退订邮件",

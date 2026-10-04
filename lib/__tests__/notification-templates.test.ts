@@ -20,6 +20,7 @@ const order: OrderEmailData = {
   cutoffAt: "2026-10-08T22:00:00.000Z", // 6:00 PM in New York (EDT)
   instructions: "North gate, red tent",
   orderUrl: "https://eats.example.com/orders/123",
+  orderNo: "m00001-00000042",
 };
 const summary: MerchantSummaryData = {
   merchantName: "Mei's Dumplings",

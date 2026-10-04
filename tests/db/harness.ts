@@ -48,7 +48,8 @@ export const IDS = {
   porkFood: "30000000-0000-0000-0000-000000000001",
 };
 
-export async function createDb() {
+// `stopBefore`: skip that migration file and everything after it (to test a migration against existing data).
+export async function createDb(opts: { stopBefore?: string } = {}) {
   const db = new PGlite();
   await db.exec(SUPABASE_STUBS);
 
@@ -61,7 +62,10 @@ export async function createDb() {
   `);
 
   const dir = join(root, "supabase/migrations");
-  for (const f of readdirSync(dir).sort()) await db.exec(readFileSync(join(dir, f), "utf8"));
+  for (const f of readdirSync(dir).sort()) {
+    if (opts.stopBefore && f >= opts.stopBefore) break;
+    await db.exec(readFileSync(join(dir, f), "utf8"));
+  }
 
   // (grants are applied at table-creation time, like Supabase's default privileges, so a migration's explicit
   // REVOKE is not silently undone afterwards)
