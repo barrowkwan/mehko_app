@@ -207,7 +207,7 @@
       "limitN": "限量 {count}",
       "unlimited": "不限量",
       "sharedLimits": "限量由所有取餐时段共用。",
-      "pickup": "{count, plural, other {取餐时段}}",
+      "pickup": "取餐",
       "cutoff": "订单截止时间（您的当地时间）",
       "instructions": "取餐说明",
       "back": "返回修改",

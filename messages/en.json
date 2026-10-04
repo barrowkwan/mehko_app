@@ -207,7 +207,7 @@
       "limitN": "limit {count}",
       "unlimited": "no limit",
       "sharedLimits": "Limits are shared across all pickup slots.",
-      "pickup": "{count, plural, one {Pickup} other {Pickup slots}}",
+      "pickup": "Pickup",
       "cutoff": "Order cutoff (your time)",
       "instructions": "Pickup instructions",
       "back": "Back to edit",

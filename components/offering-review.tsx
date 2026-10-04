@@ -90,7 +90,7 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
                 </dd>
               </div>
               <div>
-                <dt className="font-semibold">{t("pickup", { count: summary.slots.length })}</dt>
+                <dt className="font-semibold">{t("pickup")}</dt>
                 <dd>
                   <ul className="flex flex-col gap-1">
                     {summary.slots.map((s, i) => (

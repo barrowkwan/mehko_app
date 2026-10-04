@@ -207,7 +207,7 @@
       "limitN": "límite {count}",
       "unlimited": "sin límite",
       "sharedLimits": "Los límites se comparten entre todas las franjas de recogida.",
-      "pickup": "{count, plural, one {Recogida} other {Franjas de recogida}}",
+      "pickup": "Recogida",
       "cutoff": "Cierre de pedidos (tu hora)",
       "instructions": "Instrucciones de recogida",
       "back": "Volver a editar",
