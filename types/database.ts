@@ -354,6 +354,9 @@ isOneToOne: false
 "enqueue_due_notifications":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
+"has_order_in":
+{ Args: { "p_offering": string }; Returns: boolean
+                           },
 "has_order_on":
 { Args: { "o": string }; Returns: boolean
                            },

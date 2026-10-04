@@ -45,6 +45,9 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 ## Email notifications (migration `20261009000000_email_notifications.sql`)
 `profiles.email_notifications` (opt-out) and `notification_outbox` (RLS on, no policies, no grants to anon/authenticated: server only). A trigger enqueues `order_confirmed`; `enqueue_due_notifications()` enqueues `pickup_reminder` and `merchant_cutoff_summary`; `claim_notifications()` hands rows to the sender with `for update skip locked`. Only `service_role` can execute them. Rows are unique per (user, type, entity) so nothing is sent twice.
 
+## Order history visibility (migration `20261010000000_customers_keep_their_offerings.sql`)
+`offerings`/`offering_items` are readable while `published`, by the owning merchant, **and by any customer who has an order in that offering** (`has_order_in()`), whatever its status. Without this, closing or un-publishing an offering after pickup blanked the customer's order history and made the order page 404.
+
 ## Account deletion
 
 Deleting an `auth.users` row (admin API, see `app/account/actions.ts`) cascades: `profiles` → the user's orders; `merchants` → pickup points, foods, offerings → offering items, orders (and order items), live location, weather snapshot. Two things make this safe (migration `20261005000000_account_deletion.sql`): `orders.offering_id` is `ON DELETE CASCADE`, and trigger `merchants_delete_offerings_first` deletes a merchant's orders then offerings first, because Postgres cascades to foods/pickup points before offerings and the strict foreign keys elsewhere would otherwise reject it. Other customers keep their accounts but lose that merchant's order history. Policy: deletion is blocked while `account_deletion_blocker()` is non-null.
