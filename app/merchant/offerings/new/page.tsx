@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
+import { localized } from "@/lib/locale";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { createOffering } from "../../actions";
 import { CutoffInput } from "./cutoff-input";
@@ -8,9 +9,10 @@ import { CutoffInput } from "./cutoff-input";
 export default async function NewOfferingPage() {
   const { supabase, merchant } = await requireMerchant();
   const t = await getTranslations("offerings");
+  const locale = await getLocale();
   const [{ data: points }, { data: foods }] = await Promise.all([
     supabase.from("pickup_points").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
-    supabase.from("food_items").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
+    supabase.from("food_items").select("id, name, translations").eq("merchant_id", merchant.id).eq("active", true).order("name"),
   ]);
 
   if (!points?.length || !foods?.length) {
@@ -65,7 +67,7 @@ export default async function NewOfferingPage() {
           {foods.map((f) => (
             <div key={f.id} className="flex items-center gap-3">
               <label className="mr-auto flex items-center gap-2">
-                <input type="checkbox" name={`food_${f.id}`} /> {f.name}
+                <input type="checkbox" name={`food_${f.id}`} /> {localized(f.name, f.translations, locale, "name")}
               </label>
               <input
                 type="number"

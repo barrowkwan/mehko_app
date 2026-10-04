@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
+import { localized } from "@/lib/locale";
 import { LocationToggle } from "@/components/location-toggle";
 import { setOfferingStatus } from "../../actions";
 
@@ -19,7 +20,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     .select(
       `id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item:food_items(name))`,
+       offering_items(id, quantity_limit, food_item:food_items(name, translations))`,
     )
     .eq("id", id)
     .eq("merchant_id", merchant.id)
@@ -36,7 +37,9 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const totals = new Map<string, number>();
   for (const ord of orders ?? [])
     for (const it of ord.order_items) totals.set(it.offering_item_id, (totals.get(it.offering_item_id) ?? 0) + it.qty);
-  const names = new Map(o.offering_items.map((i) => [i.id, i.food_item?.name ?? tc("item")]));
+  const names = new Map(
+    o.offering_items.map((i) => [i.id, i.food_item ? localized(i.food_item.name, i.food_item.translations, locale, "name") : tc("item")]),
+  );
 
   const tz = o.pickup_point?.timezone ?? "UTC";
   const isPickupDay = todayIn(tz) === o.pickup_date;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate, formatTime } from "@/lib/format";
+import { localized } from "@/lib/locale";
 
 export default async function OfferingsPage() {
   const { supabase, merchant } = await requireMerchant();
@@ -9,7 +10,7 @@ export default async function OfferingsPage() {
   const locale = await getLocale();
   const { data: offerings } = await supabase
     .from("offerings")
-    .select("id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), offering_items(food_item:food_items(name))")
+    .select("id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), offering_items(food_item:food_items(name, translations))")
     .eq("merchant_id", merchant.id)
     .order("pickup_date", { ascending: false });
 
@@ -34,7 +35,7 @@ export default async function OfferingsPage() {
                   {t(`status.${o.status as "draft" | "published" | "closed"}`)}
                 </span>
               </p>
-              <p className="text-sm text-neutral-500">{o.offering_items.map((i) => i.food_item?.name).join(", ")}</p>
+              <p className="text-sm text-neutral-500">{o.offering_items.map((i) => i.food_item && localized(i.food_item.name, i.food_item.translations, locale, "name")).join(", ")}</p>
             </Link>
           </li>
         ))}

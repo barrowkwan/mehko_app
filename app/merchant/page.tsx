@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate, formatTime, yesterdayUtc } from "@/lib/format";
+import { localized } from "@/lib/locale";
 
 export default async function MerchantDashboard() {
   const { supabase, merchant } = await requireMerchant();
@@ -20,7 +21,7 @@ export default async function MerchantDashboard() {
 
   return (
     <main className="flex flex-col gap-4 p-4">
-      <h1 className="text-xl font-bold">{merchant.name}</h1>
+      <h1 className="text-xl font-bold">{localized(merchant.name, merchant.translations, locale, "name")}</h1>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">{t("upcoming")}</h2>
         <Link href="/merchant/offerings/new" className="text-sm text-orange-600 hover:underline">

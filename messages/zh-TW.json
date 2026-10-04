@@ -134,7 +134,9 @@
     "description": "說明",
     "submit": "新增餐點",
     "nameRequired": "請填寫名稱",
-    "editTitle": "編輯餐點"
+    "editTitle": "編輯餐點",
+    "original": "原文：{name}",
+    "translatedIn": "已翻譯：{languages}"
   },
   "offerings": {
     "title": "販售場次",

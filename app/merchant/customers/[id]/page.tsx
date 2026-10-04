@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate } from "@/lib/format";
+import { localized } from "@/lib/locale";
 
 export default async function CustomerHistoryPage({ params }: PageProps<"/merchant/customers/[id]">) {
   const { id } = await params;
@@ -15,7 +16,7 @@ export default async function CustomerHistoryPage({ params }: PageProps<"/mercha
     .select(
       `id, status, created_at, customer:profiles(display_name),
        offering:offerings!inner(merchant_id, pickup_date, pickup_point:pickup_points(name)),
-       order_items(qty, offering_item:offering_items(food_item:food_items(name)))`,
+       order_items(qty, offering_item:offering_items(food_item:food_items(name, translations)))`,
     )
     .eq("customer_id", id)
     .eq("offering.merchant_id", merchant.id)
@@ -35,7 +36,7 @@ export default async function CustomerHistoryPage({ params }: PageProps<"/mercha
               </span>
             </p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              {o.order_items.map((i) => `${i.qty}× ${i.offering_item?.food_item?.name ?? ""}`).join(", ")}
+              {o.order_items.map((i) => `${i.qty}× ${i.offering_item?.food_item ? localized(i.offering_item.food_item.name, i.offering_item.food_item.translations, locale, "name") : ""}`).join(", ")}
             </p>
           </li>
         ))}

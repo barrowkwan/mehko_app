@@ -134,7 +134,9 @@
     "description": "说明",
     "submit": "添加菜品",
     "nameRequired": "请填写名称",
-    "editTitle": "编辑菜品"
+    "editTitle": "编辑菜品",
+    "original": "原文：{name}",
+    "translatedIn": "已翻译：{languages}"
   },
   "offerings": {
     "title": "售卖场次",

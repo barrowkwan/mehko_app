@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { localized, negotiateLocale, parseTranslations } from "../locale";
+import { localized, negotiateLocale, parseTranslations, translatedLocales } from "../locale";
 
 describe("negotiateLocale", () => {
   it("defaults to English", () => {
@@ -54,5 +54,16 @@ describe("parseTranslations", () => {
     fd.set("tr_zh-TW_name", "餃子");
     fd.set("tr_fr_name", "ignored");
     expect(parseTranslations(fd, ["name", "description"])).toEqual({ es: { name: "Empanadas" }, "zh-TW": { name: "餃子" } });
+  });
+});
+
+describe("translatedLocales", () => {
+  it("lists languages with a non-empty translated field, in catalog order", () => {
+    expect(translatedLocales({ "zh-TW": { name: "餃子" }, es: { name: "", description: "x" }, en: { name: " " } })).toEqual(["es", "zh-TW"]);
+  });
+  it("handles empty or malformed input", () => {
+    expect(translatedLocales({})).toEqual([]);
+    expect(translatedLocales(null)).toEqual([]);
+    expect(translatedLocales([])).toEqual([]);
   });
 });

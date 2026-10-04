@@ -134,7 +134,9 @@
     "description": "Descripción",
     "submit": "Añadir comida",
     "nameRequired": "El nombre es obligatorio",
-    "editTitle": "Editar comida"
+    "editTitle": "Editar comida",
+    "original": "Original: {name}",
+    "translatedIn": "Traducido a: {languages}"
   },
   "offerings": {
     "title": "Ofertas",

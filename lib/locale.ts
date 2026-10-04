@@ -74,6 +74,13 @@ export function localized<T extends string | null>(
   return original;
 }
 
+// Which languages have at least one translated field (for "translated in …" hints).
+export function translatedLocales(translations: unknown): Locale[] {
+  if (!translations || typeof translations !== "object" || Array.isArray(translations)) return [];
+  const t = translations as Translations;
+  return LOCALES.filter((l) => Object.values(t[l] ?? {}).some((v) => typeof v === "string" && v.trim() !== ""));
+}
+
 // Builds the translations object from a form: fields named `tr_<locale>_<field>`.
 export function parseTranslations(formData: FormData, fields: string[]): Translations {
   const out: Translations = {};

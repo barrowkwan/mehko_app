@@ -12,6 +12,7 @@
 | Cron route instead of a Supabase Edge Function | Shares/tests `lib/context-fetch.ts` with the app; any scheduler can call it |
 | Render free + hosted Supabase free, deployed by GitHub Actions deploy hook | Vercel Hobby forbids commercial use; Render free allows it and needs no card. Trade-off: cold starts, Supabase pauses (daily job keeps it awake), no backups |
 | next-intl without URL prefix; locale = cookie → browser → `en`, saved to profile | Same URLs for all languages (OAuth callback and redirects unchanged); a returning user gets their language on any device |
+| Merchant screens show translations in the UI language (original shown on the Foods list) | First version showed originals on merchant screens, so switching language looked like translations hadn't saved. Showing the translation + original + translated languages makes the result visible |
 | Merchant text translated by the merchant (optional), not auto-translated | No API cost, no machine errors on allergen/food names; original text is always the fallback |
 | Leaflet + OpenStreetMap, circle markers | No API key; avoids Leaflet's bundled marker-icon asset issue under bundlers |
 | `types/database.ts` generated from the local DB | Typed embeds and RPCs; was hand-written first and matched except view columns (generated as nullable) |
