@@ -110,8 +110,8 @@ E.g. bad weather/sold out. Needs NOTIF-1 to tell customers; define refund behavi
 ### FEAT-9 · Staff accounts per merchant (helper can scan QR) — P3 · L
 Roles table; RLS currently assumes `merchants.owner_id` only (`is_merchant_owner`).
 
-### FEAT-10 · Pickup point map picker / address search — P2 · M
-The original plan had a map pin picker; only lat/lng inputs (+ "use my location") exist. Leaflet click-to-place and optional geocoding.
+### FEAT-10 · Pickup point map picker / address search — P2 · M — **map picker done** (click/drag pin, 2026-10-04)
+Still open: address search (geocoding). Needs a provider decision first: OSM's public Nominatim has a strict usage policy and would send typed addresses to a third party (privacy page update); alternatives are a hosted geocoder with a key.
 
 ### FEAT-11 · Customer profile: edit display name, optional phone — P3 · S
 

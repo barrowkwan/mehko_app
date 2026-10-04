@@ -135,7 +135,9 @@
     "latInvalid": "Latitude must be between -90 and 90",
     "lngInvalid": "Longitude must be between -180 and 180",
     "timezoneRequired": "Timezone is required",
-    "timezoneUnknown": "Unknown timezone (use an IANA name such as America/New_York)"
+    "timezoneUnknown": "Unknown timezone (use an IANA name such as America/New_York)",
+    "mapHint": "Click the map (or drag the pin) to set the pickup spot, or type the coordinates.",
+    "locationFailed": "Couldn't get your location. Allow location access or click the map instead."
   },
   "foods": {
     "title": "Foods",

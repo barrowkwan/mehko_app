@@ -135,7 +135,9 @@
     "latInvalid": "緯度必須介於 -90 到 90 之間",
     "lngInvalid": "經度必須介於 -180 到 180 之間",
     "timezoneRequired": "請填寫時區",
-    "timezoneUnknown": "未知的時區（請使用 IANA 名稱，例如 America/New_York）"
+    "timezoneUnknown": "未知的時區（請使用 IANA 名稱，例如 America/New_York）",
+    "mapHint": "點擊地圖（或拖曳圖釘）設定取餐點，或直接輸入座標。",
+    "locationFailed": "無法取得您的位置。請允許定位權限，或直接點擊地圖。"
   },
   "foods": {
     "title": "餐點",

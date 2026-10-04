@@ -6,7 +6,7 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Social login (Google/Facebook/Apple) | ✅ | `app/login/*`, `app/auth/callback`, `app/auth/signout` | `lib/auth.ts`, `proxy.ts`, `lib/supabase/proxy.ts` | `handle_new_user` trigger, `profiles` | DB test (profile trigger); manual for OAuth |
 | 2 | Merchant registration | ✅ | `/merchant/setup` | `createMerchant` | `merchants` | — |
-| 3 | Multiple pickup points | ✅ | `/merchant/pickup-points` (+`geo-fill.tsx`) | `addPickupPoint`, `setPickupPointActive` | `pickup_points` | RLS cross-merchant test |
+| 3 | Multiple pickup points (click-to-place map picker, typed coordinates, "use my location") | ✅ | `/merchant/pickup-points` (+`geo-fill.tsx`, `map-picker.tsx`) | `addPickupPoint`, `setPickupPointActive` | `pickup_points` | RLS cross-merchant test |
 | 4 | Foods | ✅ | `/merchant/foods` | `addFood`, `setFoodActive` | `food_items` | — |
 | 5 | Offerings (food, date, pickup, cutoff) — create, **edit, duplicate to a new date, delete** | ✅ | `/merchant/offerings`, `/new` (+`cutoff-input.tsx`), `/[id]` | `createOffering`, `setOfferingStatus` | `offerings`, `offering_items`, `check_offering_schedule` | schedule trigger test |
 | 6 | Browse & order | ✅ | `/`, `/offerings/[id]` | `placeOrder`, `OrderForm` | `place_order`, `offering_stock` | ordering tests |

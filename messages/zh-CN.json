@@ -135,7 +135,9 @@
     "latInvalid": "纬度必须在 -90 到 90 之间",
     "lngInvalid": "经度必须在 -180 到 180 之间",
     "timezoneRequired": "请填写时区",
-    "timezoneUnknown": "未知时区（请使用 IANA 名称，例如 America/New_York）"
+    "timezoneUnknown": "未知时区（请使用 IANA 名称，例如 America/New_York）",
+    "mapHint": "点击地图（或拖动图钉）设置取餐点，或直接输入坐标。",
+    "locationFailed": "无法获取您的位置。请允许定位权限，或直接点击地图。"
   },
   "foods": {
     "title": "菜品",
