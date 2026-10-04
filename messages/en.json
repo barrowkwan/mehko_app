@@ -196,7 +196,7 @@
     "instructionsTooLong": "Pickup instructions are too long (500 characters at most).",
     "endAfterStart": "The pickup end time must be after the start time.",
     "extraSlotsTitle": "More pickup slots (optional)",
-    "extraSlotsHelp": "Offer the same foods at other places or times. All slots share the cutoff, foods and limits; customers choose one.",
+    "extraSlotsHelp": "Offer the same foods at other places or times on the same date. All slots share the date, cutoff, foods and limits; customers choose one.",
     "addSlot": "Add a pickup slot",
     "removeSlot": "Remove this slot",
     "reviewAndPublish": "Review & publish",
@@ -311,7 +311,8 @@
     "imageInvalid": "That file isn't a valid photo.",
     "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again.",
     "noteTooLong": "The note is too long (300 characters at most).",
-    "pickupPointNotFound": "Pickup point not found."
+    "pickupPointNotFound": "Pickup point not found.",
+    "slotsSameDate": "All pickup slots must be on the same date."
   },
   "account": {
     "title": "Account",

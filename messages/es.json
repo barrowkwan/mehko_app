@@ -196,7 +196,7 @@
     "instructionsTooLong": "Las instrucciones de recogida son demasiado largas (500 caracteres como máximo).",
     "endAfterStart": "La hora de fin de la recogida debe ser posterior a la de inicio.",
     "extraSlotsTitle": "Más franjas de recogida (opcional)",
-    "extraSlotsHelp": "Ofrece los mismos productos en otros lugares u horarios. Todas las franjas comparten el cierre, los productos y los límites; el cliente elige una.",
+    "extraSlotsHelp": "Ofrece los mismos productos en otros lugares u horarios el mismo día. Todas las franjas comparten la fecha, el cierre, los productos y los límites; el cliente elige una.",
     "addSlot": "Añadir una franja de recogida",
     "removeSlot": "Quitar esta franja",
     "reviewAndPublish": "Revisar y publicar",
@@ -311,7 +311,8 @@
     "imageInvalid": "Ese archivo no es una foto válida.",
     "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
     "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo).",
-    "pickupPointNotFound": "Punto de recogida no encontrado."
+    "pickupPointNotFound": "Punto de recogida no encontrado.",
+    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día."
   },
   "account": {
     "title": "Cuenta",

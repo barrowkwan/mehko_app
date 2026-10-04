@@ -56,24 +56,33 @@ describe("add_offering_slot", () => {
     expect(items.map((i) => i.quantity_limit)).toEqual([20, 40]);
   });
 
-  it("allows the same pickup point again, on another day or at another time", async () => {
-    const sameDayLater = await asUser(db, IDS.meiOwner, async () =>
+  it("allows the same pickup point again at another time on the same date", async () => {
+    const later = await asUser(db, IDS.meiOwner, async () =>
       (await db.query<{ id: string }>(`select add_offering_slot($1, $2, current_date + 3, '19:30', '20:30') as id`, [IDS.meiOffering, IDS.meiPoint])).rows[0].id);
-    const nextDay = await addSlot(IDS.meiOwner, IDS.meiOffering, IDS.meiPoint, 4);
     const rows = (await db.query<{ n: number }>("select count(*)::int as n from offerings where pickup_point_id = $1 and group_id is not null", [IDS.meiPoint])).rows[0].n;
-    expect(rows).toBe(3); // the original slot plus the two repeats, all at the same point
-    expect(new Set([IDS.meiOffering, sameDayLater, nextDay]).size).toBe(3);
+    expect(rows).toBe(2); // the original slot plus the repeat, both at the same point
+    expect(later).not.toBe(IDS.meiOffering);
+  });
+
+  it("refuses a slot on a different date than the offering", async () => {
+    await expect(addSlot(IDS.meiOwner, IDS.meiOffering, CENTRAL, 4)).rejects.toThrow(/same date/);
+    await expect(addSlot(IDS.meiOwner, IDS.meiOffering, CENTRAL, 2)).rejects.toThrow(/same date/);
   });
 
   it("is refused for someone else's offering, for another merchant's point and for past dates", async () => {
     await expect(addSlot(IDS.luisOwner)).rejects.toThrow(/Offering not found/);
     await expect(addSlot(IDS.meiOwner, IDS.meiOffering, LUIS_POINT)).rejects.toThrow(/Pickup point not found/);
-    await expect(addSlot(IDS.meiOwner, IDS.meiOffering, CENTRAL, -2)).rejects.toThrow(/in the past/);
+    await expect(addSlot(IDS.meiOwner, IDS.meiOffering, CENTRAL, -2)).rejects.toThrow(/same date/);
   });
 
   it("refuses a slot that starts before the shared cutoff", async () => {
+    // Cutoff on the pickup day at 16:00 (point's timezone); a 12:00 slot would start before it.
+    await db.query(
+      "update offerings set cutoff_at = ((current_date + 3) + time '16:00') at time zone 'America/New_York' where id = $1",
+      [IDS.meiOffering],
+    );
     await expect(
-      asUser(db, IDS.meiOwner, () => db.query(`select add_offering_slot($1, $2, current_date, '09:00', '10:00')`, [IDS.meiOffering, CENTRAL])),
+      asUser(db, IDS.meiOwner, () => db.query(`select add_offering_slot($1, $2, current_date + 3, '12:00', '13:00')`, [IDS.meiOffering, CENTRAL])),
     ).rejects.toThrow(/Cutoff must be before the pickup start/);
   });
 });
@@ -138,6 +147,20 @@ describe("update_offering keeps the shared parts in sync", () => {
     await expect(update(IDS.meiOffering, 24, 40, false)).rejects.toThrow(/Item has orders/);
     const n = (await db.query<{ n: number }>("select count(*)::int as n from offering_items where offering_id = $1", [IDS.meiOffering])).rows[0].n;
     expect(n).toBe(2);
+  });
+});
+
+describe("moving the date moves every upcoming slot", () => {
+  it("update_offering applies a new date to all slots of the group", async () => {
+    await asUser(db, IDS.meiOwner, () =>
+      db.query(
+        `select update_offering($1, $2, current_date + 5, '17:00', '19:00', now() + interval '1 day',
+                 '[{"food_item_id":"${PORK}","quantity_limit":40}]'::jsonb)`,
+        [IDS.meiOffering, IDS.meiPoint],
+      ),
+    );
+    const dates = (await db.query<{ d: string }>("select distinct pickup_date::text as d from offerings where group_id is not null")).rows;
+    expect(dates).toHaveLength(1);
   });
 });
 

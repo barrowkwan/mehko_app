@@ -260,7 +260,7 @@ async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value:
 type SlotInput = { pickup_point_id: string; pickup_date: string; pickup_start: string; pickup_end: string };
 
 // Extra slots arrive as slot_<n>_point/date/start/end (the "More pickup slots" fields); `only` limits parsing to one prefix.
-async function parseSlots(formData: FormData, only?: string): Promise<{ ok: true; slots: SlotInput[] } | { ok: false; error: FormState }> {
+async function parseSlots(formData: FormData, date: string, only?: string): Promise<{ ok: true; slots: SlotInput[] } | { ok: false; error: FormState }> {
   const t = await getTranslations("offerings");
   const prefixes = new Set<string>();
   for (const key of formData.keys()) {
@@ -278,7 +278,7 @@ async function parseSlots(formData: FormData, only?: string): Promise<{ ok: true
       })
       .safeParse({
         pickup_point_id: formData.get(`${p}point`),
-        pickup_date: formData.get(`${p}date`),
+        pickup_date: date, // all slots share the offering's date
         pickup_start: formData.get(`${p}start`),
         pickup_end: formData.get(`${p}end`),
       });
@@ -292,7 +292,7 @@ async function parseSlots(formData: FormData, only?: string): Promise<{ ok: true
 export async function createOffering(_prev: FormState, formData: FormData): Promise<FormState> {
   const input = await parseOfferingForm(formData);
   if (!input.ok) return input.error;
-  const extra = await parseSlots(formData);
+  const extra = await parseSlots(formData, input.value.schedule.pickup_date);
   if (!extra.ok) return extra.error;
 
   const { supabase, merchant } = await requireMerchant();
@@ -357,11 +357,13 @@ export async function updateOffering(id: string, _prev: FormState, formData: For
 
 // Adds another pickup slot (point/date/time) to an offering; it shares the cutoff, foods and limits.
 export async function addOfferingSlot(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = await parseSlots(formData, "slot_0_");
+  const { supabase } = await requireMerchant();
+  const { data: offering } = await supabase.from("offerings").select("pickup_date").eq("id", id).maybeSingle();
+  if (!offering) return { error: (await getTranslations("errors"))("offeringNotFound") };
+  const parsed = await parseSlots(formData, offering.pickup_date, "slot_0_");
   if (!parsed.ok) return parsed.error;
   const [s] = parsed.slots;
   if (!s) return { error: (await getTranslations("errors"))("generic") };
-  const { supabase } = await requireMerchant();
   const { error } = await supabase.rpc("add_offering_slot", {
     p_offering: id,
     p_pickup_point: s.pickup_point_id,

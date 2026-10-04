@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Field, inputClass } from "@/components/action-form";
 
-// One pickup slot's fields (point, date, from, until). `prefix` namespaces the input names ("slot_0_" → slot_0_point …).
+// One pickup slot's fields (point, from, until). The date is not chosen: all slots of an offering share one date. `prefix` namespaces the input names ("slot_0_" → slot_0_point …).
 export function SlotFields({ points, prefix, onRemove }: { points: { id: string; name: string }[]; prefix: string; onRemove?: () => void }) {
   const t = useTranslations("offerings");
   return (
@@ -16,9 +16,6 @@ export function SlotFields({ points, prefix, onRemove }: { points: { id: string;
             </option>
           ))}
         </select>
-      </Field>
-      <Field label={t("pickupDate")}>
-        <input type="date" name={`${prefix}date`} required className={inputClass} />
       </Field>
       <div className="grid grid-cols-2 gap-2">
         <Field label={t("pickupFrom")}>

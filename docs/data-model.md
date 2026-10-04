@@ -46,7 +46,7 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 `profiles.email_notifications` (opt-out) and `notification_outbox` (RLS on, no policies, no grants to anon/authenticated: server only). A trigger enqueues `order_confirmed`; `enqueue_due_notifications()` enqueues `pickup_reminder` and `merchant_cutoff_summary`; `claim_notifications()` hands rows to the sender with `for update skip locked`. Only `service_role` can execute them. Rows are unique per (user, type, entity) so nothing is sent twice.
 
 ## Pickup slots (migration `20261011000000_multiple_pickup_slots.sql`)
-`offerings.group_id`: slots of one offering share it (null = single slot). Stock is pooled per food across the group (`offering_pool`). `add_offering_slot`, `change_order_slot`; `update_offering` syncs cutoff/instructions/translations/foods/limits to upcoming siblings. See [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md).
+`offerings.group_id`: slots of one offering share it (null = single slot). Stock is pooled per food across the group (`offering_pool`). `add_offering_slot` (must be the same date as the offering), `change_order_slot`; `update_offering` syncs cutoff/instructions/translations/foods/limits to upcoming siblings. See [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md).
 
 ## Order history visibility (migration `20261010000000_customers_keep_their_offerings.sql`)
 `offerings`/`offering_items` are readable while `published`, by the owning merchant, **and by any customer who has an order in that offering** (`has_order_in()`), whatever its status. Without this, closing or un-publishing an offering after pickup blanked the customer's order history and made the order page 404.

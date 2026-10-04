@@ -196,7 +196,7 @@
     "instructionsTooLong": "取餐說明太長（最多 500 個字元）。",
     "endAfterStart": "取餐結束時間必須晚於開始時間。",
     "extraSlotsTitle": "更多取餐時段（選填）",
-    "extraSlotsHelp": "在其他地點或時間提供相同的餐點。所有時段共用截止時間、餐點和限量；顧客擇一選擇。",
+    "extraSlotsHelp": "在同一天的其他地點或時間提供相同的餐點。所有時段共用日期、截止時間、餐點和限量；顧客擇一選擇。",
     "addSlot": "新增取餐時段",
     "removeSlot": "移除此時段",
     "reviewAndPublish": "預覽並發布",
@@ -311,7 +311,8 @@
     "imageInvalid": "該檔案不是有效的照片。",
     "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。",
     "noteTooLong": "備註太長（最多 300 個字元）。",
-    "pickupPointNotFound": "找不到取餐點。"
+    "pickupPointNotFound": "找不到取餐點。",
+    "slotsSameDate": "所有取餐時段必須在同一天。"
   },
   "account": {
     "title": "帳戶",

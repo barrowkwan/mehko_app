@@ -144,7 +144,6 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await mp.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
   await mp.getByRole("button", { name: "Add a pickup slot" }).click();
   await mp.locator('select[name="slot_0_point"]').selectOption({ label: "South Gate" });
-  await mp.locator('input[name="slot_0_date"]').fill(ymd(4));
   await mp.locator('input[name="slot_0_start"]').fill("12:00");
   await mp.locator('input[name="slot_0_end"]').fill("13:00");
   await mp.getByRole("checkbox", { name: /Slot Buns/ }).check();
@@ -179,7 +178,7 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(p.locator("p", { hasText: "North Gate" })).toBeVisible();
 
   // Move to the other slot: pickup place changes, the shared stock is still used up (0 left).
-  await p.locator('select[name="slot"]').selectOption({ index: 1 });
+  await p.locator('select[name="slot"]').selectOption({ index: 0 }) // same date: sorted by time, South Gate (12:00) comes first;
   await p.getByRole("button", { name: "Move my order" }).click();
   await expect(p.locator("p", { hasText: "South Gate" })).toBeVisible();
   await expect(p.getByText("0 left")).toBeVisible();
