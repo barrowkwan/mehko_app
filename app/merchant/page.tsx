@@ -26,7 +26,7 @@ export default async function MerchantDashboard() {
       <h1 className="text-xl font-bold">{localized(merchant.name, merchant.translations, locale, "name")}</h1>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">{t("upcoming")}</h2>
-        <Link href="/merchant/offerings/new" className="text-sm text-orange-600 hover:underline">
+        <Link href="/merchant/offerings/new" className="rounded-lg bg-orange-600 px-3 py-2 text-sm font-medium text-white">
           {t("newOffering")}
         </Link>
       </div>

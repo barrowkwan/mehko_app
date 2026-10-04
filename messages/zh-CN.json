@@ -127,7 +127,7 @@
   },
   "dashboard": {
     "upcoming": "即将到来的自取",
-    "newOffering": "+ 新建场次",
+    "newOffering": "新建场次",
     "none": "暂无即将到来的场次。",
     "stats": "{orders} 笔订单 · {picked} 笔已取餐 · {status}",
     "slotStats": "{orders} 个订单，{picked} 个已取"

@@ -310,9 +310,11 @@ test("Dashboard hides closed offerings; History lists everything with status fil
 
   await p.goto("/merchant");
   await expect(p.locator("ul.grid > li")).toHaveCount(2); // draft + published, not the closed one
+  await expect(p.getByRole("link", { name: "New offering" })).toHaveCount(1); // the one "New offering" button is on the Dashboard
 
   await p.goto("/merchant/offerings");
   await expect(p.getByRole("heading", { name: "Offering history" })).toBeVisible();
+  await expect(p.getByRole("link", { name: "New offering" })).toHaveCount(0); // not on History
   await expect(p.getByRole("link", { name: "All (3)" })).toBeVisible();
   await expect(p.locator("main ul > li")).toHaveCount(3);
   await p.getByRole("link", { name: "Closed (1)" }).click();

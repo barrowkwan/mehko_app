@@ -127,7 +127,7 @@
   },
   "dashboard": {
     "upcoming": "Próximas recogidas",
-    "newOffering": "+ Nueva oferta",
+    "newOffering": "Nueva oferta",
     "none": "No hay ofertas próximas.",
     "stats": "{orders, plural, one {# pedido} other {# pedidos}} · {picked} recogidos · {status}",
     "slotStats": "{orders} pedidos, {picked} recogidos"

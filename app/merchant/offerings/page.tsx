@@ -31,9 +31,6 @@ export default async function OfferingsPage({ searchParams }: { searchParams: Pr
     <main className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">{t("historyTitle")}</h1>
-        <Link href="/merchant/offerings/new" className="rounded-lg bg-orange-600 px-3 py-2 text-sm font-medium text-white">
-          {t("newButton")}
-        </Link>
       </div>
       <nav aria-label={t("filterLabel")} className="flex flex-wrap gap-2 text-sm">
         {FILTERS.map((f) => (
