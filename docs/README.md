@@ -13,6 +13,7 @@ Start here when fixing a bug or adding a feature. Read in this order, stopping w
 | [i18n.md](i18n.md) | Languages, how the locale is chosen, adding strings/languages, merchant translations |
 | [roadmap.md](roadmap.md) | Backlog of future work and recommendations (not started); [plans/](plans/README.md) holds plans for items in progress |
 | [backup-restore.md](backup-restore.md) | Daily encrypted DB backups: setup, restore steps, rehearsal |
+| [legal-review-brief.md](legal-review-brief.md) | Hand-off page for a lawyer/policy reviewer: data inventory, third parties, open questions |
 | [legal-pages.md](legal-pages.md) | Privacy policy & terms: required setup (contact email), where to paste the URLs, how to keep the text true |
 | [monitoring.md](monitoring.md) | Uptime monitoring (`/api/health`) and Sentry error reporting: setup, privacy, verification |
 | [decisions.md](decisions.md) | Learn *why* things are the way they are, past bugs, and gotchas |

@@ -39,12 +39,12 @@ Decided with the product owner: **multi-language first (done), payments last** (
 **Done when:** a restore from last night's dump into `supabase start` is verified and documented.
 **Note:** goes away as a need if you upgrade to Supabase Pro (daily backups) — see OPS-5.
 
-### OPS-2 · Uptime monitoring & alerts — P1 · S — **endpoint ready (`/api/health`); you create the monitor** (see [monitoring.md](monitoring.md#1-uptime-monitoring))
+### OPS-2 · Uptime monitoring & alerts — P1 · S — **done 2026-10-04** (monitor on `/api/health` set up by the owner; see [monitoring.md](monitoring.md#1-uptime-monitoring))
 **Why:** nothing tells you the site is down; Render free also sleeps after ~15 min.
 **Do:** free uptime monitor (e.g. UptimeRobot/Better Stack) hitting `/login` every 5 min with email alert. A 5–10 min ping also keeps the free service awake (744 h/month fits the 750 free hours, but only if it's your only free service).
 **Done when:** you get an alert when the site is stopped and no cold starts during the day.
 
-### OPS-3 · Error monitoring — P1 · S — **live in production since 2026-10-04** (verified with `scripts/verify-sentry.sh`); remaining: confirm the 2 test events in Sentry, resolve them, create the new-issue email alert (see [monitoring.md](monitoring.md#2-error-monitoring-with-sentry))
+### OPS-3 · Error monitoring — P1 · S — **done 2026-10-04** (live; verified with `scripts/verify-sentry.sh`; the owner confirmed the test message (info) and test error (error) in Sentry and created an alert; see [monitoring.md](monitoring.md#2-error-monitoring-with-sentry))
 **Why:** server action/RPC errors are only in Render logs. Unmapped DB errors are `console.error`ed (`lib/db-errors.ts`).
 **Do:** Sentry (free tier) for Next.js (server + client), source maps in CI, alert on new errors.
 
@@ -172,7 +172,7 @@ Render in `profiles.locale`; add `email.*` namespace to all catalogs.
 
 ## Security, privacy & legal
 
-### SEC-1 · Privacy policy & terms pages — P1 · M — **drafted & live in 4 languages; needs your setup and a legal review** (set `NEXT_PUBLIC_CONTACT_EMAIL`/`NEXT_PUBLIC_OPERATOR_NAME` in Render, get the text reviewed; see [legal-pages.md](legal-pages.md))
+### SEC-1 · Privacy policy & terms pages — P1 · M — **live in 4 languages; contact/operator set (verified 2026-10-04). Open: legal review** — give the reviewer [legal-review-brief.md](legal-review-brief.md); see [legal-pages.md](legal-pages.md)
 Required for Facebook login to go **Live**; needed anyway (location sharing, order history). Content needs legal review; make translatable. Link in footer and in provider consoles.
 
 ### SEC-2 · Rate limiting / abuse protection — P2 · M
@@ -186,6 +186,9 @@ Apple 5.1.1(v) and Google Play require **in-app account deletion** for apps with
 
 ### SEC-8 · Mobile security gate — P1 with MOB · —
 The 14-point checklist in [plans/mobile-native-expo.md](plans/mobile-native-expo.md#security-gate-before-each-testflightplay-externalstore-submission) must pass before every TestFlight/Play-external/store submission (encrypted session storage, PKCE, no secrets in bundle, EAS Update code signing, minimal permissions, RLS regression tests…).
+
+### SEC-9 · Record acceptance of the Terms — P2 · S–M
+Today acceptance is implied ("By continuing you agree…", browsewrap). Add an explicit, versioned acceptance: a checkbox for **merchants** at registration (also "I hold the licences/permits my food business needs") and a first-login prompt for customers; store `terms_accepted_at` + `terms_version` (and re-prompt when `LEGAL_UPDATED` changes materially). Wording and need to be confirmed by the legal review (brief §7, Terms Q4).
 
 ### SEC-6 · Public vs private repo — P3 · decision
 Repo is public (code visible, Actions free). Private: Actions free-minutes cap (~2000/mo) — CI takes a few minutes per run; required-reviewer environments need a paid plan.
