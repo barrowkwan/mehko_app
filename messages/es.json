@@ -25,13 +25,15 @@
     "myOrders": "Mis pedidos",
     "merchant": "Comerciante",
     "signOut": "Cerrar sesión",
-    "language": "Idioma"
+    "language": "Idioma",
+    "account": "Cuenta"
   },
   "login": {
     "title": "Bienvenido",
     "subtitle": "Inicia sesión para pedir comida a comerciantes locales.",
     "failed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
-    "continueWith": "Continuar con {provider}"
+    "continueWith": "Continuar con {provider}",
+    "deleted": "Tu cuenta ha sido eliminada."
   },
   "home": {
     "title": "Abierto para pedidos",
@@ -229,6 +231,20 @@
     "unknownQr": "Código QR desconocido.",
     "otherMerchant": "Este pedido pertenece a otro comerciante.",
     "orderCancelled": "Este pedido fue cancelado.",
-    "cutoffAfterPickup": "El cierre de pedidos debe ser antes del inicio de la recogida."
+    "cutoffAfterPickup": "El cierre de pedidos debe ser antes del inicio de la recogida.",
+    "merchantHasActiveOrders": "Todavía tienes pedidos próximos de clientes. Cancélalos o complétalos antes de eliminar tu cuenta."
+  },
+  "account": {
+    "title": "Cuenta",
+    "signedInAs": "Sesión iniciada como {name}",
+    "dangerTitle": "Eliminar cuenta",
+    "dangerIntro": "Eliminar tu cuenta es permanente y no se puede deshacer. Se eliminará:",
+    "deletesProfile": "tu perfil y tu acceso",
+    "deletesOrders": "todos tus pedidos",
+    "deletesMerchant": "si eres comerciante: tus comidas, puntos de recogida y ofertas, y todos los pedidos de ellas (tus clientes pierden ese historial de pedidos)",
+    "blocked": "Todavía no puedes eliminar tu cuenta: hay clientes con pedidos próximos contigo. Cancela o completa esos pedidos primero.",
+    "confirmLabel": "Escribe DELETE para confirmar",
+    "confirmMismatch": "Escribe DELETE exactamente para confirmar.",
+    "submit": "Eliminar mi cuenta definitivamente"
   }
 }

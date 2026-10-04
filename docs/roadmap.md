@@ -181,7 +181,7 @@ Server actions and `/api/cron/fetch-context` (secret-protected already). Supabas
 ### SEC-3 · Security headers (CSP etc.) — P2 · S
 Careful with Leaflet tiles (OpenStreetMap), Supabase websockets/HTTPS, inline styles.
 
-### SEC-5 · Account deletion & data export — **P1** · M  (store requirement)
+### SEC-5 · Account deletion & data export — **P1** · M  (store requirement) — **web implemented**; mobile calls the same rule via an authenticated endpoint (MOB M3/M5); data export still open
 Apple 5.1.1(v) and Google Play require **in-app account deletion** for apps with account creation (social-login accounts count). GDPR/CCPA-style too. **Policy:** deletion is blocked while a merchant has upcoming offerings with active orders (close/cancel first); otherwise deleting the account removes the profile, orders, and the merchant with its foods/offerings/pickup points and their past orders (FK cascades fixed in a migration). The auth user is deleted server-side with the admin API (web server action now; an authenticated HTTP endpoint for mobile later). Data export is a later follow-up.
 
 ### SEC-8 · Mobile security gate — P1 with MOB · —

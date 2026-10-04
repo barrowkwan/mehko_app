@@ -25,13 +25,15 @@
     "myOrders": "My orders",
     "merchant": "Merchant",
     "signOut": "Sign out",
-    "language": "Language"
+    "language": "Language",
+    "account": "Account"
   },
   "login": {
     "title": "Welcome",
     "subtitle": "Sign in to order food from local merchants.",
     "failed": "Sign-in failed. Please try again.",
-    "continueWith": "Continue with {provider}"
+    "continueWith": "Continue with {provider}",
+    "deleted": "Your account has been deleted."
   },
   "home": {
     "title": "Open for ordering",
@@ -229,6 +231,20 @@
     "unknownQr": "Unknown QR code.",
     "otherMerchant": "This order belongs to a different merchant.",
     "orderCancelled": "This order was cancelled.",
-    "cutoffAfterPickup": "The cutoff must be before the pickup start time."
+    "cutoffAfterPickup": "The cutoff must be before the pickup start time.",
+    "merchantHasActiveOrders": "You still have upcoming orders from customers. Cancel or complete them before deleting your account."
+  },
+  "account": {
+    "title": "Account",
+    "signedInAs": "Signed in as {name}",
+    "dangerTitle": "Delete account",
+    "dangerIntro": "Deleting your account is permanent and cannot be undone. This will remove:",
+    "deletesProfile": "your profile and sign-in",
+    "deletesOrders": "all your orders",
+    "deletesMerchant": "if you are a merchant: your foods, pickup points and offerings, and all orders on them (your customers lose that order history)",
+    "blocked": "You can't delete your account yet: customers have upcoming orders with you. Cancel or complete those orders first.",
+    "confirmLabel": "Type DELETE to confirm",
+    "confirmMismatch": "Please type DELETE exactly to confirm.",
+    "submit": "Delete my account permanently"
   }
 }

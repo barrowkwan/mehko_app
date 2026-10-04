@@ -25,13 +25,15 @@
     "myOrders": "我的訂單",
     "merchant": "商家",
     "signOut": "登出",
-    "language": "語言"
+    "language": "語言",
+    "account": "帳戶"
   },
   "login": {
     "title": "歡迎",
     "subtitle": "登入後即可向在地商家訂餐。",
     "failed": "登入失敗，請再試一次。",
-    "continueWith": "使用 {provider} 繼續"
+    "continueWith": "使用 {provider} 繼續",
+    "deleted": "您的帳戶已被刪除。"
   },
   "home": {
     "title": "接受預訂中",
@@ -229,6 +231,20 @@
     "unknownQr": "無法辨識的 QR 碼。",
     "otherMerchant": "此訂單屬於其他商家。",
     "orderCancelled": "此訂單已被取消。",
-    "cutoffAfterPickup": "下單截止時間必須早於自取開始時間。"
+    "cutoffAfterPickup": "下單截止時間必須早於自取開始時間。",
+    "merchantHasActiveOrders": "您仍有顧客的未完成訂單。請先取消或完成這些訂單，再刪除帳戶。"
+  },
+  "account": {
+    "title": "帳戶",
+    "signedInAs": "目前登入：{name}",
+    "dangerTitle": "刪除帳戶",
+    "dangerIntro": "刪除帳戶是永久性的，無法復原。這將刪除：",
+    "deletesProfile": "您的個人資料與登入資訊",
+    "deletesOrders": "您的所有訂單",
+    "deletesMerchant": "若您是商家：您的餐點、自取點與販售場次，以及其下的所有訂單（您的顧客將失去這些訂單紀錄）",
+    "blocked": "目前無法刪除帳戶：有顧客在您這裡有未完成的訂單。請先取消或完成這些訂單。",
+    "confirmLabel": "輸入 DELETE 以確認",
+    "confirmMismatch": "請準確輸入 DELETE 以確認。",
+    "submit": "永久刪除我的帳戶"
   }
 }

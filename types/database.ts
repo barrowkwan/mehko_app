@@ -295,6 +295,9 @@ isOneToOne: false
             "_write_order_items":
 { Args: { "p_items": Json,"p_offering": string,"p_order": string }; Returns: undefined
                            },
+"account_deletion_blocker":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
 "can_share_location":
 { Args: { "o": string }; Returns: boolean
                            },

@@ -9,11 +9,13 @@ export function ActionForm({
   submitLabel,
   children,
   className = "flex flex-col gap-3",
+  buttonClassName = "bg-orange-600 hover:bg-orange-700",
 }: {
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
   children: ReactNode;
   className?: string;
+  buttonClassName?: string;
 }) {
   const t = useTranslations("common");
   const [state, formAction, pending] = useActionState(action, undefined);
@@ -24,7 +26,7 @@ export function ActionForm({
       {state?.saved && !state.error && <p className="text-sm text-green-700">{t("saved")}</p>}
       <button
         disabled={pending}
-        className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-700 disabled:opacity-50"
+        className={`rounded-lg px-4 py-2 font-medium text-white disabled:opacity-50 ${buttonClassName}`}
       >
         {pending ? t("saving") : submitLabel}
       </button>

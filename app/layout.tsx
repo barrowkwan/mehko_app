@@ -41,6 +41,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   <Link href="/">{t("browse")}</Link>
                   <Link href="/orders">{t("myOrders")}</Link>
                   <Link href="/merchant">{t("merchant")}</Link>
+                  <Link href="/account">{t("account")}</Link>
                 </>
               )}
               <LocaleSwitcher />

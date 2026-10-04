@@ -12,6 +12,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <p className="text-neutral-600 dark:text-neutral-400">{t("subtitle")}</p>
       </div>
+      {sp.deleted && <p className="text-sm text-green-700">{t("deleted")}</p>}
       {sp.error && <p className="text-sm text-red-600">{t("failed")}</p>}
       <LoginButtons next={next} />
     </main>

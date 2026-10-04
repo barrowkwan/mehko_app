@@ -214,4 +214,56 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("live Supabase", () => {
     await cust.client.removeChannel(channel);
     await other.client.removeChannel(otherChannel);
   }, 30_000);
+  it("account deletion: blocked while customers have upcoming orders, then cascades via the real auth admin API", async () => {
+    const m = await signUp("delmerchant");
+    const c = await signUp("delcustomer");
+    const mid = must(await m.client.from("merchants").insert({ owner_id: m.id, name: `Doomed ${run}` }).select("id").single()).id;
+    const pid = must(
+      await m.client.from("pickup_points").insert({ merchant_id: mid, name: "P", lat: 1, lng: 1, timezone: "UTC" }).select("id").single(),
+    ).id;
+    const fid = must(await m.client.from("food_items").insert({ merchant_id: mid, name: "F" }).select("id").single()).id;
+    const oid = must(
+      await m.client
+        .from("offerings")
+        .insert({
+          merchant_id: mid,
+          pickup_point_id: pid,
+          pickup_date: ymd(3),
+          pickup_start: "17:00",
+          pickup_end: "19:00",
+          cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(),
+        })
+        .select("id")
+        .single(),
+    ).id;
+    const oiid = must(await m.client.from("offering_items").insert({ offering_id: oid, food_item_id: fid }).select("id").single()).id;
+    const orderId = must(await c.client.rpc("place_order", { p_offering: oid, p_items: [{ offering_item_id: oiid, qty: 1 }] }));
+
+    // Blocked for the merchant while the customer's order is active; the customer is not blocked.
+    expect(must(await m.client.rpc("account_deletion_blocker"))).toBe("merchant_active_orders");
+    expect(must(await c.client.rpc("account_deletion_blocker"))).toBeNull();
+    // Anonymous callers cannot use it.
+    const anon = createClient<Database>(URL, ANON, { auth: { persistSession: false } });
+    expect((await anon.rpc("account_deletion_blocker")).error).not.toBeNull();
+
+    // Customer cancels -> merchant can delete.
+    must(await c.client.rpc("cancel_order", { p_order: orderId }));
+    expect(must(await m.client.rpc("account_deletion_blocker"))).toBeNull();
+
+    // Real deletion through the auth service: the database cascade must succeed under its role.
+    const del = await admin.auth.admin.deleteUser(m.id);
+    expect(del.error).toBeNull();
+    const rows = async (table: "merchants" | "offerings" | "pickup_points" | "food_items" | "orders" | "profiles", col: string, val: string) =>
+      must(await admin.from(table).select("*", { count: "exact", head: false }).eq(col, val)).length;
+    expect(await rows("merchants", "id", mid)).toBe(0);
+    expect(await rows("offerings", "id", oid)).toBe(0);
+    expect(await rows("pickup_points", "id", pid)).toBe(0);
+    expect(await rows("food_items", "id", fid)).toBe(0);
+    expect(await rows("orders", "id", orderId)).toBe(0);
+    expect(await rows("profiles", "id", m.id)).toBe(0);
+    // The customer account is untouched until they delete it too.
+    expect(await rows("profiles", "id", c.id)).toBe(1);
+    expect((await admin.auth.admin.deleteUser(c.id)).error).toBeNull();
+    expect(await rows("profiles", "id", c.id)).toBe(0);
+  }, 30_000);
 });

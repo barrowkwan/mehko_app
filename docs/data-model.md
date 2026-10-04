@@ -25,11 +25,16 @@ View: `order_lines` (`security_invoker`) — one row per ordered item with merch
 | --- | --- |
 | `place_order(offering, items jsonb)` | Offering published; `now() < cutoff_at`; stock; one active order |
 | `update_order(order, items jsonb)` | Own order, status `placed`, before cutoff; stock (excluding own lines) |
+| `account_deletion_blocker()` | Invoker rights (RLS). Returns `'merchant_active_orders'` if the caller owns a merchant with an active (`placed`) order whose pickup date is today or later, else null. Used by the Account page / `deleteAccount` before the auth user is deleted |
 | `cancel_order(order)` | Own order, `placed`, before cutoff |
 | `confirm_pickup(token)` | Token's offering belongs to caller's merchant; not cancelled; idempotent (returns `already_picked_up`) |
 | `offering_stock(offering)` | Remaining quantity for limited items (customers can't read others' orders) |
 
 `items` = `[{"offering_item_id": "<uuid>", "qty": <int>}]`. Helpers: `is_merchant_owner`, `offering_merchant`, `has_order_on`, `can_share_location`, internal `_write_order_items`.
+
+## Account deletion
+
+Deleting an `auth.users` row (admin API, see `app/account/actions.ts`) cascades: `profiles` → the user's orders; `merchants` → pickup points, foods, offerings → offering items, orders (and order items), live location, weather snapshot. Two things make this safe (migration `20261005000000_account_deletion.sql`): `orders.offering_id` is `ON DELETE CASCADE`, and trigger `merchants_delete_offerings_first` deletes a merchant's orders then offerings first, because Postgres cascades to foods/pickup points before offerings and the strict foreign keys elsewhere would otherwise reject it. Other customers keep their accounts but lose that merchant's order history. Policy: deletion is blocked while `account_deletion_blocker()` is non-null.
 
 ## Row level security summary
 
