@@ -33,7 +33,7 @@ Decided with the product owner: **multi-language first (done), payments last** (
 
 ## Operations & reliability
 
-### OPS-1 · Scheduled database backups — P1 · S — **implemented, awaiting your setup** (add `BACKUP_PASSPHRASE`, run once, test-restore into a throw-away project; see [backup-restore.md](backup-restore.md))
+### OPS-1 · Scheduled database backups — P1 · S — **running** (passphrase set, first hosted run green 2026-10-04). **Open: test-restore into a throw-away Supabase project — deferred; do it before the first real merchants take orders and no later than the first mobile beta** (steps in [backup-restore.md](backup-restore.md)). Until then the backups are unproven: dump + encryption work on the hosted DB, but decrypt + load has not been tried there.
 **Why:** Supabase free has **no automatic backups**; a bad migration or deleted project loses everything.
 **Do:** GitHub Action (daily/weekly) running `supabase db dump --db-url "$SUPABASE_DB_URL"` (the session-pooler secret already exists) → store as an encrypted/private artifact or private storage; keep N copies; write a restore runbook in `docs/` and test one restore into a local stack.
 **Done when:** a restore from last night's dump into `supabase start` is verified and documented.
