@@ -17,6 +17,7 @@ const PATTERNS: [RegExp, ErrorKey][] = [
   [/offering not found/i, "offeringNotFound"],
   [/pickup point not found/i, "pickupPointNotFound"],
   [/slots must be on the same date/i, "slotsSameDate"],
+  [/only once per offering/i, "slotPointDuplicate"],
   [/offering is not available/i, "offeringUnavailable"],
   [/cutoff has passed/i, "cutoffPassed"],
   [/already have an order/i, "alreadyOrdered"],

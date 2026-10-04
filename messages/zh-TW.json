@@ -211,7 +211,9 @@
       "cutoff": "訂單截止時間（您的當地時間）",
       "instructions": "取餐說明",
       "back": "返回修改",
-      "publish": "發布"
+      "publish": "發布",
+      "duplicateTitle": "取餐點重複",
+      "duplicateBody": "「{point}」被選擇了多次。同一個取餐點在一個優惠中只能使用一次。請移除重複項或選擇其他取餐點。"
     }
   },
   "offeringDetail": {
@@ -312,7 +314,8 @@
     "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。",
     "noteTooLong": "備註太長（最多 300 個字元）。",
     "pickupPointNotFound": "找不到取餐點。",
-    "slotsSameDate": "所有取餐時段必須在同一天。"
+    "slotsSameDate": "所有取餐時段必須在同一天。",
+    "slotPointDuplicate": "同一個取餐點在一個優惠中只能使用一次。請選擇其他取餐點或移除重複項。"
   },
   "account": {
     "title": "帳戶",

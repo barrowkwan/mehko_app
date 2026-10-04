@@ -211,7 +211,9 @@
       "cutoff": "订单截止时间（您的当地时间）",
       "instructions": "取餐说明",
       "back": "返回修改",
-      "publish": "发布"
+      "publish": "发布",
+      "duplicateTitle": "取餐点重复",
+      "duplicateBody": "“{point}”被选择了多次。同一个取餐点在一个优惠中只能使用一次。请移除重复项或选择其他取餐点。"
     }
   },
   "offeringDetail": {
@@ -312,7 +314,8 @@
     "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。",
     "noteTooLong": "备注太长（最多 300 个字符）。",
     "pickupPointNotFound": "找不到取餐点。",
-    "slotsSameDate": "所有取餐时段必须在同一天。"
+    "slotsSameDate": "所有取餐时段必须在同一天。",
+    "slotPointDuplicate": "同一个取餐点在一个优惠中只能使用一次。请选择其他取餐点或移除重复项。"
   },
   "account": {
     "title": "账户",

@@ -56,12 +56,44 @@ describe("add_offering_slot", () => {
     expect(items.map((i) => i.quantity_limit)).toEqual([20, 40]);
   });
 
-  it("allows the same pickup point again at another time on the same date", async () => {
-    const later = await asUser(db, IDS.meiOwner, async () =>
-      (await db.query<{ id: string }>(`select add_offering_slot($1, $2, current_date + 3, '19:30', '20:30') as id`, [IDS.meiOffering, IDS.meiPoint])).rows[0].id);
-    const rows = (await db.query<{ n: number }>("select count(*)::int as n from offerings where pickup_point_id = $1 and group_id is not null", [IDS.meiPoint])).rows[0].n;
-    expect(rows).toBe(2); // the original slot plus the repeat, both at the same point
-    expect(later).not.toBe(IDS.meiOffering);
+  it("refuses a pickup point that the offering already uses (original or added slot)", async () => {
+    await expect(
+      asUser(db, IDS.meiOwner, () => db.query(`select add_offering_slot($1, $2, current_date + 3, '19:30', '20:30')`, [IDS.meiOffering, IDS.meiPoint])),
+    ).rejects.toThrow(/only once per offering/);
+    await expect(
+      asUser(db, IDS.meiOwner, () => db.query(`select add_offering_slot($1, $2, current_date + 3, '19:30', '20:30')`, [IDS.meiOffering, CENTRAL])),
+    ).rejects.toThrow(/only once per offering/);
+    const n = (await db.query<{ n: number }>("select count(*)::int as n from offerings where group_id is not null")).rows[0].n;
+    expect(n).toBe(2); // nothing half-created
+  });
+
+  it("refuses editing a slot onto a point another slot of the offering uses", async () => {
+    await expect(
+      asUser(db, IDS.meiOwner, () =>
+        db.query(
+          `select update_offering($1, $2, current_date + 3, '12:00', '13:00', now() + interval '1 day', '[{"food_item_id":"${PORK}","quantity_limit":40}]'::jsonb)`,
+          [slotB, IDS.meiPoint],
+        ),
+      ),
+    ).rejects.toThrow(/only once per offering/);
+  });
+
+  it("offerings that already repeat a point (created before the rule) stay editable", async () => {
+    await db.exec("alter table offerings disable trigger offerings_slot_point_unique");
+    await db.query(
+      `insert into offerings (merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, group_id)
+       select merchant_id, pickup_point_id, pickup_date, '19:30', '20:30', cutoff_at, group_id from offerings where id = $1`,
+      [IDS.meiOffering],
+    );
+    await db.exec("alter table offerings enable trigger offerings_slot_point_unique");
+    await expect(
+      asUser(db, IDS.meiOwner, () =>
+        db.query(
+          `select update_offering($1, $2, current_date + 3, '17:00', '19:00', now() + interval '1 day', '[{"food_item_id":"${PORK}","quantity_limit":40}]'::jsonb)`,
+          [IDS.meiOffering, IDS.meiPoint],
+        ),
+      ),
+    ).resolves.toBeDefined();
   });
 
   it("refuses a slot on a different date than the offering", async () => {

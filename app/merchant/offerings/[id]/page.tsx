@@ -22,7 +22,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const { data: o } = await supabase
     .from("offerings")
     .select(
-      `id, group_id, merchant_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
+      `id, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item:food_items(name, translations))`,
     )
@@ -35,13 +35,17 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     o.group_id
       ? supabase
           .from("offerings")
-          .select("id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name)")
+          .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name)")
           .eq("group_id", o.group_id)
           .order("pickup_date")
           .order("pickup_start")
       : Promise.resolve({ data: null }),
     supabase.from("pickup_points").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
   ]);
+
+  // A pickup point can be used only once per offering: offer only the ones not used by a slot yet.
+  const usedPoints = new Set([o.pickup_point_id, ...(slots ?? []).map((s) => s.pickup_point_id)]);
+  const availablePoints = (points ?? []).filter((p) => !usedPoints.has(p.id));
 
   const { data: orders } = await supabase
     .from("orders")
@@ -118,11 +122,11 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
             </ul>
           </>
         )}
-        {!past && points && points.length > 0 && (
+        {!past && availablePoints.length > 0 && (
           <details>
             <summary className="cursor-pointer text-sm font-medium text-orange-600">{t("addSlotTitle")}</summary>
             <ActionForm action={addOfferingSlot.bind(null, id)} submitLabel={t("addSlotSubmit")} className="mt-2 flex flex-col gap-3">
-              <SlotFields points={points} prefix="slot_0_" />
+              <SlotFields points={availablePoints} prefix="slot_0_" />
             </ActionForm>
           </details>
         )}

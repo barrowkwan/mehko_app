@@ -295,6 +295,9 @@ export async function createOffering(_prev: FormState, formData: FormData): Prom
   const extra = await parseSlots(formData, input.value.schedule.pickup_date);
   if (!extra.ok) return extra.error;
 
+  const pointIds = [input.value.schedule.pickup_point_id, ...extra.slots.map((s) => s.pickup_point_id)];
+  if (new Set(pointIds).size !== pointIds.length) return { error: (await getTranslations("errors"))("slotPointDuplicate") };
+
   const { supabase, merchant } = await requireMerchant();
   const { data: offering, error } = await supabase
     .from("offerings")

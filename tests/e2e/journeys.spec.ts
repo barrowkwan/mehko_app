@@ -184,3 +184,36 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(p.getByText("0 left")).toBeVisible();
   await ctx.close();
 });
+
+test("choosing the same pickup point twice is refused with a warning", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant5");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Dup Kitchen ${run}` }).select("id").single()).id;
+  must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Only Gate", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single());
+  must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Dup Buns" }).select("id").single());
+
+  const ctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(ctx, baseURL!, mer.email);
+  const mp = await ctx.newPage();
+  await mp.goto("/merchant/offerings/new");
+  await mp.getByLabel("Pickup date").first().fill(ymd(3));
+  await mp.getByLabel("Pickup from").first().fill("17:00");
+  await mp.getByLabel("Pickup until").first().fill("19:00");
+  const cutoff = new Date(Date.now() + 2 * 86_400_000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  await mp.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
+  await mp.getByRole("button", { name: "Add a pickup slot" }).click();
+  await mp.locator('input[name="slot_0_start"]').fill("12:00");
+  await mp.locator('input[name="slot_0_end"]').fill("13:00");
+  await mp.getByRole("checkbox", { name: /Dup Buns/ }).check();
+  await mp.getByRole("button", { name: "Review & publish" }).click();
+
+  const dialog = mp.getByRole("dialog");
+  await expect(dialog.getByText("Pickup point used twice")).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Publish offering" })).toHaveCount(0); // cannot be published from here
+  await dialog.getByRole("button", { name: "Back to edit" }).click();
+  expect(mp.url()).toMatch(/\/offerings\/new/);
+  await ctx.close();
+
+  const { count } = await admin.from("offerings").select("id", { count: "exact", head: true }).eq("merchant_id", merchantId);
+  expect(count).toBe(0);
+});

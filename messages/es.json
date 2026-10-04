@@ -211,7 +211,9 @@
       "cutoff": "Cierre de pedidos (tu hora)",
       "instructions": "Instrucciones de recogida",
       "back": "Volver a editar",
-      "publish": "Publicar oferta"
+      "publish": "Publicar oferta",
+      "duplicateTitle": "Punto de recogida repetido",
+      "duplicateBody": "«{point}» está elegido más de una vez. Cada punto de recogida solo puede usarse una vez en una oferta. Quita el repetido o elige otro punto."
     }
   },
   "offeringDetail": {
@@ -312,7 +314,8 @@
     "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
     "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo).",
     "pickupPointNotFound": "Punto de recogida no encontrado.",
-    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día."
+    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día.",
+    "slotPointDuplicate": "Cada punto de recogida solo puede usarse una vez en una oferta. Elige otro punto o quita el repetido."
   },
   "account": {
     "title": "Cuenta",
