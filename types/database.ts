@@ -169,13 +169,13 @@ isOneToOne: false
                   ]
                 },"offerings": {
                   Row: {
-                    "created_at": string,"cutoff_at": string,"id": string,"instructions": string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
+                    "created_at": string,"cutoff_at": string,"group_id": string | null,"id": string,"instructions": string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "created_at"?: string,"cutoff_at": string,"id"?: string,"instructions"?: string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
+                    "created_at"?: string,"cutoff_at": string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "created_at"?: string,"cutoff_at"?: string,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
+                    "created_at"?: string,"cutoff_at"?: string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -317,11 +317,17 @@ isOneToOne: false
 "account_deletion_blocker":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"add_offering_slot":
+{ Args: { "p_date": string,"p_end": string,"p_offering": string,"p_pickup_point": string,"p_start": string }; Returns: string
+                           },
 "can_share_location":
 { Args: { "o": string }; Returns: boolean
                            },
 "cancel_order":
 { Args: { "p_order": string }; Returns: undefined
+                           },
+"change_order_slot":
+{ Args: { "p_new_offering": string,"p_order": string }; Returns: undefined
                            },
 "claim_notifications":
 { Args: { "p_limit"?: number }; Returns: {
@@ -368,6 +374,9 @@ isOneToOne: false
                            },
 "offering_merchant":
 { Args: { "o": string }; Returns: string
+                           },
+"offering_pool":
+{ Args: { "p_item": string }; Returns: string[]
                            },
 "offering_stock":
 { Args: { "p_offering": string }; Returns: {

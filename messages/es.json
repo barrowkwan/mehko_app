@@ -39,14 +39,18 @@
   "home": {
     "title": "Abierto para pedidos",
     "empty": "Por ahora no hay nada abierto para pedidos.",
-    "orderBy": "Pide antes de {time}"
+    "orderBy": "Pide antes de {time}",
+    "slotsCount": "{count} opciones de recogida"
   },
   "offering": {
     "pickup": "Recogida: {place}",
     "orderBy": "Pide antes de {time}",
     "closed": "Los pedidos están cerrados.",
     "placeOrder": "Hacer pedido",
-    "instructionsTitle": "Instrucciones de recogida"
+    "instructionsTitle": "Instrucciones de recogida",
+    "pickupOptions": "Otras opciones de recogida",
+    "pickupOptionsHelp": "Elige la franja que más te convenga; los productos y los límites son los mismos.",
+    "here": "(viendo)"
   },
   "orderForm": {
     "quantityOf": "Cantidad de {name}",
@@ -77,7 +81,10 @@
     "saveChanges": "Guardar cambios",
     "cancelOrder": "Cancelar pedido",
     "instructionsTitle": "Instrucciones de recogida",
-    "noteTitle": "Tu nota para el comerciante"
+    "noteTitle": "Tu nota para el comerciante",
+    "changeSlotTitle": "Cambiar la franja de recogida",
+    "changeSlotHelp": "Mueve este pedido a otra franja de recogida antes del cierre.",
+    "changeSlotSubmit": "Mover mi pedido"
   },
   "map": {
     "sharing": "El comerciante está compartiendo su ubicación en vivo.",
@@ -186,7 +193,12 @@
     "pastHint": "La fecha de esta recogida ya pasó, así que no se puede editar el horario.",
     "instructions": "Instrucciones de recogida (opcional)",
     "instructionsHelp": "Explica a los clientes dónde y cómo encontrarte, p. ej. \"Puerta norte, busca la carpa roja\".",
-    "instructionsTooLong": "Las instrucciones de recogida son demasiado largas (500 caracteres como máximo)."
+    "instructionsTooLong": "Las instrucciones de recogida son demasiado largas (500 caracteres como máximo).",
+    "endAfterStart": "La hora de fin de la recogida debe ser posterior a la de inicio.",
+    "extraSlotsTitle": "Más franjas de recogida (opcional)",
+    "extraSlotsHelp": "Ofrece los mismos productos en otros lugares u horarios. Todas las franjas comparten el cierre, los productos y los límites; el cliente elige una.",
+    "addSlot": "Añadir una franja de recogida",
+    "removeSlot": "Quitar esta franja"
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",
@@ -206,7 +218,12 @@
     "deleteBlocked": "Las ofertas con pedidos no se pueden eliminar. Cierra los pedidos en su lugar.",
     "back": "Volver a la oferta",
     "customerNotes": "Notas de clientes ({count})",
-    "noteLabel": "Nota:"
+    "noteLabel": "Nota:",
+    "slotsTitle": "Franjas de recogida",
+    "slotsHelp": "Estas franjas comparten el cierre, los productos y los límites. Cada una tiene sus propios pedidos, lista de preparación y ubicación en vivo.",
+    "thisSlot": "(esta franja)",
+    "addSlotTitle": "Añadir una franja de recogida",
+    "addSlotSubmit": "Añadir franja"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
@@ -279,7 +296,8 @@
     "imageTooLarge": "Esa foto es demasiado grande. Prueba con una más pequeña.",
     "imageInvalid": "Ese archivo no es una foto válida.",
     "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
-    "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo)."
+    "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo).",
+    "pickupPointNotFound": "Punto de recogida no encontrado."
   },
   "account": {
     "title": "Cuenta",

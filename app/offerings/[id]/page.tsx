@@ -1,4 +1,5 @@
 import { LocalInstantText } from "@/components/local-instant";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
@@ -18,7 +19,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
   const { data: offering } = await supabase
     .from("offerings")
     .select(
-      `id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
+      `id, group_id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
        merchant:merchants(name, description, translations),
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))`,
@@ -35,6 +36,17 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
     .neq("status", "cancelled")
     .maybeSingle();
   if (existing) redirect(`/orders/${existing.id}`);
+
+  // Other pickup slots of the same offering that can still be ordered.
+  const { data: siblings } = offering.group_id
+    ? await supabase
+        .from("offerings")
+        .select("id, pickup_date, pickup_start, pickup_end, pickup_point:pickup_points(name, address)")
+        .eq("group_id", offering.group_id)
+        .eq("status", "published")
+        .order("pickup_date")
+        .order("pickup_start")
+    : { data: null };
 
   const closed = isPastCutoff(offering.cutoff_at);
   const { data: stock } = await supabase.rpc("offering_stock", { p_offering: id });
@@ -62,6 +74,26 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
         <p className="text-sm text-orange-700">
           {closed ? t("closed") : <LocalInstantText messageKey="offering.orderBy" iso={offering.cutoff_at} fallbackTimeZone={tz} />}
         </p>
+        {siblings && siblings.length > 1 && (
+          <section className="mt-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+            <h2 className="text-sm font-semibold">{t("pickupOptions")}</h2>
+            <p className="mb-2 text-xs text-neutral-500">{t("pickupOptionsHelp")}</p>
+            <ul className="flex flex-col gap-1">
+              {siblings.map((s) => (
+                <li key={s.id}>
+                  <Link
+                    href={`/offerings/${s.id}`}
+                    aria-current={s.id === id ? "page" : undefined}
+                    className={`block rounded border px-3 py-2 text-sm ${s.id === id ? "border-orange-500 bg-orange-50 dark:bg-orange-950" : "border-neutral-200 hover:border-orange-500 dark:border-neutral-800"}`}
+                  >
+                    {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
+                    {s.id === id ? ` ${t("here")}` : ""}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         {offering.instructions && (
           <div className="mt-2 rounded border border-neutral-200 p-3 text-sm dark:border-neutral-800">
             <p className="font-medium">{t("instructionsTitle")}</p>

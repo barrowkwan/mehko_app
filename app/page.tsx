@@ -12,7 +12,7 @@ export default async function Home() {
   const { data: offerings } = await supabase
     .from("offerings")
     .select(
-      `id, pickup_date, pickup_start, pickup_end, cutoff_at,
+      `id, group_id, pickup_date, pickup_start, pickup_end, cutoff_at,
        merchant:merchants(id, name, translations),
        pickup_point:pickup_points(name, address, timezone),
        offering_items(food_item:food_items(name, translations))`,
@@ -22,38 +22,87 @@ export default async function Home() {
     .order("pickup_date")
     .order("pickup_start");
 
+  // Slots of one offering (same group) are shown as one card with a choice of pickup slots.
+  const groups: NonNullable<typeof offerings>[] = [];
+  const index = new Map<string, number>();
+  for (const o of offerings ?? []) {
+    const key = o.group_id ?? o.id;
+    const at = index.get(key);
+    if (at === undefined) {
+      index.set(key, groups.length);
+      groups.push([o]);
+    } else groups[at].push(o);
+  }
+
   return (
     <main className="flex flex-col gap-4 p-4">
       <h1 className="text-xl font-bold">{t("title")}</h1>
       {!offerings?.length && <p className="text-neutral-500">{t("empty")}</p>}
       <ul className="grid gap-3 sm:grid-cols-2">
-        {offerings?.map((o) => (
-          <li key={o.id}>
-            <Link
-              href={`/offerings/${o.id}`}
-              className="block rounded-lg border border-neutral-200 p-4 hover:border-orange-500 dark:border-neutral-800"
-            >
+        {groups.map((slots) => {
+          const o = slots[0];
+          const tz = o.pickup_point?.timezone ?? "UTC";
+          const cardClass = "block rounded-lg border border-neutral-200 p-4 dark:border-neutral-800";
+          const slotLine = (s: (typeof slots)[number]) => (
+            <>
+              <span className="text-sm">
+                {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)}
+              </span>
+              <span className="block text-sm text-neutral-500">
+                {s.pickup_point?.name}
+                {s.pickup_point?.address ? ` · ${s.pickup_point.address}` : ""}
+              </span>
+            </>
+          );
+          const body = (
+            <>
               <p className="font-semibold">
                 {o.merchant && localized(o.merchant.name, o.merchant.translations, locale, "name")}
               </p>
-              <p className="text-sm">
-                {formatDate(o.pickup_date, locale)}, {formatTime(o.pickup_start, locale)}–{formatTime(o.pickup_end, locale)}
-              </p>
-              <p className="text-sm text-neutral-500">
-                {o.pickup_point?.name}
-                {o.pickup_point?.address ? ` · ${o.pickup_point.address}` : ""}
-              </p>
+              {slots.length === 1 ? (
+                <p>{slotLine(o)}</p>
+              ) : (
+                <p className="text-sm text-neutral-500">{t("slotsCount", { count: slots.length })}</p>
+              )}
+            </>
+          );
+          const foods = (
+            <>
               <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
                 {o.offering_items
                   .map((i) => i.food_item && localized(i.food_item.name, i.food_item.translations, locale, "name"))
                   .join(", ")}
               </p>
               <p className="mt-2 text-xs text-orange-700">
-                <LocalInstantText messageKey="home.orderBy" iso={o.cutoff_at} fallbackTimeZone={o.pickup_point?.timezone ?? "UTC"} />
+                <LocalInstantText messageKey="home.orderBy" iso={o.cutoff_at} fallbackTimeZone={tz} />
               </p>
-            </Link>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={o.group_id ?? o.id}>
+              {slots.length === 1 ? (
+                <Link href={`/offerings/${o.id}`} className={`${cardClass} hover:border-orange-500`}>
+                  {body}
+                  {foods}
+                </Link>
+              ) : (
+                <div className={cardClass}>
+                  {body}
+                  <ul className="mt-2 flex flex-col gap-1">
+                    {slots.map((s) => (
+                      <li key={s.id}>
+                        <Link href={`/offerings/${s.id}`} className="block rounded border border-neutral-200 px-3 py-2 hover:border-orange-500 dark:border-neutral-800">
+                          {slotLine(s)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {foods}
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </main>
   );

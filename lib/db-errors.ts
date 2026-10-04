@@ -15,6 +15,7 @@ const PATTERNS: [RegExp, ErrorKey][] = [
   [/offering must contain at least one item/i, "emptyOffering"],
   [/note is too long/i, "noteTooLong"],
   [/offering not found/i, "offeringNotFound"],
+  [/pickup point not found/i, "pickupPointNotFound"],
   [/offering is not available/i, "offeringUnavailable"],
   [/cutoff has passed/i, "cutoffPassed"],
   [/already have an order/i, "alreadyOrdered"],

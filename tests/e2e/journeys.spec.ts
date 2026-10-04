@@ -120,3 +120,56 @@ test("merchant publishes an offering through the form; stock limit stops a secon
   await expect(p2).not.toHaveURL(/\/orders\/[0-9a-f-]{36}/); // the form refuses more than what is left
   await second.close();
 });
+
+test("merchant offers two pickup slots; customer picks one and later moves the order to the other", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant4");
+  const cust = await createUser("e2ecust3");
+  const kitchen = `E2E Slots Kitchen ${run}`;
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: kitchen }).select("id").single()).id;
+  must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "North Gate", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single());
+  must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "South Gate", lat: 40.7, lng: -73.97, timezone: "UTC" }).select("id").single());
+  must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Slot Buns" }).select("id").single());
+
+  const merCtx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(merCtx, baseURL!, mer.email);
+  const mp = await merCtx.newPage();
+  await mp.goto("/merchant/offerings/new");
+  await mp.getByLabel("Pickup point").first().selectOption({ label: "North Gate" });
+  await mp.getByLabel("Pickup date").first().fill(ymd(3));
+  await mp.getByLabel("Pickup from").first().fill("17:00");
+  await mp.getByLabel("Pickup until").first().fill("19:00");
+  const cutoff = new Date(Date.now() + 2 * 86_400_000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  await mp.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
+  await mp.getByRole("button", { name: "Add a pickup slot" }).click();
+  await mp.locator('select[name="slot_0_point"]').selectOption({ label: "South Gate" });
+  await mp.locator('input[name="slot_0_date"]').fill(ymd(4));
+  await mp.locator('input[name="slot_0_start"]').fill("12:00");
+  await mp.locator('input[name="slot_0_end"]').fill("13:00");
+  await mp.getByRole("checkbox", { name: /Slot Buns/ }).check();
+  await mp.locator('input[name^="limit_"]').fill("2");
+  await mp.getByRole("button", { name: "Publish offering" }).click();
+  await mp.waitForURL(/\/merchant\/offerings\/[0-9a-f-]{36}$/);
+  await expect(mp.getByRole("heading", { name: "Pickup slots" })).toBeVisible();
+  await merCtx.close();
+
+  const ctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(ctx, baseURL!, cust.email);
+  const p = await ctx.newPage();
+  await p.goto("/");
+  const card = p.locator("li", { hasText: kitchen }).first();
+  await expect(card.getByText("2 pickup options")).toBeVisible();
+  await card.getByRole("link", { name: /North Gate/ }).click();
+  await expect(p.getByText("Other pickup options")).toBeVisible();
+  await p.locator('input[name^="qty_"]').fill("2");
+  await p.getByRole("button", { name: "Place order" }).click();
+  await expect(p).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
+  await expect(p.locator("p", { hasText: "North Gate" })).toBeVisible();
+
+  // Move to the other slot: pickup place changes, the shared stock is still used up (0 left).
+  await p.locator('select[name="slot"]').selectOption({ index: 1 });
+  await p.getByRole("button", { name: "Move my order" }).click();
+  await expect(p.locator("p", { hasText: "South Gate" })).toBeVisible();
+  await expect(p.getByText("0 left")).toBeVisible();
+  await ctx.close();
+});

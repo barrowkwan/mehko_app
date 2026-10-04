@@ -39,14 +39,18 @@
   "home": {
     "title": "Open for ordering",
     "empty": "Nothing is open for ordering right now.",
-    "orderBy": "Order by {time}"
+    "orderBy": "Order by {time}",
+    "slotsCount": "{count} pickup options"
   },
   "offering": {
     "pickup": "Pickup: {place}",
     "orderBy": "Order by {time}",
     "closed": "Ordering is closed.",
     "placeOrder": "Place order",
-    "instructionsTitle": "Pickup instructions"
+    "instructionsTitle": "Pickup instructions",
+    "pickupOptions": "Other pickup options",
+    "pickupOptionsHelp": "Pick the slot that suits you; the foods and limits are the same.",
+    "here": "(viewing)"
   },
   "orderForm": {
     "quantityOf": "Quantity of {name}",
@@ -77,7 +81,10 @@
     "saveChanges": "Save changes",
     "cancelOrder": "Cancel order",
     "instructionsTitle": "Pickup instructions",
-    "noteTitle": "Your note to the merchant"
+    "noteTitle": "Your note to the merchant",
+    "changeSlotTitle": "Change pickup slot",
+    "changeSlotHelp": "Move this order to another pickup slot before the cutoff.",
+    "changeSlotSubmit": "Move my order"
   },
   "map": {
     "sharing": "Merchant is sharing their live location.",
@@ -186,7 +193,12 @@
     "pastHint": "This pickup date has passed, so the schedule can't be edited.",
     "instructions": "Pickup instructions (optional)",
     "instructionsHelp": "Tell customers where and how to find you, e.g. \"North gate, look for the red tent\".",
-    "instructionsTooLong": "Pickup instructions are too long (500 characters at most)."
+    "instructionsTooLong": "Pickup instructions are too long (500 characters at most).",
+    "endAfterStart": "The pickup end time must be after the start time.",
+    "extraSlotsTitle": "More pickup slots (optional)",
+    "extraSlotsHelp": "Offer the same foods at other places or times. All slots share the cutoff, foods and limits; customers choose one.",
+    "addSlot": "Add a pickup slot",
+    "removeSlot": "Remove this slot"
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
@@ -206,7 +218,12 @@
     "deleteBlocked": "Offerings with orders can't be deleted. Close ordering instead.",
     "back": "Back to offering",
     "customerNotes": "Customer notes ({count})",
-    "noteLabel": "Note:"
+    "noteLabel": "Note:",
+    "slotsTitle": "Pickup slots",
+    "slotsHelp": "These slots share the cutoff, foods and limits. Each has its own orders, prep list and live location.",
+    "thisSlot": "(this slot)",
+    "addSlotTitle": "Add a pickup slot",
+    "addSlotSubmit": "Add slot"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",
@@ -279,7 +296,8 @@
     "imageTooLarge": "That photo is too large. Try a smaller one.",
     "imageInvalid": "That file isn't a valid photo.",
     "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again.",
-    "noteTooLong": "The note is too long (300 characters at most)."
+    "noteTooLong": "The note is too long (300 characters at most).",
+    "pickupPointNotFound": "Pickup point not found."
   },
   "account": {
     "title": "Account",

@@ -7,7 +7,8 @@ import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { LocationToggle } from "@/components/location-toggle";
-import { deleteOffering, duplicateOffering, setOfferingStatus } from "../../actions";
+import { SlotFields } from "@/components/slot-fields";
+import { addOfferingSlot, deleteOffering, duplicateOffering, setOfferingStatus } from "../../actions";
 
 export default async function MerchantOfferingPage({ params }: PageProps<"/merchant/offerings/[id]">) {
   const { id } = await params;
@@ -21,7 +22,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const { data: o } = await supabase
     .from("offerings")
     .select(
-      `id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
+      `id, group_id, merchant_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item:food_items(name, translations))`,
     )
@@ -29,6 +30,18 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     .eq("merchant_id", merchant.id)
     .maybeSingle();
   if (!o) notFound();
+
+  const [{ data: slots }, { data: points }] = await Promise.all([
+    o.group_id
+      ? supabase
+          .from("offerings")
+          .select("id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name)")
+          .eq("group_id", o.group_id)
+          .order("pickup_date")
+          .order("pickup_start")
+      : Promise.resolve({ data: null }),
+    supabase.from("pickup_points").select("id, name").eq("merchant_id", merchant.id).eq("active", true).order("name"),
+  ]);
 
   const { data: orders } = await supabase
     .from("orders")
@@ -81,6 +94,39 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
           )}
         </div>
       </div>
+
+      <section className="flex max-w-md flex-col gap-2 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+        <h2 className="font-semibold">{t("slotsTitle")}</h2>
+        {slots && slots.length > 1 && (
+          <>
+            <p className="text-xs text-neutral-500">{t("slotsHelp")}</p>
+            <ul className="flex flex-col gap-1 text-sm">
+              {slots.map((s) => (
+                <li key={s.id}>
+                  {s.id === id ? (
+                    <span className="font-medium">
+                      {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name} {t("thisSlot")}
+                    </span>
+                  ) : (
+                    <Link href={`/merchant/offerings/${s.id}`} className="text-orange-600 hover:underline">
+                      {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
+                    </Link>
+                  )}{" "}
+                  <span className="text-neutral-500">({tStatus(s.status as "draft" | "published" | "closed")})</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {!past && points && points.length > 0 && (
+          <details>
+            <summary className="cursor-pointer text-sm font-medium text-orange-600">{t("addSlotTitle")}</summary>
+            <ActionForm action={addOfferingSlot.bind(null, id)} submitLabel={t("addSlotSubmit")} className="mt-2 flex flex-col gap-3">
+              <SlotFields points={points} prefix="slot_0_" />
+            </ActionForm>
+          </details>
+        )}
+      </section>
 
       <section className="flex max-w-md flex-col gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
         <details>

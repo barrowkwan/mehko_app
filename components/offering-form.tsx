@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { CutoffInput } from "@/components/cutoff-input";
+import { ExtraSlots } from "@/components/extra-slots";
 import { TranslationFields } from "@/components/translation-fields";
 import type { FormState } from "@/app/orders/actions";
 
@@ -24,6 +25,7 @@ export async function OfferingForm({
   foods,
   values,
   lockMove = false,
+  allowExtraSlots = false,
 }: {
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
@@ -31,6 +33,7 @@ export async function OfferingForm({
   foods: { id: string; name: string }[];
   values?: OfferingFormValues;
   lockMove?: boolean;
+  allowExtraSlots?: boolean; // "New offering" only: more pickup slots (other editing is done per slot on its page)
 }) {
   const t = await getTranslations("offerings");
   const hhmm = (v?: string) => v?.slice(0, 5);
@@ -75,6 +78,7 @@ export async function OfferingForm({
         </Field>
       </div>
       <CutoffInput defaultIso={values?.cutoffAt} />
+      {allowExtraSlots && <ExtraSlots points={points} />}
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-sm font-medium">{t("foodsOnSale")}</legend>
         {foods.map((f) => {

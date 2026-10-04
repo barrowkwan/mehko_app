@@ -61,6 +61,18 @@ export async function updateOrder(orderId: string, _prev: FormState, formData: F
   return undefined;
 }
 
+// Moves the order to another pickup slot of the same offering (allowed until the cutoff).
+export async function changeOrderSlot(orderId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const target = String(formData.get("slot") ?? "");
+  if (!/^[0-9a-f-]{36}$/.test(target)) return { error: (await getTranslations("errors"))("generic") };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("change_order_slot", { p_order: orderId, p_new_offering: target });
+  if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
+  revalidatePath(`/orders/${orderId}`);
+  revalidatePath("/orders");
+  return { saved: true };
+}
+
 export async function cancelOrder(orderId: string): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.rpc("cancel_order", { p_order: orderId });

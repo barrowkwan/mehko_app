@@ -9,7 +9,8 @@ import { localized } from "@/lib/locale";
 import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
 import { LiveMapLoader } from "@/components/live-map-loader";
-import { cancelOrder, updateOrder } from "@/app/orders/actions";
+import { ActionForm, inputClass } from "@/components/action-form";
+import { cancelOrder, changeOrderSlot, updateOrder } from "@/app/orders/actions";
 
 export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   const { id } = await params;
@@ -23,7 +24,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
     .from("orders")
     .select(
       `id, status, qr_token, offering_id, note,
-       offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
+       offering:offerings(group_id, pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
          merchant:merchants(name, translations),
          pickup_point:pickup_points(name, address, lat, lng, timezone),
          offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))),
@@ -37,6 +38,17 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   const off = order.offering;
   const tz = off.pickup_point?.timezone ?? "UTC";
   const editable = order.status === "placed" && !isPastCutoff(off.cutoff_at);
+  // Other slots of the same offering this order can be moved to (until the cutoff).
+  const { data: slots } =
+    editable && off.group_id
+      ? await supabase
+          .from("offerings")
+          .select("id, pickup_date, pickup_start, pickup_end, pickup_point:pickup_points(name)")
+          .eq("group_id", off.group_id)
+          .eq("status", "published")
+          .order("pickup_date")
+          .order("pickup_start")
+      : { data: null };
   const mine = new Map(order.order_items.map((i) => [i.offering_item_id, i.qty]));
   const foodName = (f: { name: string; translations: unknown } | null) =>
     f ? localized(f.name, f.translations, locale, "name") : tc("item");
@@ -99,6 +111,21 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
             <p className="mb-2 text-sm text-orange-700">
               <LocalInstantText messageKey="order.canChangeUntil" iso={off.cutoff_at} fallbackTimeZone={tz} />
             </p>
+            {slots && slots.length > 1 && (
+              <div className="mb-4 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+                <h3 className="text-sm font-semibold">{t("changeSlotTitle")}</h3>
+                <p className="mb-2 text-xs text-neutral-500">{t("changeSlotHelp")}</p>
+                <ActionForm action={changeOrderSlot.bind(null, id)} submitLabel={t("changeSlotSubmit")} className="flex flex-col gap-2">
+                  <select name="slot" defaultValue={order.offering_id} className={inputClass}>
+                    {slots.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {formatDate(s.pickup_date, locale)}, {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
+                      </option>
+                    ))}
+                  </select>
+                </ActionForm>
+              </div>
+            )}
             <OrderForm
               action={updateOrder.bind(null, id)}
               submitLabel={t("saveChanges")}

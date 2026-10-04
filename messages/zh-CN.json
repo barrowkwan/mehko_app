@@ -39,14 +39,18 @@
   "home": {
     "title": "接受预订中",
     "empty": "目前没有开放预订的商品。",
-    "orderBy": "请在 {time} 前下单"
+    "orderBy": "请在 {time} 前下单",
+    "slotsCount": "{count} 个取餐选项"
   },
   "offering": {
     "pickup": "自取地点：{place}",
     "orderBy": "请在 {time} 前下单",
     "closed": "已截止下单。",
     "placeOrder": "提交订单",
-    "instructionsTitle": "取餐说明"
+    "instructionsTitle": "取餐说明",
+    "pickupOptions": "其他取餐选项",
+    "pickupOptionsHelp": "选择适合您的时段；食品和限量相同。",
+    "here": "（当前）"
   },
   "orderForm": {
     "quantityOf": "{name} 的数量",
@@ -77,7 +81,10 @@
     "saveChanges": "保存修改",
     "cancelOrder": "取消订单",
     "instructionsTitle": "取餐说明",
-    "noteTitle": "您给商家的备注"
+    "noteTitle": "您给商家的备注",
+    "changeSlotTitle": "更改取餐时段",
+    "changeSlotHelp": "在截止时间前，将此订单改到其他取餐时段。",
+    "changeSlotSubmit": "移动我的订单"
   },
   "map": {
     "sharing": "商家正在共享实时位置。",
@@ -186,7 +193,12 @@
     "pastHint": "该自取日期已过，无法编辑时间安排。",
     "instructions": "取餐说明（可选）",
     "instructionsHelp": "告诉顾客在哪里、怎样找到您，例如“北门，找红色帐篷”。",
-    "instructionsTooLong": "取餐说明太长（最多 500 个字符）。"
+    "instructionsTooLong": "取餐说明太长（最多 500 个字符）。",
+    "endAfterStart": "取餐结束时间必须晚于开始时间。",
+    "extraSlotsTitle": "更多取餐时段（可选）",
+    "extraSlotsHelp": "在其他地点或时间提供相同的食品。所有时段共用截止时间、食品和限量；顾客选择其中一个。",
+    "addSlot": "添加取餐时段",
+    "removeSlot": "移除此时段"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",
@@ -206,7 +218,12 @@
     "deleteBlocked": "已有订单的场次无法删除。请改为关闭下单。",
     "back": "返回场次",
     "customerNotes": "顾客备注（{count}）",
-    "noteLabel": "备注："
+    "noteLabel": "备注：",
+    "slotsTitle": "取餐时段",
+    "slotsHelp": "这些时段共用截止时间、食品和限量。每个时段有各自的订单、备餐清单和实时位置。",
+    "thisSlot": "（当前时段）",
+    "addSlotTitle": "添加取餐时段",
+    "addSlotSubmit": "添加时段"
   },
   "location": {
     "onlyPickupDay": "自取当天才能开启实时位置共享。",
@@ -279,7 +296,8 @@
     "imageTooLarge": "照片太大，请换一张小一点的。",
     "imageInvalid": "该文件不是有效的照片。",
     "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。",
-    "noteTooLong": "备注太长（最多 300 个字符）。"
+    "noteTooLong": "备注太长（最多 300 个字符）。",
+    "pickupPointNotFound": "找不到取餐点。"
   },
   "account": {
     "title": "账户",

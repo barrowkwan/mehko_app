@@ -257,9 +257,43 @@ async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value:
   return { ok: true, value: { schedule, instructions, translations: parseTranslations(formData, ["instructions"]), items } };
 }
 
+type SlotInput = { pickup_point_id: string; pickup_date: string; pickup_start: string; pickup_end: string };
+
+// Extra slots arrive as slot_<n>_point/date/start/end (the "More pickup slots" fields); `only` limits parsing to one prefix.
+async function parseSlots(formData: FormData, only?: string): Promise<{ ok: true; slots: SlotInput[] } | { ok: false; error: FormState }> {
+  const t = await getTranslations("offerings");
+  const prefixes = new Set<string>();
+  for (const key of formData.keys()) {
+    const m = /^(slot_\d+_)point$/.exec(key);
+    if (m && (!only || m[1] === only)) prefixes.add(m[1]);
+  }
+  const slots: SlotInput[] = [];
+  for (const p of prefixes) {
+    const parsed = z
+      .object({
+        pickup_point_id: z.uuid(t("choosePoint")),
+        pickup_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, t("dateRequired")),
+        pickup_start: z.string().regex(/^\d{2}:\d{2}/, t("startRequired")),
+        pickup_end: z.string().regex(/^\d{2}:\d{2}/, t("endRequired")),
+      })
+      .safeParse({
+        pickup_point_id: formData.get(`${p}point`),
+        pickup_date: formData.get(`${p}date`),
+        pickup_start: formData.get(`${p}start`),
+        pickup_end: formData.get(`${p}end`),
+      });
+    if (!parsed.success) return { ok: false, error: await firstError(parsed.error) };
+    if (parsed.data.pickup_end <= parsed.data.pickup_start) return { ok: false, error: { error: t("endAfterStart") } };
+    slots.push(parsed.data);
+  }
+  return { ok: true, slots };
+}
+
 export async function createOffering(_prev: FormState, formData: FormData): Promise<FormState> {
   const input = await parseOfferingForm(formData);
   if (!input.ok) return input.error;
+  const extra = await parseSlots(formData);
+  if (!extra.ok) return extra.error;
 
   const { supabase, merchant } = await requireMerchant();
   const { data: offering, error } = await supabase
@@ -275,6 +309,23 @@ export async function createOffering(_prev: FormState, formData: FormData): Prom
   if (itemsError) {
     await supabase.from("offerings").delete().eq("id", offering.id);
     return { error: await dbError(itemsError.message) };
+  }
+
+  // Extra slots copy the offering (cutoff, foods, limits) into siblings; if any fails, nothing is left half-created.
+  const created = [offering.id];
+  for (const s of extra.slots) {
+    const { data: slotId, error: slotError } = await supabase.rpc("add_offering_slot", {
+      p_offering: offering.id,
+      p_pickup_point: s.pickup_point_id,
+      p_date: s.pickup_date,
+      p_start: s.pickup_start,
+      p_end: s.pickup_end,
+    });
+    if (slotError) {
+      await supabase.from("offerings").delete().in("id", created);
+      return { error: await dbError(slotError.message) };
+    }
+    created.push(slotId);
   }
   revalidatePath("/merchant/offerings");
   redirect(`/merchant/offerings/${offering.id}`);
@@ -302,6 +353,26 @@ export async function updateOffering(id: string, _prev: FormState, formData: For
   revalidatePath("/merchant/offerings");
   revalidatePath(`/merchant/offerings/${id}`);
   redirect(`/merchant/offerings/${id}`);
+}
+
+// Adds another pickup slot (point/date/time) to an offering; it shares the cutoff, foods and limits.
+export async function addOfferingSlot(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = await parseSlots(formData, "slot_0_");
+  if (!parsed.ok) return parsed.error;
+  const [s] = parsed.slots;
+  if (!s) return { error: (await getTranslations("errors"))("generic") };
+  const { supabase } = await requireMerchant();
+  const { error } = await supabase.rpc("add_offering_slot", {
+    p_offering: id,
+    p_pickup_point: s.pickup_point_id,
+    p_date: s.pickup_date,
+    p_start: s.pickup_start,
+    p_end: s.pickup_end,
+  });
+  if (error) return { error: await dbError(error.message) };
+  revalidatePath("/merchant/offerings");
+  revalidatePath(`/merchant/offerings/${id}`);
+  return { saved: true };
 }
 
 // A draft copy on a new date (same pickup point, times, foods); the merchant reviews and publishes it.
