@@ -1,6 +1,6 @@
 # FEAT-1 · Edit, duplicate and delete offerings
 
-**Status:** Implemented 2026-10-04 — pending production verification after the deploy (migration applied by CI, then a manual smoke test)
+**Status:** Done (2026-10-04, commit 1b236ec) — live; migration applied to the hosted database by CI. Remaining: your manual smoke test on the live site (below)
 **Roadmap items:** FEAT-1 (+ fixes a data-safety gap found while planning)   **Size:** M   **Owner:** Claude + product owner
 
 ## Goal
@@ -40,6 +40,12 @@ Merchants could only publish or close an offering. Repeating a weekly menu was t
 
 ## Verification
 DB rules via PGlite; the real auth/RLS path via the live-stack integration test; the web flow by driving the running app's server actions; after deploy confirm the migration applied (CI deploy job).
+
+## Manual smoke test on the live site (needs a real merchant login)
+1. Open one of your offerings → **Edit**: values are pre-filled (the cutoff shows in your browser's time zone). Change the end time → Save.
+2. If it has orders, the pickup point and date are greyed out with an explanation.
+3. **Repeat on another date** → pick a date → a draft copy opens; check the cutoff is the same time of day as the original relative to pickup; publish it.
+4. **Delete** an offering with no orders (confirm dialog). One with orders shows "can't be deleted".
 
 ## Rollout notes
 Migration adds triggers/functions only (no column changes): backward-compatible with the previous app version. Customers' existing orders are unaffected.

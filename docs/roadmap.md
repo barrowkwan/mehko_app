@@ -16,8 +16,6 @@ Size: **S** ≤ half a day · **M** 1–3 days · **L** a week or more. Priority
 - _Phase A (in progress):_ OPS-1, SEC-5, SEC-1 are being implemented first (below).
 - **Planned (after Phase A):** [MOB · Native iOS + Android apps with Expo (Plan A)](plans/mobile-native-expo.md) — detailed plan, milestones M-1…M5, security gate.
 
-- [FEAT-1 Edit, duplicate & delete offerings](plans/feat-1-edit-clone-offerings.md) — implemented 2026-10-04, verifying after deploy.
-
 (Link plans here: `- [FEAT-1 Edit & clone offerings](plans/feat-1-edit-clone-offerings.md) — started YYYY-MM-DD`)
 
 ## Suggested order
@@ -206,6 +204,7 @@ Google: **Publish app** (out of Testing). Facebook: privacy URL (SEC-1) then swi
 
 ## Done
 
+- Edit, duplicate and delete offerings (FEAT-1, 2026-10-04) — see [plans/feat-1-edit-clone-offerings.md](plans/feat-1-edit-clone-offerings.md); also closed a data-safety gap (offering delete could cascade to customers' orders).
 - Account deletion on web (SEC-5, 2026-10-04) — mobile reuses the same rule later.
 - Privacy policy & terms pages in 4 languages (SEC-1 text, 2026-10-04) — still needs your Render settings and a legal review.
 - Health endpoint `/api/health` (OPS-2 endpoint) and Sentry error reporting (OPS-3), live 2026-10-04.
