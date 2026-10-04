@@ -161,8 +161,22 @@
     "timezoneUnknown": "未知时区（请使用 IANA 名称，例如 America/New_York）",
     "mapHint": "点击地图（或拖动图钉）设置取餐点，或直接输入坐标。",
     "locationFailed": "无法获取您的位置。请允许定位权限，或直接点击地图。",
-    "changeTimezone": "更改时区",
-    "saveTimezone": "保存时区"
+    "searchTitle": "查找地点",
+    "searchPlaceholder": "商家、地点或地址（例如 99 Ranch Market）",
+    "nearLabel": "附近（城市或邮编，可选）",
+    "searchButton": "搜索",
+    "searching": "搜索中…",
+    "results": "搜索结果",
+    "noResults": "没有找到地点。请换个名称或邮编，或直接点击地图。",
+    "searchUnavailable": "目前无法使用地点搜索。请点击地图或手动输入地址。",
+    "searchBusy": "搜索次数过多，请稍等一分钟。",
+    "poweredBy": "搜索由 Geoapify 提供",
+    "technicalDetails": "技术详情（地图位置、时区）",
+    "technicalHelp": "选择地点或点击地图后会自动填写，通常无需修改。",
+    "timezoneAuto": "根据地图位置自动判断",
+    "locationMissing": "请先选择地点：搜索、点击地图或使用您当前的位置。",
+    "editButton": "编辑",
+    "updateSubmit": "保存更改"
   },
   "foods": {
     "title": "菜品",
@@ -339,7 +353,8 @@
     "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。",
     "noteTooLong": "备注太长（最多 300 个字符）。",
     "pickupPointNotFound": "找不到取餐点。",
-    "slotsSameDate": "所有取餐时段必须在同一天。"
+    "slotsSameDate": "所有取餐时段必须在同一天。",
+    "pickupPointHasOrders": "此取餐点有即将到来的订单，因此无法更改其地址和地图位置。您可以重命名它，或添加新的取餐点。"
   },
   "account": {
     "title": "账户",

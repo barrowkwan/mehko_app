@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
-import { ActionForm, Field, inputClass } from "@/components/action-form";
-import { addPickupPoint, setPickupPointActive, updatePickupPointTimezone } from "../actions";
-import { GeoFill } from "./geo-fill";
-import { TimezoneField } from "./timezone-field";
+import { ActionForm } from "@/components/action-form";
+import { placesFromEnv } from "@/lib/places";
+import { addPickupPoint, setPickupPointActive, updatePickupPoint } from "../actions";
+import { PlaceSearch } from "./place-search";
 
 export default async function PickupPointsPage() {
   const { supabase, merchant } = await requireMerchant();
@@ -14,42 +14,41 @@ export default async function PickupPointsPage() {
     .select("*")
     .eq("merchant_id", merchant.id)
     .order("created_at");
+  const searchEnabled = placesFromEnv() !== null; // no provider key → the search box is hidden, the map still works
 
   return (
     <main className="flex flex-col gap-6 p-4">
       <h1 className="text-xl font-bold">{t("title")}</h1>
       <ul className="flex flex-col gap-2">
         {points?.map((p) => (
-          <li key={p.id} className="flex items-center gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
-            <div className="mr-auto">
-              <p className={`font-medium ${p.active ? "" : "text-neutral-400 line-through"}`}>{p.name}</p>
-              <p className="text-sm text-neutral-500">
-                {p.address} · {p.lat.toFixed(5)}, {p.lng.toFixed(5)} · {p.timezone}
-              </p>
+          <li key={p.id} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+            <div className="flex items-center gap-3">
+              <div className="mr-auto">
+                <p className={`font-medium ${p.active ? "" : "text-neutral-400 line-through"}`}>{p.name}</p>
+                {p.address && <p className="text-sm text-neutral-500">{p.address}</p>}
+              </div>
+              <form action={setPickupPointActive.bind(null, p.id, !p.active)}>
+                <button className="text-sm text-orange-600 hover:underline">{p.active ? tc("disable") : tc("enable")}</button>
+              </form>
             </div>
-            <details className="text-sm">
-              <summary className="cursor-pointer text-orange-600">{t("changeTimezone")}</summary>
-              <ActionForm action={updatePickupPointTimezone.bind(null, p.id)} submitLabel={t("saveTimezone")} className="mt-2 flex flex-col gap-2">
-                <TimezoneField defaultValue={p.timezone} />
-              </ActionForm>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-sm text-orange-600">{t("editButton")}</summary>
+              <div className="mt-2 max-w-md">
+                <ActionForm action={updatePickupPoint.bind(null, p.id)} submitLabel={t("updateSubmit")}>
+                  <PlaceSearch
+                    searchEnabled={searchEnabled}
+                    initial={{ name: p.name, address: p.address, lat: p.lat, lng: p.lng, timezone: p.timezone }}
+                  />
+                </ActionForm>
+              </div>
             </details>
-            <form action={setPickupPointActive.bind(null, p.id, !p.active)}>
-              <button className="text-sm text-orange-600 hover:underline">{p.active ? tc("disable") : tc("enable")}</button>
-            </form>
           </li>
         ))}
       </ul>
       <section className="max-w-md">
         <h2 className="mb-2 font-semibold">{t("addTitle")}</h2>
         <ActionForm action={addPickupPoint} submitLabel={t("submit")}>
-          <Field label={t("name")}>
-            <input name="name" required className={inputClass} />
-          </Field>
-          <Field label={t("address")}>
-            <input name="address" className={inputClass} />
-          </Field>
-          <GeoFill />
-          <TimezoneField />
+          <PlaceSearch searchEnabled={searchEnabled} />
         </ActionForm>
       </section>
     </main>

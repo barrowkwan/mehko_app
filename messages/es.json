@@ -161,8 +161,22 @@
     "timezoneUnknown": "Zona horaria desconocida (usa un nombre IANA como America/New_York)",
     "mapHint": "Haz clic en el mapa (o arrastra el marcador) para fijar el punto de recogida, o escribe las coordenadas.",
     "locationFailed": "No se pudo obtener tu ubicación. Permite el acceso a la ubicación o haz clic en el mapa.",
-    "changeTimezone": "Cambiar zona horaria",
-    "saveTimezone": "Guardar zona horaria"
+    "searchTitle": "Encuentra el lugar",
+    "searchPlaceholder": "Negocio, lugar o dirección (p. ej. 99 Ranch Market)",
+    "nearLabel": "Cerca de (ciudad o código postal, opcional)",
+    "searchButton": "Buscar",
+    "searching": "Buscando…",
+    "results": "Resultados de la búsqueda",
+    "noResults": "No se encontraron lugares. Prueba otro nombre o código postal, o haz clic en el mapa.",
+    "searchUnavailable": "La búsqueda de lugares no está disponible ahora. Haz clic en el mapa o escribe la dirección.",
+    "searchBusy": "Demasiadas búsquedas. Espera un minuto.",
+    "poweredBy": "Búsqueda con tecnología de Geoapify",
+    "technicalDetails": "Detalles técnicos (posición en el mapa, zona horaria)",
+    "technicalHelp": "Se rellenan solos al elegir un lugar o hacer clic en el mapa. Casi nunca hace falta cambiarlos.",
+    "timezoneAuto": "Se calcula a partir de la posición en el mapa",
+    "locationMissing": "Elige primero el lugar: búscalo, haz clic en el mapa o usa tu ubicación actual.",
+    "editButton": "Editar",
+    "updateSubmit": "Guardar cambios"
   },
   "foods": {
     "title": "Comidas",
@@ -339,7 +353,8 @@
     "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
     "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo).",
     "pickupPointNotFound": "Punto de recogida no encontrado.",
-    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día."
+    "slotsSameDate": "Todas las franjas de recogida deben ser el mismo día.",
+    "pickupPointHasOrders": "Este punto de recogida tiene pedidos próximos, por lo que no se puede cambiar su dirección ni su posición en el mapa. Puedes cambiarle el nombre o añadir un punto nuevo."
   },
   "account": {
     "title": "Cuenta",

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { requireMerchant, requireUser } from "@/lib/auth";
+import { timezoneAt } from "@/lib/timezone";
 import { translateDbError } from "@/lib/db-errors";
 import { parseTranslations } from "@/lib/locale";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -90,44 +91,56 @@ export async function updateMerchantProfile(_prev: FormState, formData: FormData
 
 // ───────── pickup points ─────────
 
-export async function addPickupPoint(_prev: FormState, formData: FormData): Promise<FormState> {
+const pointFields = async () => {
   const t = await getTranslations("pickupPoints");
-  const parsed = z
-    .object({
-      name: text.min(1, t("nameRequired")),
-      address: optionalText,
-      lat: z.coerce.number(t("latInvalid")).min(-90, t("latInvalid")).max(90, t("latInvalid")),
-      lng: z.coerce.number(t("lngInvalid")).min(-180, t("lngInvalid")).max(180, t("lngInvalid")),
-      timezone: text.min(1, t("timezoneRequired")),
-    })
-    .safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return await firstError(parsed.error);
-  try {
-    Intl.DateTimeFormat(undefined, { timeZone: parsed.data.timezone });
-  } catch {
-    return { error: t("timezoneUnknown") };
-  }
+  return z.object({
+    name: text.min(1, t("nameRequired")),
+    address: optionalText,
+    // blank would coerce to 0: ask for a place instead
+    lat: text.min(1, t("locationMissing")).transform(Number).pipe(z.number(t("latInvalid")).min(-90, t("latInvalid")).max(90, t("latInvalid"))),
+    lng: text.min(1, t("locationMissing")).transform(Number).pipe(z.number(t("lngInvalid")).min(-180, t("lngInvalid")).max(180, t("lngInvalid"))),
+    timezone: optionalText,
+  });
+};
 
-  const { supabase, merchant } = await requireMerchant();
-  const { error } = await supabase.from("pickup_points").insert({ ...parsed.data, merchant_id: merchant.id });
-  if (error) return { error: await dbError(error.message) };
-  revalidatePath("/merchant/pickup-points");
-  return undefined;
-}
-
-// Fixes a point's timezone (e.g. points created before the form used the browser's timezone).
-export async function updatePickupPointTimezone(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+// A point's timezone: the one given (checked), else the one at its map position.
+async function resolveTimezone(given: string | null, lat: number, lng: number): Promise<{ timezone: string } | { error: string }> {
   const t = await getTranslations("pickupPoints");
-  const timezone = String(formData.get("timezone") ?? "").trim();
+  const timezone = given ?? timezoneAt(lat, lng);
   if (!timezone) return { error: t("timezoneRequired") };
   try {
     Intl.DateTimeFormat(undefined, { timeZone: timezone });
   } catch {
     return { error: t("timezoneUnknown") };
   }
-  const { supabase } = await requireMerchant();
-  const { error } = await supabase.from("pickup_points").update({ timezone }).eq("id", id);
+  return { timezone };
+}
+
+export async function addPickupPoint(_prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = (await pointFields()).safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return await firstError(parsed.error);
+  const tz = await resolveTimezone(parsed.data.timezone, parsed.data.lat, parsed.data.lng);
+  if ("error" in tz) return { error: tz.error };
+
+  const { supabase, merchant } = await requireMerchant();
+  const { error } = await supabase.from("pickup_points").insert({ ...parsed.data, timezone: tz.timezone, merchant_id: merchant.id });
   if (error) return { error: await dbError(error.message) };
+  revalidatePath("/merchant/pickup-points");
+  return { saved: true };
+}
+
+// Edit a point's name, address, map position and timezone. The database refuses to move it while customers have
+// upcoming orders there (name and timezone stay editable).
+export async function updatePickupPoint(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = (await pointFields()).safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return await firstError(parsed.error);
+  const tz = await resolveTimezone(parsed.data.timezone, parsed.data.lat, parsed.data.lng);
+  if ("error" in tz) return { error: tz.error };
+
+  const { supabase } = await requireMerchant();
+  const { data, error } = await supabase.from("pickup_points").update({ ...parsed.data, timezone: tz.timezone }).eq("id", id).select("id");
+  if (error) return { error: await dbError(error.message) };
+  if (!data?.length) return { error: (await getTranslations("errors"))("generic") };
   revalidatePath("/merchant/pickup-points");
   return { saved: true };
 }

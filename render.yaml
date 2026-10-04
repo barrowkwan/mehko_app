@@ -30,6 +30,9 @@ services:
         sync: false
       - key: UNSUBSCRIBE_SECRET
         sync: false
+      # Place search for merchants adding pickup points (optional). Free key from geoapify.com; see docs/todo.md.
+      - key: GEOAPIFY_API_KEY
+        sync: false
       # Shown on /privacy and /terms (build-time). Set real values; see docs/legal-pages.md.
       - key: NEXT_PUBLIC_CONTACT_EMAIL
         sync: false

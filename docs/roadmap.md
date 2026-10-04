@@ -111,8 +111,8 @@ E.g. bad weather/sold out. Needs NOTIF-1 to tell customers; define refund behavi
 ### FEAT-9 · Staff accounts per merchant (helper can scan QR) — P3 · L
 Roles table; RLS currently assumes `merchants.owner_id` only (`is_merchant_owner`).
 
-### FEAT-10 · Pickup point map picker / address search — P2 · M — **map picker done** (click/drag pin, 2026-10-04)
-Still open: address search (geocoding). Needs a provider decision first: OSM's public Nominatim has a strict usage policy and would send typed addresses to a third party (privacy page update); alternatives are a hosted geocoder with a key.
+### FEAT-10 · Pickup point map picker / address search — P2 · M — **done (2026-10-04)**: map picker, then business/address/ZIP search with Geoapify, no coordinates to type, edit with upcoming-orders protection; needs `GEOAPIFY_API_KEY` ([todo.md](todo.md))
+Details: [plans/feat-10b-pickup-point-search.md](plans/feat-10b-pickup-point-search.md). Follow-ups: autocomplete while typing (costs more credits), a different provider if the free quota is outgrown.
 
 ### FEAT-13 · Browse pagination / search — P3 · S
 Browse is now one card per merchant (done 2026-10-04) and loads all open offerings, then groups them in the server code. When there are many merchants: group in the database (a view or function that returns one row per merchant), page it (e.g. 20 per page) and add a search box.

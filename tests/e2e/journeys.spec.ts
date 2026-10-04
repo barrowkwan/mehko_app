@@ -60,18 +60,96 @@ test("customer orders, edits, switches language and cancels", async ({ page, con
   await expect(page.getByText("Cancelado")).toBeVisible();
 });
 
-test("merchant adds a pickup point by clicking the map", async ({ page, context, baseURL }) => {
+test("merchant adds a pickup point by clicking the map (no coordinates typed; timezone worked out)", async ({ page, context, baseURL }) => {
   const mer = await createUser("e2emerchant2");
-  must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Map Kitchen ${run}` }).select("id").single());
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Map Kitchen ${run}` }).select("id").single()).id;
   await signIn(context, baseURL!, mer.email);
 
   await page.goto("/merchant/pickup-points");
   await page.getByLabel("Name", { exact: true }).fill("Map spot");
+  await expect(page.getByLabel("Latitude")).toBeHidden(); // coordinates live under "Technical details"
   await page.locator(".leaflet-container").click({ position: { x: 150, y: 100 } });
   await expect(page.locator('input[name="lat"]')).not.toHaveValue("");
-  await expect(page.locator('input[name="lng"]')).not.toHaveValue("");
   await page.getByRole("button", { name: "Add pickup point" }).click();
   await expect(page.getByText("Map spot")).toBeVisible();
+  const { data } = await admin.from("pickup_points").select("timezone").eq("merchant_id", merchantId).single();
+  expect(data?.timezone).toMatch(/\S/); // derived from the clicked position
+});
+
+test("merchant finds a pickup point by searching a business and ZIP", async ({ page, context, baseURL }) => {
+  const mer = await createUser("e2emerchant10");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Search Kitchen ${run}` }).select("id").single()).id;
+  await signIn(context, baseURL!, mer.email);
+  await page.goto("/merchant/pickup-points");
+
+  await page.getByPlaceholder("Business, place or address").fill("99 Ranch");
+  await page.getByPlaceholder("Near (city or ZIP code, optional)").fill("95014");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  const result = page.getByRole("list", { name: "Search results" }).getByRole("button", { name: /99 Ranch Market/ });
+  await expect(result).toContainText("10983 North Wolfe Road, Cupertino, CA 95014");
+  await result.click();
+
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("99 Ranch Market");
+  await expect(page.getByLabel("Address", { exact: true })).toHaveValue("10983 North Wolfe Road, Cupertino, CA 95014");
+  await expect(page.getByLabel("Latitude")).toBeHidden(); // the merchant never sees coordinates
+  await page.getByRole("button", { name: "Add pickup point" }).click();
+  await expect(page.getByText("10983 North Wolfe Road, Cupertino, CA 95014")).toBeVisible();
+
+  const { data } = await admin.from("pickup_points").select("name, lat, lng, timezone").eq("merchant_id", merchantId).single();
+  expect(data).toMatchObject({ name: "99 Ranch Market", lat: 37.3347, lng: -122.0141, timezone: "America/Los_Angeles" });
+});
+
+test("place search says so when nothing is found or the provider is down", async ({ page, context, baseURL }) => {
+  const mer = await createUser("e2emerchant11");
+  must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Search2 Kitchen ${run}` }).select("id").single());
+  await signIn(context, baseURL!, mer.email);
+  await page.goto("/merchant/pickup-points");
+
+  const box = page.getByPlaceholder("Business, place or address");
+  await box.fill("zzzz nothing");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.getByText("No places found.")).toBeVisible();
+
+  await box.fill("boom");
+  await box.press("Enter"); // Enter searches and does not submit the form
+  await expect(page.getByText("Place search isn't available right now.")).toBeVisible();
+  expect(page.url()).toContain("/merchant/pickup-points");
+});
+
+test("merchant edits a pickup point; moving it is refused while customers have upcoming orders", async ({ page, context, baseURL }) => {
+  const mer = await createUser("e2emerchant12");
+  const cust = await createUser("e2ecust7");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Edit Kitchen ${run}` }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Edit Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  await signIn(context, baseURL!, mer.email);
+  await page.goto("/merchant/pickup-points");
+
+  // Free to edit: rename and fix the timezone.
+  const item = page.locator("li", { hasText: "Edit Park" });
+  await item.getByText("Edit", { exact: true }).click();
+  await item.getByLabel("Name", { exact: true }).fill("Edit Park North");
+  await item.getByText("Technical details").click();
+  await item.getByLabel("Timezone").fill("America/Chicago");
+  await item.getByRole("button", { name: "Save changes" }).click();
+  await expect(item.getByText("Saved")).toBeVisible();
+  const { data } = await admin.from("pickup_points").select("name, timezone").eq("id", pointId).single();
+  expect(data).toEqual({ name: "Edit Park North", timezone: "America/Chicago" });
+
+  // A customer orders for an upcoming offering at this point: the position is now locked.
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Edit Buns" }).select("id").single()).id;
+  const off = must(await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: ymd(3), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published" }).select("id").single()).id;
+  const itemId = must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single()).id;
+  const order = must(await admin.from("orders").insert({ customer_id: cust.id, offering_id: off }).select("id").single()).id;
+  must(await admin.from("order_items").insert({ order_id: order, offering_item_id: itemId, qty: 1 }).select("order_id").single());
+
+  await page.goto("/merchant/pickup-points");
+  const again = page.locator("li", { hasText: "Edit Park North" });
+  await again.getByText("Edit", { exact: true }).click();
+  await again.locator(".leaflet-container").click({ position: { x: 120, y: 80 } });
+  await again.getByRole("button", { name: "Save changes" }).click();
+  await expect(again.getByText("has upcoming orders")).toBeVisible();
+  const { data: unchanged } = await admin.from("pickup_points").select("lat, lng").eq("id", pointId).single();
+  expect(unchanged).toEqual({ lat: 40.8, lng: -73.97 });
 });
 
 test("merchant publishes an offering through the form; stock limit stops a second customer", async ({ browser, baseURL }) => {

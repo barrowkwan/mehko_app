@@ -4,6 +4,8 @@ Things that are **not code work for Claude**: they need you, a native speaker, a
 
 ## Open
 
+**Do this to turn on place search for pickup points (FEAT-10b):** create a free account at geoapify.com → Projects → your project → copy the API key → in Render add `GEOAPIFY_API_KEY` (Environment) → redeploy (no rebuild needed; it is read at runtime). Until then the search box is hidden and merchants use the map. Free plan: 3,000 searches/day; keep the "Powered by Geoapify" credit.
+
 | ID | What | Who / what's needed | Notes |
 | --- | --- | --- | --- |
 | QA-3 | Native-speaker review of translations (es, zh-CN, zh-TW) | A native speaker | Spanish and both Chinese catalogs were AI-drafted. Prioritise cutoff / pickup / QR wording and the **email** texts (`email` namespace). Strings are in `messages/*.json`; send the reviewer the file or a table of key → text. Keep ICU `{placeholders}`, plural forms and `<tags>` intact. |

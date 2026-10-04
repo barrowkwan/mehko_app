@@ -161,8 +161,22 @@
     "timezoneUnknown": "Unknown timezone (use an IANA name such as America/New_York)",
     "mapHint": "Click the map (or drag the pin) to set the pickup spot, or type the coordinates.",
     "locationFailed": "Couldn't get your location. Allow location access or click the map instead.",
-    "changeTimezone": "Change timezone",
-    "saveTimezone": "Save timezone"
+    "searchTitle": "Find the place",
+    "searchPlaceholder": "Business, place or address (e.g. 99 Ranch Market)",
+    "nearLabel": "Near (city or ZIP code, optional)",
+    "searchButton": "Search",
+    "searching": "Searching…",
+    "results": "Search results",
+    "noResults": "No places found. Try another name or ZIP code, or click the map.",
+    "searchUnavailable": "Place search isn't available right now. Click the map or type the address instead.",
+    "searchBusy": "Too many searches. Please wait a minute.",
+    "poweredBy": "Search powered by Geoapify",
+    "technicalDetails": "Technical details (map position, timezone)",
+    "technicalHelp": "Filled in for you when you pick a place or click the map. You rarely need to change these.",
+    "timezoneAuto": "Worked out from the map position",
+    "locationMissing": "Choose the place first: search for it, click the map, or use your current location.",
+    "editButton": "Edit",
+    "updateSubmit": "Save changes"
   },
   "foods": {
     "title": "Foods",
@@ -339,7 +353,8 @@
     "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again.",
     "noteTooLong": "The note is too long (300 characters at most).",
     "pickupPointNotFound": "Pickup point not found.",
-    "slotsSameDate": "All pickup slots must be on the same date."
+    "slotsSameDate": "All pickup slots must be on the same date.",
+    "pickupPointHasOrders": "This pickup point has upcoming orders, so its address and map position can't be moved. You can rename it, or add a new pickup point."
   },
   "account": {
     "title": "Account",
