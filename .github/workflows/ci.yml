@@ -58,7 +58,18 @@ jobs:
           GITHUB_CLIENT_SECRET: ci
           APPLE_CLIENT_ID: ci
           APPLE_CLIENT_SECRET: ci
-        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor
+        # Retry once: pulling ~10 images on a shared runner occasionally times out or flakes.
+        run: |
+          for attempt in 1 2; do
+            if supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor; then
+              exit 0
+            fi
+            echo "::warning::supabase start failed (attempt $attempt)"
+            docker ps -a || true
+            supabase stop --no-backup || true
+            sleep 10
+          done
+          exit 1
       - name: Export Supabase keys
         run: |
           supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY)=' | sed 's/"//g' > "$RUNNER_TEMP/sb.env"
