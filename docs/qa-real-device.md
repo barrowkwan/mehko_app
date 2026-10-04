@@ -49,6 +49,12 @@ Mark each line **Pass / Fail / N/A** and note the phone + OS version for any fai
 - [ ] The order confirmation arrives (check spam), renders properly, button opens the order
 - [ ] The unsubscribe link opens the confirmation page; after confirming, no more emails; Account → email toggle reflects it
 
+## 8b. Sharing an offering
+- [ ] Merchant → offering → "Share this offering": turn on "Share publicly" and save; the link and post text appear
+- [ ] "Share…" opens the phone's share sheet (iPhone/Android) with Facebook/WhatsApp/Messages; the post text and link arrive
+- [ ] Pasting the link in Facebook/WhatsApp shows a preview with the merchant, foods, pickup times and a photo (use the Sharing Debugger if it shows an old one)
+- [ ] The public page works on a phone without signing in, "Order now" asks to sign in and then lands on the offering
+
 ## 9. General
 - [ ] Dark mode (phone setting) on home, order, merchant pages: text readable, inputs visible
 - [ ] Rotate to landscape: nothing breaks

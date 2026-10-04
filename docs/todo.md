@@ -4,6 +4,8 @@ Things that are **not code work for Claude**: they need you, a native speaker, a
 
 ## Open
 
+**Check the Facebook preview (FEAT-14):** after the deploy, open an offering → Share → turn on "Share publicly" → copy the link → paste it into [Facebook's Sharing Debugger](https://developers.facebook.com/tools/debug/) and press Debug / Scrape again: you should see the merchant, foods, pickup times and a photo. Then try a real post draft and the WhatsApp/Messages preview.
+
 **Do this to turn on place search for pickup points (FEAT-10b):** create a free account at geoapify.com → Projects → your project → copy the API key → in Render add `GEOAPIFY_API_KEY` (Environment) → redeploy (no rebuild needed; it is read at runtime). Until then the search box is hidden and merchants use the map. Free plan: 3,000 searches/day; keep the "Powered by Geoapify" credit.
 
 | ID | What | Who / what's needed | Notes |

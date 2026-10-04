@@ -435,5 +435,48 @@
     "back": "← Todos los comerciantes",
     "empty": "Este comerciante no tiene nada abierto para pedidos ahora.",
     "logoAlt": "Logotipo del comerciante"
+  },
+  "share": {
+    "title": "{merchant} — {date}",
+    "at": "en",
+    "description": "{foods}. Recogida: {pickups}. Pide antes de {time}.",
+    "foodsHeading": "En el menú",
+    "foodLimit": "{name} (límite {count})",
+    "pickupHeading": "Recogida",
+    "pickupLine": "{time} · {place}",
+    "pickupLineAddress": "{time} · {place}, {address}",
+    "orderBy": "Pide antes de {time}",
+    "orderHere": "Pide aquí: {url}",
+    "page": {
+      "orderNow": "Pedir ahora",
+      "signInNote": "Iniciarás sesión con Google, Facebook o Apple para pedir.",
+      "closed": "Los pedidos de esta oferta están cerrados.",
+      "addressAfterSignIn": "La dirección exacta se muestra al iniciar sesión",
+      "offeringNumber": "Oferta {number}",
+      "foodsTitle": "En el menú",
+      "pickupTitle": "Recogida",
+      "cutoffTitle": "Pide antes de",
+      "limitHint": "Limitado a {count}",
+      "visit": "Sitio web"
+    },
+    "merchant": {
+      "sectionTitle": "Compartir esta oferta",
+      "newHint": "Promociona esta oferta: activa el uso compartido abajo para obtener un enlace y una publicación lista para Facebook y otras apps.",
+      "publicLabel": "Compartir públicamente",
+      "publicHelp": "Cualquiera con el enlace puede ver qué se ofrece, los horarios y los nombres de los lugares de recogida, sin iniciar sesión. Desactívalo cuando quieras y el enlace dejará de funcionar.",
+      "addressLabel": "Mostrar también públicamente la dirección exacta",
+      "addressWarn": "No lo actives si el punto de recogida es tu casa.",
+      "save": "Guardar ajustes de compartir",
+      "language": "Idioma de la publicación",
+      "postText": "Publicación lista",
+      "copyLink": "Copiar enlace",
+      "copyText": "Copiar texto",
+      "copied": "¡Copiado!",
+      "shareButton": "Compartir…",
+      "facebook": "Compartir en Facebook",
+      "previewPage": "Abrir la página pública",
+      "debuggerNote": "Si Facebook muestra una vista previa antigua, pega el enlace en el Depurador de uso compartido de Facebook y pulsa «Volver a extraer».",
+      "link": "Enlace"
+    }
   }
 }

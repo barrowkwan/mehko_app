@@ -117,6 +117,9 @@ Details: [plans/feat-10b-pickup-point-search.md](plans/feat-10b-pickup-point-sea
 ### FEAT-13 · Browse pagination / search — P3 · S
 Browse is now one card per merchant (done 2026-10-04) and loads all open offerings, then groups them in the server code. When there are many merchants: group in the database (a view or function that returns one row per merchant), page it (e.g. 20 per page) and add a search box.
 
+### FEAT-14 · Share an offering on Facebook/social media — **done (2026-10-05)**: [plans/feat-14-share-offering.md](plans/feat-14-share-offering.md)
+Follow-ups: generated image card, QR poster/flyer, Instagram image download, short links, "share it?" prompt after publishing.
+
 ### FEAT-12 · Several pickup slots per offering — **done (2026-10-04)**: [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md)
 Duplicate-the-whole-group and editing shared parts from the slot list are follow-ups.
 

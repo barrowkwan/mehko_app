@@ -45,6 +45,9 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 ## Email notifications (migration `20261009000000_email_notifications.sql`)
 `profiles.email_notifications` (opt-out) and `notification_outbox` (RLS on, no policies, no grants to anon/authenticated: server only). A trigger enqueues `order_confirmed`; `enqueue_due_notifications()` enqueues `pickup_reminder` and `merchant_cutoff_summary`; `claim_notifications()` hands rows to the sender with `for update skip locked`. Only `service_role` can execute them. Rows are unique per (user, type, entity) so nothing is sent twice.
 
+## Public sharing (migration `20261020000000_share_offering.sql`)
+`offerings.share_public` / `share_address` (both default false; all slots of an offering change together via `set_offering_sharing`). Anonymous visitors read offering data **only** through `get_shared_offering(offering_no)`, a whitelist (no coordinates, customers, orders, stock, instructions); it returns null for unknown, unshared and draft offerings. Public page: `/o/<offering_no>?lang=…` (in `lib/public-paths.ts`).
+
 ## Merchant codes, offering numbers and order numbers (migrations `20261018…`, `20261019…`)
 Three levels, all permanent and never reused:
 - `merchants.code` — `m00001` (sequence, immutable).

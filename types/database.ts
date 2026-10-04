@@ -207,13 +207,13 @@ isOneToOne: false
                   ]
                 },"offerings": {
                   Row: {
-                    "created_at": string,"cutoff_at": string,"group_id": string | null,"id": string,"instructions": string | null,"merchant_id": string,"offering_no": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
+                    "created_at": string,"cutoff_at": string,"group_id": string | null,"id": string,"instructions": string | null,"merchant_id": string,"offering_no": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"share_address": boolean,"share_public": boolean,"status": string,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "created_at"?: string,"cutoff_at": string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id": string,"offering_no"?: string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
+                    "created_at"?: string,"cutoff_at": string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id": string,"offering_no"?: string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"share_address"?: boolean,"share_public"?: boolean,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "created_at"?: string,"cutoff_at"?: string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"offering_no"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
+                    "created_at"?: string,"cutoff_at"?: string,"group_id"?: string | null,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"offering_no"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"share_address"?: boolean,"share_public"?: boolean,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -404,6 +404,9 @@ isOneToOne: false
 "format_code":
 { Args: { "n": number,"prefix": string,"width": number }; Returns: string
                            },
+"get_shared_offering":
+{ Args: { "p_offering_no": string }; Returns: Json
+                           },
 "has_order_in":
 { Args: { "p_offering": string }; Returns: boolean
                            },
@@ -432,6 +435,9 @@ isOneToOne: false
                            },
 "place_order":
 { Args: { "p_items": Json,"p_note"?: string,"p_offering": string }; Returns: string
+                           },
+"set_offering_sharing":
+{ Args: { "p_address": boolean,"p_offering": string,"p_public": boolean }; Returns: undefined
                            },
 "update_offering":
 { Args: { "p_cutoff": string,"p_date": string,"p_end": string,"p_instructions"?: string,"p_items": Json,"p_offering": string,"p_pickup_point": string,"p_start": string,"p_translations"?: Json }; Returns: undefined

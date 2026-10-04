@@ -65,6 +65,7 @@ const en: LegalDoc = {
         {
           ul: [
             "Merchants and customers: merchants see the name, profile picture and orders of people who ordered from them; customers see merchants' business details, foods and pickup points.",
+            "Public pages (merchants only, optional): if a merchant turns on \"Share publicly\" for an offering, anyone with the link can see that offering without signing in: the merchant's name, description, logo and website, the foods, the pickup times and place names, and the order cutoff. The street address is shown only if the merchant chooses to. Customers' information is never shown there. The merchant can turn this off at any time and the link stops working.",
             "Supabase: provides our database, sign-in and real-time features.",
             "Render: hosts the website.",
             "Sign-in providers (Google, Facebook, GitHub, Apple): when you sign in, they tell us who you are, under their own privacy policies.",
@@ -227,6 +228,7 @@ const es: LegalDoc = {
         {
           ul: [
             "Comerciantes y clientes: los comerciantes ven el nombre, la foto de perfil y los pedidos de quienes les han pedido; los clientes ven los datos del negocio, las comidas y los puntos de recogida de los comerciantes.",
+            "Páginas públicas (solo comerciantes, opcional): si un comerciante activa «Compartir públicamente» en una oferta, cualquiera con el enlace puede ver esa oferta sin iniciar sesión: el nombre, la descripción, el logotipo y el sitio web del comerciante, las comidas, los horarios y nombres de los lugares de recogida y el cierre de pedidos. La dirección postal solo se muestra si el comerciante lo decide. Nunca se muestran datos de los clientes. El comerciante puede desactivarlo en cualquier momento y el enlace deja de funcionar.",
             "Supabase: proporciona nuestra base de datos, el inicio de sesión y las funciones en tiempo real.",
             "Render: aloja el sitio web.",
             "Proveedores de inicio de sesión (Google, Facebook, GitHub, Apple): al iniciar sesión nos indican quién eres, según sus propias políticas de privacidad.",
@@ -390,6 +392,7 @@ const zhCN: LegalDoc = {
         {
           ul: [
             "商家和顾客：商家可看到向其下单者的姓名、头像和订单；顾客可看到商家的经营信息、菜品和自取点。",
+            "公开页面（仅限商家，可选）：如果商家为某个售卖场次开启“公开分享”，任何拿到链接的人无需登录即可查看该场次：商家名称、简介、标志和网站，菜品，取餐时间和地点名称，以及下单截止时间。只有商家选择时才会显示详细街道地址。顾客的信息绝不会显示在其中。商家可随时关闭，链接会随即失效。",
             "Supabase：提供我们的数据库、登录和实时功能。",
             "Render：托管网站。",
             "登录提供方（Google、Facebook、GitHub、Apple）：您登录时，它们会根据各自的隐私政策告知我们您的身份。",
@@ -552,6 +555,7 @@ const zhTW: LegalDoc = {
         {
           ul: [
             "商家和顧客：商家可看到向其下單者的姓名、大頭貼和訂單；顧客可看到商家的營業資訊、餐點和自取點。",
+            "公開頁面（僅限商家，選填）：若商家為某個販售場次開啟「公開分享」，任何拿到連結的人無需登入即可查看該場次：商家名稱、簡介、標誌和網站、餐點、取餐時間和地點名稱，以及下單截止時間。只有商家選擇時才會顯示詳細街道地址。顧客的資訊絕不會顯示在其中。商家可隨時關閉，連結會隨即失效。",
             "Supabase：提供我們的資料庫、登入和即時功能。",
             "Render：代管網站。",
             "登入提供者（Google、Facebook、GitHub、Apple）：您登入時，它們會依各自的隱私權政策告知我們您的身分。",

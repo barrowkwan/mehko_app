@@ -538,3 +538,73 @@ test("denied location permission gives clear instructions instead of a raw brows
   await expect(p.getByRole("status")).toHaveCount(0); // not sharing
   await ctx.close();
 });
+
+test("sharing: opt-in public page with link-preview tags; address hidden unless allowed; off = 404", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant15");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Share Kitchen ${run}`, translations: { "zh-TW": { name: `分享廚房 ${run}` } } }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Share Park", address: "12 Secret Lane", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Share Buns", translations: { "zh-TW": { name: "分享包" } } }).select("id").single()).id;
+  const off = must(await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: ymd(3), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published" }).select("id, offering_no").single());
+  must(await admin.from("offering_items").insert({ offering_id: off.id, food_item_id: foodId, quantity_limit: 12 }).select("id").single());
+  const url = `/o/${off.offering_no}`;
+
+  // Not shared yet: the page does not exist for the public.
+  const anon = await browser.newContext({ timezoneId: "UTC" });
+  const a = await anon.newPage();
+  expect((await a.goto(url))?.status()).toBe(404);
+
+  // The merchant turns sharing on (address stays private) and gets the link and the ready-made post.
+  const mctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(mctx, baseURL!, mer.email);
+  const m = await mctx.newPage();
+  await m.goto(`/merchant/offerings/${off.id}`);
+  await expect(m.getByText("Share this offering")).toBeVisible();
+  await m.getByLabel("Share publicly").check();
+  await m.getByRole("button", { name: "Save sharing settings" }).click();
+  await expect(m.getByText("Saved")).toBeVisible();
+  await expect(m.locator("#share-link")).toHaveValue(new RegExp(`/o/${off.offering_no}\\?lang=en$`));
+  const post = await m.locator("#share-text").inputValue();
+  expect(post).toContain("• Share Buns (limit 12)");
+  expect(post).toContain("Share Park");
+  expect(post).not.toContain("Secret Lane"); // the address is not in the post unless the merchant allowed it
+  await m.getByLabel("Post language").selectOption("zh-TW");
+  await expect(m.locator("#share-text")).toHaveValue(/分享包/);
+
+  // An anonymous visitor (what Facebook's robot is) now gets a real page with preview tags, in the link's language.
+  await anon.clearCookies();
+  const res = await a.goto(`${url}?lang=zh-TW`);
+  expect(res?.status()).toBe(200);
+  await expect(a.getByRole("heading", { name: new RegExp(`分享廚房 ${run}`) })).toBeVisible();
+  await expect(a.getByText("分享包")).toBeVisible();
+  await expect(a.getByText("Share Park")).toBeVisible();
+  await expect(a.getByText("12 Secret Lane")).toHaveCount(0);
+  const meta = (property: string) => a.locator(`meta[property="${property}"]`).getAttribute("content");
+  expect(await meta("og:title")).toContain(`分享廚房 ${run}`);
+  expect(await meta("og:description")).toContain("分享包");
+  expect(await meta("og:url")).toMatch(/^https?:\/\/[^/]+\/o\//);
+  expect(await meta("og:image")).toMatch(/^https?:\/\//); // absolute, as link previews require
+  await expect(a.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+
+  // "Order now" sends a visitor to sign in first.
+  await a.getByRole("link", { name: "立即下單" }).click();
+  await expect(a).toHaveURL(/\/login\?next=%2Fofferings%2F/);
+
+  // Showing the exact address is a separate, explicit choice.
+  await m.getByLabel("Also show the exact street address publicly").check();
+  await m.getByRole("button", { name: "Save sharing settings" }).click();
+  await expect(m.getByText("Saved")).toBeVisible();
+  await expect.poll(async () => (await admin.from("offerings").select("share_public, share_address").eq("id", off.id).single()).data).toEqual({ share_public: true, share_address: true });
+  await a.goto(`${url}?lang=en`);
+  await expect(a.getByText("12 Secret Lane")).toBeVisible();
+
+  // Turning it off kills the link at once.
+  await m.getByLabel("Share publicly").uncheck();
+  await m.getByRole("button", { name: "Save sharing settings" }).click();
+  await expect.poll(async () => (await admin.from("offerings").select("share_public, share_address").eq("id", off.id).single()).data).toEqual({ share_public: false, share_address: false });
+  expect((await a.goto(url))?.status()).toBe(404);
+
+  // A private offering and an unknown number look the same.
+  expect((await a.goto("/o/m99999-999999"))?.status()).toBe(404);
+  await anon.close();
+  await mctx.close();
+});

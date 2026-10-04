@@ -435,5 +435,48 @@
     "back": "← All merchants",
     "empty": "This merchant has nothing open for ordering right now.",
     "logoAlt": "Merchant logo"
+  },
+  "share": {
+    "title": "{merchant} — {date}",
+    "at": "at",
+    "description": "{foods}. Pickup: {pickups}. Order by {time}.",
+    "foodsHeading": "On the menu",
+    "foodLimit": "{name} (limit {count})",
+    "pickupHeading": "Pickup",
+    "pickupLine": "{time} · {place}",
+    "pickupLineAddress": "{time} · {place}, {address}",
+    "orderBy": "Order by {time}",
+    "orderHere": "Order here: {url}",
+    "page": {
+      "orderNow": "Order now",
+      "signInNote": "You'll sign in with Google, Facebook or Apple to order.",
+      "closed": "Ordering for this offering has closed.",
+      "addressAfterSignIn": "Exact address shown after you sign in",
+      "offeringNumber": "Offering {number}",
+      "foodsTitle": "On the menu",
+      "pickupTitle": "Pickup",
+      "cutoffTitle": "Order by",
+      "limitHint": "Limited to {count}",
+      "visit": "Website"
+    },
+    "merchant": {
+      "sectionTitle": "Share this offering",
+      "newHint": "Promote this offering: turn on sharing below to get a link and a ready-made post for Facebook and other apps.",
+      "publicLabel": "Share publicly",
+      "publicHelp": "Anyone with the link can see what is on offer, the pickup times and place names, without signing in. Turn it off at any time and the link stops working.",
+      "addressLabel": "Also show the exact street address publicly",
+      "addressWarn": "Do not turn this on if the pickup point is your home.",
+      "save": "Save sharing settings",
+      "language": "Post language",
+      "postText": "Ready-made post",
+      "copyLink": "Copy link",
+      "copyText": "Copy post text",
+      "copied": "Copied!",
+      "shareButton": "Share…",
+      "facebook": "Share on Facebook",
+      "previewPage": "Open the public page",
+      "debuggerNote": "If Facebook shows an old preview, paste the link into Facebook's Sharing Debugger and press “Scrape again”.",
+      "link": "Link"
+    }
   }
 }

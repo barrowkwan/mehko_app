@@ -8,6 +8,9 @@ import { localized } from "@/lib/locale";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { LocationToggle } from "@/components/location-toggle";
 import { SlotFields } from "@/components/slot-fields";
+import { ShareSection } from "@/components/share-section";
+import { getSiteUrl } from "@/lib/site";
+import type { SharedOffering } from "@/lib/shared-offering";
 import { addOfferingSlot, deleteOffering, duplicateOffering, setOfferingStatus } from "../../actions";
 
 export default async function MerchantOfferingPage({ params }: PageProps<"/merchant/offerings/[id]">) {
@@ -22,9 +25,9 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const { data: o } = await supabase
     .from("offerings")
     .select(
-      `id, offering_no, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
+      `id, offering_no, share_public, share_address, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item_id, food_item:food_items(name, translations))`,
+       offering_items(id, quantity_limit, food_item_id, food_item:food_items(name, description, translations, image_path))`,
     )
     .eq("id", id)
     .eq("merchant_id", merchant.id)
@@ -35,7 +38,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     o.group_id
       ? supabase
           .from("offerings")
-          .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name)")
+          .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name, address, timezone)")
           .eq("group_id", o.group_id)
           .order("pickup_date")
           .order("pickup_start")
@@ -84,6 +87,35 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const canDelete = thisSlotOrders.length === 0; // cancelled orders are not listed; they go with the offering
   const status = o.status as "draft" | "published" | "closed";
 
+  // What the public page/post will show, built from this merchant's own rows (the address only if it will be public).
+  const shareData: SharedOffering = {
+    offering_no: o.offering_no,
+    cutoff_at: o.cutoff_at,
+    open: status === "published",
+    merchant: { name: merchant.name, description: merchant.description, translations: merchant.translations, logo_path: merchant.logo_path, website: merchant.website },
+    slots: (slots?.length ? slots : [{ id: o.id, pickup_date: o.pickup_date, pickup_start: o.pickup_start, pickup_end: o.pickup_end, status: o.status, pickup_point: o.pickup_point }])
+      .filter((s) => s.status !== "draft")
+      .map((s) => ({
+        id: s.id,
+        pickup_date: s.pickup_date,
+        pickup_start: s.pickup_start,
+        pickup_end: s.pickup_end,
+        timezone: s.pickup_point?.timezone ?? "UTC",
+        place: s.pickup_point?.name ?? "",
+        address: o.share_address ? (s.pickup_point?.address ?? null) : null,
+        open: s.status === "published",
+      })),
+    foods: o.offering_items.map((i) => ({
+      name: i.food_item?.name ?? "",
+      description: i.food_item?.description ?? null,
+      translations: i.food_item?.translations ?? {},
+      image_path: i.food_item?.image_path ?? null,
+      limit: i.quantity_limit,
+    })),
+  };
+  if (shareData.slots.length === 0) shareData.slots.push({ id: o.id, pickup_date: o.pickup_date, pickup_start: o.pickup_start, pickup_end: o.pickup_end, timezone: o.pickup_point?.timezone ?? "UTC", place: o.pickup_point?.name ?? "", address: null, open: false });
+  const siteUrl = await getSiteUrl();
+
   return (
     <main className="flex flex-col gap-5 p-4">
       <div>
@@ -114,6 +146,8 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
           )}
         </div>
       </div>
+
+      <ShareSection offeringId={id} data={shareData} isPublic={o.share_public} showAddress={o.share_address} siteUrl={siteUrl} />
 
       <section className="flex max-w-md flex-col gap-2 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
         <h2 className="font-semibold">{t("slotsTitle")}</h2>

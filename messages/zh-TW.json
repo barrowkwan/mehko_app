@@ -435,5 +435,48 @@
     "back": "← 所有商家",
     "empty": "此商家目前沒有可下單的優惠。",
     "logoAlt": "商家標誌"
+  },
+  "share": {
+    "title": "{merchant} — {date}",
+    "at": "在",
+    "description": "{foods}。取餐：{pickups}。請在 {time} 前下單。",
+    "foodsHeading": "菜單",
+    "foodLimit": "{name}（限量 {count}）",
+    "pickupHeading": "取餐",
+    "pickupLine": "{time} · {place}",
+    "pickupLineAddress": "{time} · {place}，{address}",
+    "orderBy": "請在 {time} 前下單",
+    "orderHere": "在這裡下單：{url}",
+    "page": {
+      "orderNow": "立即下單",
+      "signInNote": "下單時將使用 Google、Facebook 或 Apple 登入。",
+      "closed": "此優惠已截止下單。",
+      "addressAfterSignIn": "登入後顯示詳細地址",
+      "offeringNumber": "場次編號 {number}",
+      "foodsTitle": "菜單",
+      "pickupTitle": "取餐",
+      "cutoffTitle": "下單截止",
+      "limitHint": "限量 {count}",
+      "visit": "網站"
+    },
+    "merchant": {
+      "sectionTitle": "分享此優惠",
+      "newHint": "推廣此優惠：在下方開啟分享，即可取得連結和可直接用於 Facebook 等應用程式的貼文文案。",
+      "publicLabel": "公開分享",
+      "publicHelp": "任何拿到連結的人無需登入即可看到優惠內容、取餐時間和地點名稱。您可以隨時關閉，連結會立即失效。",
+      "addressLabel": "同時公開顯示詳細街道地址",
+      "addressWarn": "如果取餐點是您的住所，請不要開啟。",
+      "save": "儲存分享設定",
+      "language": "貼文語言",
+      "postText": "現成的貼文",
+      "copyLink": "複製連結",
+      "copyText": "複製貼文文字",
+      "copied": "已複製！",
+      "shareButton": "分享…",
+      "facebook": "分享到 Facebook",
+      "previewPage": "開啟公開頁面",
+      "debuggerNote": "如果 Facebook 顯示的是舊預覽，請把連結貼到 Facebook 的分享偵錯工具中，然後按「重新抓取」。",
+      "link": "連結"
+    }
   }
 }

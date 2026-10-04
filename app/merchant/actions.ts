@@ -416,6 +416,21 @@ export async function addOfferingSlot(id: string, _prev: FormState, formData: Fo
   return { saved: true };
 }
 
+// Turns the public share page of an offering on/off (all its pickup slots). Off by default; the exact address is a
+// separate choice. The database function checks ownership.
+export async function setOfferingSharing(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const { supabase } = await requireMerchant();
+  const isPublic = formData.get("share_public") === "on";
+  const { error } = await supabase.rpc("set_offering_sharing", {
+    p_offering: id,
+    p_public: isPublic,
+    p_address: isPublic && formData.get("share_address") === "on",
+  });
+  if (error) return { error: await dbError(error.message) };
+  revalidatePath(`/merchant/offerings/${id}`);
+  return { saved: true };
+}
+
 // A draft copy on a new date (same pickup point, times, foods); the merchant reviews and publishes it.
 export async function duplicateOffering(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const t = await getTranslations("offeringDetail");
