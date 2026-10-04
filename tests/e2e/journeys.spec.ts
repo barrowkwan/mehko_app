@@ -65,3 +65,52 @@ test("merchant adds a pickup point by clicking the map", async ({ page, context,
   await page.getByRole("button", { name: "Add pickup point" }).click();
   await expect(page.getByText("Map spot")).toBeVisible();
 });
+
+test("merchant publishes an offering through the form; stock limit stops a second customer", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant3");
+  const c1 = await createUser("e2ecust1");
+  const kitchen = `E2E Form Kitchen ${run}`;
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: kitchen }).select("id").single()).id;
+  must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Form Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single());
+  must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Form Buns" }).select("id").single());
+
+  // Merchant fills in the real form.
+  const merCtx = await browser.newContext();
+  await signIn(merCtx, baseURL!, mer.email);
+  const mp = await merCtx.newPage();
+  await mp.goto("/merchant/offerings/new");
+  await mp.getByLabel("Pickup date").fill(ymd(3));
+  await mp.getByLabel("Pickup from").fill("17:00");
+  await mp.getByLabel("Pickup until").fill("19:00");
+  const cutoff = new Date(Date.now() + 2 * 86_400_000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  await mp.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
+  await mp.getByRole("checkbox", { name: /Form Buns/ }).check();
+  await mp.locator('input[name^="limit_"]').fill("2");
+  await mp.getByRole("button", { name: "Publish offering" }).click();
+  await mp.waitForURL(/\/merchant\/offerings(\/|$)/);
+  await merCtx.close();
+
+  // A customer takes both buns; the next customer cannot order any.
+  const first = await browser.newContext();
+  await signIn(first, baseURL!, c1.email);
+  const p1 = await first.newPage();
+  await p1.goto("/");
+  await p1.getByRole("link", { name: new RegExp(kitchen) }).click();
+  await p1.locator('input[name^="qty_"]').fill("2");
+  await p1.getByRole("button", { name: "Place order" }).click();
+  await expect(p1).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
+  await first.close();
+
+  const c2 = await createUser("e2ecust2");
+  const second = await browser.newContext();
+  await signIn(second, baseURL!, c2.email);
+  const p2 = await second.newPage();
+  await p2.goto("/");
+  await p2.getByRole("link", { name: new RegExp(kitchen) }).click();
+  await expect(p2.getByText("0 left")).toBeVisible();
+  await p2.locator('input[name^="qty_"]').fill("1");
+  await p2.getByRole("button", { name: "Place order" }).click();
+  await expect(p2).not.toHaveURL(/\/orders\/[0-9a-f-]{36}/); // the form refuses more than what is left
+  await second.close();
+});
