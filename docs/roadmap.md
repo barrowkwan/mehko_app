@@ -13,6 +13,7 @@ Size: **S** ≤ half a day · **M** 1–3 days · **L** a week or more. Priority
 
 ## In progress
 
+- **Waiting on a person:** see [todo.md](todo.md) (translation review, terms acceptance, real-device check, legal review, restore test, provider go-live).
 - _Phase A (in progress):_ OPS-1, SEC-5, SEC-1 are being implemented first (below).
 - **Planned (after Phase A):** [MOB · Native iOS + Android apps with Expo (Plan A)](plans/mobile-native-expo.md) — detailed plan, milestones M-1…M5, security gate.
 
@@ -141,10 +142,10 @@ Webhook route using the admin client, idempotent; refunds only before cutoff; ga
 ### QA-1 · Browser end-to-end tests (Playwright) — P2 · L — **started: 3 journeys run in CI** (customer order → edit → Spanish → cancel; merchant map picker; merchant publishes offering via form + stock limit). Run locally: `supabase start`, `npm run build`, `npm run test:e2e`. Still to add: cutoff-passed errors, QR scan (needs a camera stub)
 Run in CI against `supabase start`. Log in without OAuth via admin-created password users (cookie injection works — done manually for smoke tests). Cover: merchant creates offering → customer orders/edits/cutoff → QR scan → language switch.
 
-### QA-2 · Real-device verification — P1 · S (manual)
+### QA-2 · Real-device verification — P1 · S (manual) — **checklist ready: [qa-real-device.md](qa-real-device.md); tracked in [todo.md](todo.md)**
 iOS Safari and Android Chrome: camera QR scan, GPS sharing, live map, install-to-home-screen, language switcher, Google login. Never tested on devices.
 
-### QA-3 · Native-speaker review of translations — P1 · S
+### QA-3 · Native-speaker review of translations — P1 · S — **moved to [todo.md](todo.md)** (needs a native speaker)
 Spanish, Simplified and Traditional Chinese were AI-drafted. Review cutoff/pickup/QR wording especially.
 
 ### QA-4 · Accessibility & dark-mode pass — P2 · M
@@ -187,7 +188,7 @@ Apple 5.1.1(v) and Google Play require **in-app account deletion** for apps with
 ### SEC-8 · Mobile security gate — P1 with MOB · —
 The 14-point checklist in [plans/mobile-native-expo.md](plans/mobile-native-expo.md#security-gate-before-each-testflightplay-externalstore-submission) must pass before every TestFlight/Play-external/store submission (encrypted session storage, PKCE, no secrets in bundle, EAS Update code signing, minimal permissions, RLS regression tests…).
 
-### SEC-9 · Record acceptance of the Terms — P2 · S–M
+### SEC-9 · Record acceptance of the Terms — P2 · S–M — **moved to [todo.md](todo.md)** (waits on the legal review)
 Today acceptance is implied ("By continuing you agree…", browsewrap). Add an explicit, versioned acceptance: a checkbox for **merchants** at registration (also "I hold the licences/permits my food business needs") and a first-login prompt for customers; store `terms_accepted_at` + `terms_version` (and re-prompt when `LEGAL_UPDATED` changes materially). Wording and need to be confirmed by the legal review (brief §7, Terms Q4).
 
 ### SEC-6 · Public vs private repo — P3 · decision

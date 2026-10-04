@@ -11,6 +11,8 @@ Start here when fixing a bug or adding a feature. Read in this order, stopping w
 | [social-login-setup.md](social-login-setup.md) | Set up Google / Facebook / GitHub / Apple (and why Instagram isn't possible, how Yahoo could work) |
 | [deployment.md](deployment.md) | Deploy for free (Render + hosted Supabase) and how the CI/CD pipeline works |
 | [i18n.md](i18n.md) | Languages, how the locale is chosen, adding strings/languages, merchant translations |
+| [todo.md](todo.md) | Things waiting on a person (translation review, legal, devices, accounts) |
+| [qa-real-device.md](qa-real-device.md) | QA-2 checklist for iOS/Android phones |
 | [roadmap.md](roadmap.md) | Backlog of future work and recommendations (not started); [plans/](plans/README.md) holds plans for items in progress |
 | [backup-restore.md](backup-restore.md) | Daily encrypted DB backups: setup, restore steps, rehearsal |
 | [legal-review-brief.md](legal-review-brief.md) | Hand-off page for a lawyer/policy reviewer: data inventory, third parties, open questions |
