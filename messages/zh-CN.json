@@ -215,7 +215,8 @@
       "publish": "发布",
       "duplicateTitle": "同一取餐点被多次使用",
       "duplicateBody": "“{point}”在当天被用于多个取餐时间（例如上午和晚上）。顾客会分别看到每个时间。请确认这是您想要的。"
-    }
+    },
+    "slotsSummary": "{count} 个取餐时段"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",

@@ -215,7 +215,8 @@
       "publish": "Publicar oferta",
       "duplicateTitle": "Mismo punto de recogida usado más de una vez",
       "duplicateBody": "«{point}» se usa para más de un horario de recogida ese día (por ejemplo mañana y tarde). Los clientes verán cada horario por separado. Asegúrate de que es lo que quieres."
-    }
+    },
+    "slotsSummary": "{count} franjas de recogida"
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",

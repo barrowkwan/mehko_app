@@ -164,6 +164,11 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await mp.getByRole("button", { name: "Publish offering" }).click();
   await mp.waitForURL(/\/merchant\/offerings\/[0-9a-f-]{36}$/);
   await expect(mp.getByRole("heading", { name: "Pickup slots" })).toBeVisible();
+  // The offerings list shows the two slots as ONE row with a short summary.
+  await mp.goto("/merchant/offerings");
+  const rows = mp.locator("li", { hasText: "Slot Buns" });
+  await expect(rows).toHaveCount(1);
+  await expect(rows.getByText("2 pickup slots")).toBeVisible();
   await merCtx.close();
 
   const ctx = await browser.newContext({ timezoneId: "UTC" });

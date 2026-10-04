@@ -215,7 +215,8 @@
       "publish": "Publish offering",
       "duplicateTitle": "Same pickup point used more than once",
       "duplicateBody": "“{point}” is used for more than one pickup time on this day (for example morning and evening). Customers will see each time separately. Make sure this is what you want."
-    }
+    },
+    "slotsSummary": "{count} pickup slots"
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
