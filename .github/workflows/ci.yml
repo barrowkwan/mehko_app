@@ -46,7 +46,7 @@ jobs:
       - run: npm ci
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.119.0
       - name: Start Supabase
         # Placeholders satisfy the env() references in config.toml; OAuth isn't exercised in CI.
         env:
@@ -89,7 +89,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.119.0
       - name: Apply database migrations to hosted Supabase
         env:
           # Session-pooler connection string (IPv4). GitHub runners have no IPv6, and Supabase's direct

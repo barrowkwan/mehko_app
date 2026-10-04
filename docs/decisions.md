@@ -20,6 +20,8 @@
 - **Cancelled order blocked re-ordering.** `unique (customer_id, offering_id)` counted cancelled orders. Now a partial unique index `where status <> 'cancelled'`.
 - **Stopping location sharing after pickup day failed.** An `upsert` re-runs the INSERT policy (`can_share_location`, pickup-day only). `updateLocation(null)` therefore uses a plain `update`.
 - **`supabase db push` failed on hosted: `function gen_random_bytes does not exist`.** pgcrypto lives in the `extensions` schema on hosted Supabase, which isn't on the search_path during pushed migrations (the local stack and PGlite hid this). The QR token default now uses core `gen_random_uuid()` only; no extensions. Lesson: don't depend on extension functions in migrations without schema-qualifying them, and check migrations against `set search_path = public`.
+- **CI: `supabase/setup-cli` `version: latest` hit a GitHub API rate limit.** The Supabase CLI version is pinned in `.github/workflows/ci.yml` (both jobs). Bump it deliberately; keep it close to the CLI you use locally.
+- **CI: `supabase db push` couldn't connect (IPv6).** GitHub runners are IPv4-only and the direct DB host is IPv6-only on the free plan; CI uses the session-pooler string in `SUPABASE_DB_URL`.
 - **Cutoff check by timezone hack.** Validation lives in trigger `check_offering_schedule`, evaluated in the pickup point's timezone — not in TypeScript.
 
 ## Gotchas
