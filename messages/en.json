@@ -45,13 +45,17 @@
     "pickup": "Pickup: {place}",
     "orderBy": "Order by {time}",
     "closed": "Ordering is closed.",
-    "placeOrder": "Place order"
+    "placeOrder": "Place order",
+    "instructionsTitle": "Pickup instructions"
   },
   "orderForm": {
     "quantityOf": "Quantity of {name}",
     "left": "{count} left",
     "chooseOne": "Choose at least one item.",
-    "chooseOneOrCancel": "Choose at least one item, or cancel the order instead."
+    "chooseOneOrCancel": "Choose at least one item, or cancel the order instead.",
+    "note": "Note for the merchant (optional)",
+    "noteHelp": "Mention allergies or special requests. Only you and the merchant can see this.",
+    "notePlaceholder": "e.g. No nuts please — severe allergy"
   },
   "orders": {
     "title": "My orders",
@@ -71,7 +75,9 @@
     "yourItems": "Your items",
     "canChangeUntil": "You can change this order until {time}.",
     "saveChanges": "Save changes",
-    "cancelOrder": "Cancel order"
+    "cancelOrder": "Cancel order",
+    "instructionsTitle": "Pickup instructions",
+    "noteTitle": "Your note to the merchant"
   },
   "map": {
     "sharing": "Merchant is sharing their live location.",
@@ -106,7 +112,8 @@
     "title": "Translations (optional)",
     "help": "Customers see their own language when you provide it, otherwise the original text above. Leave blank to skip.",
     "name": "Name",
-    "description": "Description"
+    "description": "Description",
+    "instructions": "Pickup instructions"
   },
   "dashboard": {
     "upcoming": "Upcoming pickups",
@@ -172,7 +179,10 @@
     "editTitle": "Edit offering",
     "save": "Save changes",
     "lockedHint": "This offering already has orders, so the pickup point and date can't be changed. You can still adjust the times, cutoff and foods.",
-    "pastHint": "This pickup date has passed, so the schedule can't be edited."
+    "pastHint": "This pickup date has passed, so the schedule can't be edited.",
+    "instructions": "Pickup instructions (optional)",
+    "instructionsHelp": "Tell customers where and how to find you, e.g. \"North gate, look for the red tent\".",
+    "instructionsTooLong": "Pickup instructions are too long (500 characters at most)."
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
@@ -190,7 +200,9 @@
     "delete": "Delete offering",
     "deleteConfirm": "Delete this offering? This can't be undone.",
     "deleteBlocked": "Offerings with orders can't be deleted. Close ordering instead.",
-    "back": "Back to offering"
+    "back": "Back to offering",
+    "customerNotes": "Customer notes ({count})",
+    "noteLabel": "Note:"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",
@@ -262,7 +274,8 @@
     "imageType": "Please choose a JPEG or PNG photo.",
     "imageTooLarge": "That photo is too large. Try a smaller one.",
     "imageInvalid": "That file isn't a valid photo.",
-    "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again."
+    "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again.",
+    "noteTooLong": "The note is too long (300 characters at most)."
   },
   "account": {
     "title": "Account",

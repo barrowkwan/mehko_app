@@ -13,6 +13,7 @@ const PATTERNS: [RegExp, ErrorKey][] = [
   [/below the quantity already ordered/i, "limitBelowOrdered"],
   [/new date is in the past/i, "newDatePast"],
   [/offering must contain at least one item/i, "emptyOffering"],
+  [/note is too long/i, "noteTooLong"],
   [/offering not found/i, "offeringNotFound"],
   [/offering is not available/i, "offeringUnavailable"],
   [/cutoff has passed/i, "cutoffPassed"],

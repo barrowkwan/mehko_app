@@ -18,12 +18,21 @@ function parseItems(formData: FormData) {
   return items;
 }
 
+// The optional note for the merchant (allergies, requests). Blank = none (place) / clear (update).
+async function parseNote(formData: FormData): Promise<{ note: string } | { error: string }> {
+  const note = String(formData.get("note") ?? "").trim();
+  if (note.length > 300) return { error: (await getTranslations("errors"))("noteTooLong") };
+  return { note };
+}
+
 export async function placeOrder(offeringId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const items = parseItems(formData);
   if (items.length === 0) return { error: (await getTranslations("orderForm"))("chooseOne") };
+  const note = await parseNote(formData);
+  if ("error" in note) return { error: note.error };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("place_order", { p_offering: offeringId, p_items: items });
+  const { data, error } = await supabase.rpc("place_order", { p_offering: offeringId, p_items: items, p_note: note.note });
   if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
   redirect(`/orders/${data}`);
 }
@@ -31,9 +40,11 @@ export async function placeOrder(offeringId: string, _prev: FormState, formData:
 export async function updateOrder(orderId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const items = parseItems(formData);
   if (items.length === 0) return { error: (await getTranslations("orderForm"))("chooseOneOrCancel") };
+  const note = await parseNote(formData);
+  if ("error" in note) return { error: note.error };
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("update_order", { p_order: orderId, p_items: items });
+  const { error } = await supabase.rpc("update_order", { p_order: orderId, p_items: items, p_note: note.note });
   if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
   revalidatePath(`/orders/${orderId}`);
   revalidatePath("/orders");

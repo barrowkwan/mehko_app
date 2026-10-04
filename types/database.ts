@@ -150,13 +150,13 @@ isOneToOne: false
                   ]
                 },"offerings": {
                   Row: {
-                    "created_at": string,"cutoff_at": string,"id": string,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string
+                    "created_at": string,"cutoff_at": string,"id": string,"instructions": string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status": string,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "created_at"?: string,"cutoff_at": string,"id"?: string,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string
+                    "created_at"?: string,"cutoff_at": string,"id"?: string,"instructions"?: string | null,"merchant_id": string,"pickup_date": string,"pickup_end": string,"pickup_point_id": string,"pickup_start": string,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "created_at"?: string,"cutoff_at"?: string,"id"?: string,"merchant_id"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string
+                    "created_at"?: string,"cutoff_at"?: string,"id"?: string,"instructions"?: string | null,"merchant_id"?: string,"pickup_date"?: string,"pickup_end"?: string,"pickup_point_id"?: string,"pickup_start"?: string,"status"?: string,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -200,13 +200,13 @@ isOneToOne: false
                   ]
                 },"orders": {
                   Row: {
-                    "created_at": string,"customer_id": string,"id": string,"offering_id": string,"payment_ref": string | null,"payment_status": string,"picked_up_at": string | null,"qr_token": string,"status": string,"updated_at": string
+                    "created_at": string,"customer_id": string,"id": string,"note": string | null,"offering_id": string,"payment_ref": string | null,"payment_status": string,"picked_up_at": string | null,"qr_token": string,"status": string,"updated_at": string
                   }
                   Insert: {
-                    "created_at"?: string,"customer_id": string,"id"?: string,"offering_id": string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
+                    "created_at"?: string,"customer_id": string,"id"?: string,"note"?: string | null,"offering_id": string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"customer_id"?: string,"id"?: string,"offering_id"?: string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
+                    "created_at"?: string,"customer_id"?: string,"id"?: string,"note"?: string | null,"offering_id"?: string,"payment_ref"?: string | null,"payment_status"?: string,"picked_up_at"?: string | null,"qr_token"?: string,"status"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -330,13 +330,13 @@ isOneToOne: false
             }[]
                            },
 "place_order":
-{ Args: { "p_items": Json,"p_offering": string }; Returns: string
+{ Args: { "p_items": Json,"p_note"?: string,"p_offering": string }; Returns: string
                            },
 "update_offering":
-{ Args: { "p_cutoff": string,"p_date": string,"p_end": string,"p_items": Json,"p_offering": string,"p_pickup_point": string,"p_start": string }; Returns: undefined
+{ Args: { "p_cutoff": string,"p_date": string,"p_end": string,"p_instructions"?: string,"p_items": Json,"p_offering": string,"p_pickup_point": string,"p_start": string,"p_translations"?: Json }; Returns: undefined
                            },
 "update_order":
-{ Args: { "p_items": Json,"p_order": string }; Returns: undefined
+{ Args: { "p_items": Json,"p_note"?: string,"p_order": string }; Returns: undefined
                            }
           }
           Enums: {

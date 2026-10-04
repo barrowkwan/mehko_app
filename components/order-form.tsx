@@ -18,10 +18,12 @@ export function OrderForm({
   items,
   action,
   submitLabel,
+  note,
 }: {
   items: OrderFormItem[];
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
+  note?: string | null; // existing note when editing; the field is always shown
 }) {
   const t = useTranslations();
   const [state, formAction, pending] = useActionState(action, undefined);
@@ -48,6 +50,18 @@ export function OrderForm({
           </li>
         ))}
       </ul>
+      <label className="flex flex-col gap-1 text-sm">
+        <span className="font-medium">{t("orderForm.note")}</span>
+        <textarea
+          name="note"
+          rows={3}
+          maxLength={300}
+          defaultValue={note ?? ""}
+          placeholder={t("orderForm.notePlaceholder")}
+          className="w-full rounded border border-neutral-300 bg-transparent p-2 dark:border-neutral-700"
+        />
+        <span className="text-xs text-neutral-500">{t("orderForm.noteHelp")}</span>
+      </label>
       {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
       <button
         disabled={pending}

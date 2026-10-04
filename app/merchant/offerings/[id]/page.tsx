@@ -31,7 +31,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
 
   const { data: orders } = await supabase
     .from("orders")
-    .select("id, status, customer_id, customer:profiles(display_name), order_items(offering_item_id, qty)")
+    .select("id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
     .eq("offering_id", id)
     .neq("status", "cancelled")
     .order("created_at");
@@ -39,6 +39,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const totals = new Map<string, number>();
   for (const ord of orders ?? [])
     for (const it of ord.order_items) totals.set(it.offering_item_id, (totals.get(it.offering_item_id) ?? 0) + it.qty);
+  const notes = (orders ?? []).filter((ord) => ord.note);
   const names = new Map(
     o.offering_items.map((i) => [i.id, i.food_item ? localized(i.food_item.name, i.food_item.translations, locale, "name") : tc("item")]),
   );
@@ -116,6 +117,20 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
         </ul>
       </section>
 
+      {notes.length > 0 && (
+        <section className="rounded-lg border border-yellow-400 bg-yellow-50 p-3 dark:border-yellow-700 dark:bg-yellow-950">
+          <h2 className="mb-2 font-semibold">{t("customerNotes", { count: notes.length })}</h2>
+          <ul className="flex flex-col gap-1 text-sm">
+            {notes.map((ord) => (
+              <li key={ord.id}>
+                <span className="font-medium">{ord.customer?.display_name ?? tc("customer")}:</span>{" "}
+                <span className="whitespace-pre-line">{ord.note}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section>
         <h2 className="mb-2 font-semibold">{t("liveLocation")}</h2>
         <LocationToggle offeringId={id} enabled={isPickupDay} />
@@ -135,6 +150,11 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 {ord.order_items.map((i) => `${i.qty}× ${names.get(i.offering_item_id)}`).join(", ")}
               </p>
+              {ord.note && (
+                <p className="mt-1 text-sm">
+                  <span className="font-medium">{t("noteLabel")}</span> <span className="whitespace-pre-line">{ord.note}</span>
+                </p>
+              )}
             </li>
           ))}
         </ul>

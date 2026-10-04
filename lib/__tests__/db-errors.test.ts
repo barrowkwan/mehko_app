@@ -23,6 +23,7 @@ describe("dbErrorKey", () => {
     ["The new date is in the past", "newDatePast"],
     ["Offering not found", "offeringNotFound"],
     ["An offering must contain at least one item", "emptyOffering"],
+    ["Note is too long", "noteTooLong"],
   ])("maps %s", (msg, key) => {
     expect(dbErrorKey(msg)).toBe(key);
   });

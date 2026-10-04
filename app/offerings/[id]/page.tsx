@@ -17,7 +17,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
   const { data: offering } = await supabase
     .from("offerings")
     .select(
-      `id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
+      `id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
        merchant:merchants(name, description, translations),
        pickup_point:pickup_points(name, address, timezone),
        offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))`,
@@ -61,6 +61,12 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
         <p className="text-sm text-orange-700">
           {closed ? t("closed") : t("orderBy", { time: formatInstant(offering.cutoff_at, locale, tz) })}
         </p>
+        {offering.instructions && (
+          <div className="mt-2 rounded border border-neutral-200 p-3 text-sm dark:border-neutral-800">
+            <p className="font-medium">{t("instructionsTitle")}</p>
+            <p className="whitespace-pre-line">{localized(offering.instructions, offering.translations, locale, "instructions")}</p>
+          </div>
+        )}
       </div>
       {!closed && (
         <OrderForm

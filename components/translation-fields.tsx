@@ -9,7 +9,7 @@ export function TranslationFields({
   fields,
 }: {
   translations?: unknown;
-  fields: ("name" | "description")[];
+  fields: ("name" | "description" | "instructions")[];
 }) {
   const t = useTranslations("translations");
   const existing = (translations && typeof translations === "object" ? translations : {}) as Translations;
@@ -21,16 +21,29 @@ export function TranslationFields({
         {LOCALES.map((l) => (
           <fieldset key={l} className="flex flex-col gap-1">
             <legend className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">{LOCALE_LABELS[l]}</legend>
-            {fields.map((f) => (
-              <input
-                key={f}
-                name={`tr_${l}_${f}`}
-                defaultValue={existing[l]?.[f] ?? ""}
-                placeholder={t(f)}
-                aria-label={`${LOCALE_LABELS[l]} – ${t(f)}`}
-                className={inputClass}
-              />
-            ))}
+            {fields.map((f) =>
+              f === "instructions" ? (
+                <textarea
+                  key={f}
+                  name={`tr_${l}_${f}`}
+                  rows={2}
+                  maxLength={500}
+                  defaultValue={existing[l]?.[f] ?? ""}
+                  placeholder={t(f)}
+                  aria-label={`${LOCALE_LABELS[l]} – ${t(f)}`}
+                  className={inputClass}
+                />
+              ) : (
+                <input
+                  key={f}
+                  name={`tr_${l}_${f}`}
+                  defaultValue={existing[l]?.[f] ?? ""}
+                  placeholder={t(f)}
+                  aria-label={`${LOCALE_LABELS[l]} – ${t(f)}`}
+                  className={inputClass}
+                />
+              ),
+            )}
           </fieldset>
         ))}
       </div>

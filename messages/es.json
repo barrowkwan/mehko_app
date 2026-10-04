@@ -45,13 +45,17 @@
     "pickup": "Recogida: {place}",
     "orderBy": "Pide antes de {time}",
     "closed": "Los pedidos están cerrados.",
-    "placeOrder": "Hacer pedido"
+    "placeOrder": "Hacer pedido",
+    "instructionsTitle": "Instrucciones de recogida"
   },
   "orderForm": {
     "quantityOf": "Cantidad de {name}",
     "left": "{count} disponibles",
     "chooseOne": "Elige al menos un artículo.",
-    "chooseOneOrCancel": "Elige al menos un artículo, o cancela el pedido."
+    "chooseOneOrCancel": "Elige al menos un artículo, o cancela el pedido.",
+    "note": "Nota para el comerciante (opcional)",
+    "noteHelp": "Indica alergias o peticiones especiales. Solo tú y el comerciante pueden verla.",
+    "notePlaceholder": "p. ej. Sin frutos secos, por favor: alergia grave"
   },
   "orders": {
     "title": "Mis pedidos",
@@ -71,7 +75,9 @@
     "yourItems": "Tus artículos",
     "canChangeUntil": "Puedes modificar este pedido hasta {time}.",
     "saveChanges": "Guardar cambios",
-    "cancelOrder": "Cancelar pedido"
+    "cancelOrder": "Cancelar pedido",
+    "instructionsTitle": "Instrucciones de recogida",
+    "noteTitle": "Tu nota para el comerciante"
   },
   "map": {
     "sharing": "El comerciante está compartiendo su ubicación en vivo.",
@@ -106,7 +112,8 @@
     "title": "Traducciones (opcional)",
     "help": "Los clientes verán su propio idioma si lo proporcionas; si no, verán el texto original de arriba. Déjalo en blanco para omitirlo.",
     "name": "Nombre",
-    "description": "Descripción"
+    "description": "Descripción",
+    "instructions": "Instrucciones de recogida"
   },
   "dashboard": {
     "upcoming": "Próximas recogidas",
@@ -172,7 +179,10 @@
     "editTitle": "Editar oferta",
     "save": "Guardar cambios",
     "lockedHint": "Esta oferta ya tiene pedidos, así que no se puede cambiar el punto de recogida ni la fecha. Aún puedes ajustar los horarios, el cierre y las comidas.",
-    "pastHint": "La fecha de esta recogida ya pasó, así que no se puede editar el horario."
+    "pastHint": "La fecha de esta recogida ya pasó, así que no se puede editar el horario.",
+    "instructions": "Instrucciones de recogida (opcional)",
+    "instructionsHelp": "Explica a los clientes dónde y cómo encontrarte, p. ej. \"Puerta norte, busca la carpa roja\".",
+    "instructionsTooLong": "Las instrucciones de recogida son demasiado largas (500 caracteres como máximo)."
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",
@@ -190,7 +200,9 @@
     "delete": "Eliminar oferta",
     "deleteConfirm": "¿Eliminar esta oferta? No se puede deshacer.",
     "deleteBlocked": "Las ofertas con pedidos no se pueden eliminar. Cierra los pedidos en su lugar.",
-    "back": "Volver a la oferta"
+    "back": "Volver a la oferta",
+    "customerNotes": "Notas de clientes ({count})",
+    "noteLabel": "Nota:"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
@@ -262,7 +274,8 @@
     "imageType": "Elige una foto JPEG o PNG.",
     "imageTooLarge": "Esa foto es demasiado grande. Prueba con una más pequeña.",
     "imageInvalid": "Ese archivo no es una foto válida.",
-    "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo."
+    "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo.",
+    "noteTooLong": "La nota es demasiado larga (300 caracteres como máximo)."
   },
   "account": {
     "title": "Cuenta",

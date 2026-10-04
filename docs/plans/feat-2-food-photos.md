@@ -1,6 +1,6 @@
 # FEAT-2 · Food photos
 
-**Status:** Implemented 2026-10-04 — verifying after deploy (migration applied by CI; manual browser check below)
+**Status:** Done (2026-10-04, commit b11f71e) — live; owner confirmed adding a photo from a phone works
 **Roadmap items:** FEAT-2   **Size:** M   **Owner:** Claude + product owner
 
 ## Goal

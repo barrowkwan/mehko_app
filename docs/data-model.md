@@ -10,9 +10,9 @@ Source of truth: `supabase/migrations/*.sql`. Mirror any change in `types/databa
 | `merchants` | A business owned by a user | `owner_id`, `country_code` (holiday lookup), `translations` jsonb (optional name/description per language) |
 | `pickup_points` | Merchant's pickup locations (many) | `lat`, `lng`, `timezone` (IANA), `active` |
 | `food_items` | Merchant's menu | `active`, `price_cents` (unused until payments), `translations` jsonb (optional name/description per language), `image_path` (photo path in the `food-images` bucket) |
-| `offerings` | A sale event: one pickup point on one date | `pickup_date`, `pickup_start/end`, `cutoff_at`, `status` draft/published/closed. Trigger `check_offering_schedule`: cutoff ≤ pickup start in the point's timezone |
+| `offerings` | A sale event: one pickup point on one date | `instructions` (optional pickup instructions ≤500 chars) + `translations` jsonb (`{es:{instructions}}`), `pickup_date`, `pickup_start/end`, `cutoff_at`, `status` draft/published/closed. Trigger `check_offering_schedule`: cutoff ≤ pickup start in the point's timezone |
 | `offering_items` | Foods in an offering | `quantity_limit` (null = unlimited), unique (offering, food) |
-| `orders` | A customer's order on an offering | `status` placed/cancelled/picked_up, `qr_token` (unique), `picked_up_at`, `payment_status` (default `'none'`), `payment_ref`. **Partial unique** index: one non-cancelled order per (customer, offering) |
+| `orders` | A customer's order on an offering | `note` (optional, ≤300 chars, trimmed; visible to the customer and that offering's merchant only), `status` placed/cancelled/picked_up, `qr_token` (unique), `picked_up_at`, `payment_status` (default `'none'`), `payment_ref`. **Partial unique** index: one non-cancelled order per (customer, offering) |
 | `order_items` | Lines of an order | PK (order, offering_item), `qty > 0` |
 | `location_shares` | Merchant live location, one row per offering | `lat`, `lng`, `active`, `updated_at`; in Realtime publication |
 | `offering_context` | Weather + holiday snapshot per offering | `weather_bucket` (clear/cloudy/rain/snow/hot/cold), `temp_max_c`, `precip_mm`, `is_holiday`, `holiday_name` |
@@ -23,9 +23,9 @@ View: `order_lines` (`security_invoker`) — one row per ordered item with merch
 
 | Function | Rule enforced |
 | --- | --- |
-| `place_order(offering, items jsonb)` | Offering published; `now() < cutoff_at`; stock; one active order |
-| `update_order(order, items jsonb)` | Own order, status `placed`, before cutoff; stock (excluding own lines) |
-| `update_offering(offering, point, date, start, end, cutoff, items jsonb)` | Invoker rights, atomic. Owner only (`Offering not found` otherwise). Replaces schedule and items in one call; items = `[{food_item_id, quantity_limit}]`; all-or-nothing, so a rejected change leaves the offering untouched. Subject to the protection triggers below |
+| `place_order(offering, items jsonb, note text default null)` | Offering published; `now() < cutoff_at`; stock; one active order |
+| `update_order(order, items jsonb, note text default null)` | Own order, status `placed`, before cutoff; stock (excluding own lines) |
+| `update_offering(offering, point, date, start, end, cutoff, items jsonb, instructions text default null, translations jsonb default null)` | Invoker rights, atomic. Owner only (`Offering not found` otherwise). Replaces schedule and items in one call; items = `[{food_item_id, quantity_limit}]`; all-or-nothing, so a rejected change leaves the offering untouched. Subject to the protection triggers below |
 | `duplicate_offering(offering, new_date)` | Invoker rights. Owner only. Creates a **draft** copy on `new_date` (not in the past): same pickup point, times, items/limits (archived foods skipped, orders never copied); cutoff keeps the same *wall-clock* lead before pickup in the pickup point's timezone (DST-safe). Returns the new id |
 | `account_deletion_blocker()` | Invoker rights (RLS). Returns `'merchant_active_orders'` if the caller owns a merchant with an active (`placed`) order whose pickup date is today or later, else null. Used by the Account page / `deleteAccount` before the auth user is deleted |
 | `cancel_order(order)` | Own order, `placed`, before cutoff |

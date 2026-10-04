@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { CutoffInput } from "@/components/cutoff-input";
+import { TranslationFields } from "@/components/translation-fields";
 import type { FormState } from "@/app/orders/actions";
 
 export type OfferingFormValues = {
@@ -10,6 +11,8 @@ export type OfferingFormValues = {
   pickupEnd: string;
   cutoffAt: string; // ISO instant
   items: Record<string, number | null>; // foodId -> limit (null = unlimited); presence = selected
+  instructions?: string | null;
+  translations?: unknown;
 };
 
 // Used by "New offering" and "Edit offering". When `lockMove` is set (the offering already has orders) the
@@ -94,6 +97,11 @@ export async function OfferingForm({
           );
         })}
       </fieldset>
+      <Field label={t("instructions")}>
+        <textarea name="instructions" rows={3} maxLength={500} defaultValue={values?.instructions ?? ""} className={inputClass} />
+      </Field>
+      <p className="-mt-2 text-xs text-neutral-500">{t("instructionsHelp")}</p>
+      <TranslationFields translations={values?.translations} fields={["instructions"]} />
     </ActionForm>
   );
 }

@@ -21,8 +21,8 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   const { data: order } = await supabase
     .from("orders")
     .select(
-      `id, status, qr_token, offering_id,
-       offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at,
+      `id, status, qr_token, offering_id, note,
+       offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
          merchant:merchants(name, translations),
          pickup_point:pickup_points(name, address, lat, lng, timezone),
          offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))),
@@ -74,6 +74,13 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
       )}
       {order.status === "picked_up" && <p className="text-green-700">{t("pickedUp")}</p>}
 
+      {off.instructions && order.status !== "cancelled" && (
+        <section className="rounded-lg border border-orange-300 bg-orange-50 p-3 text-sm dark:border-orange-900 dark:bg-orange-950">
+          <h2 className="font-semibold">{t("instructionsTitle")}</h2>
+          <p className="whitespace-pre-line">{localized(off.instructions, off.translations, locale, "instructions")}</p>
+        </section>
+      )}
+
       {showMap && off.pickup_point && (
         <section>
           <h2 className="mb-2 font-semibold">{t("merchantLocation")}</h2>
@@ -94,6 +101,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
             <OrderForm
               action={updateOrder.bind(null, id)}
               submitLabel={t("saveChanges")}
+              note={order.note}
               items={off.offering_items.map((i) => ({
                 offeringItemId: i.id,
                 name: foodName(i.food_item),
@@ -110,15 +118,23 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
             </form>
           </>
         ) : (
-          <ul className="list-disc pl-5">
-            {off.offering_items
-              .filter((i) => mine.has(i.id))
-              .map((i) => (
-                <li key={i.id}>
-                  {mine.get(i.id)}× {foodName(i.food_item)}
-                </li>
-              ))}
-          </ul>
+          <>
+            <ul className="list-disc pl-5">
+              {off.offering_items
+                .filter((i) => mine.has(i.id))
+                .map((i) => (
+                  <li key={i.id}>
+                    {mine.get(i.id)}× {foodName(i.food_item)}
+                  </li>
+                ))}
+            </ul>
+            {order.note && (
+              <p className="mt-2 text-sm">
+                <span className="font-medium">{t("noteTitle")}: </span>
+                <span className="whitespace-pre-line">{order.note}</span>
+              </p>
+            )}
+          </>
         )}
       </section>
     </main>

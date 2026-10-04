@@ -373,4 +373,51 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("live Supabase", () => {
     expect((await bucket(m.client).remove([path])).error).toBeNull();
     expect((await fetch(publicUrl)).status).not.toBe(200);
   }, 40_000);
+  it("order notes and pickup instructions through the real API: visibility, limits, update semantics", async () => {
+    const m = await signUp("notemerchant");
+    const other = await signUp("noteother");
+    const c = await signUp("notecustomer");
+    const c2 = await signUp("notecustomer2");
+    const mid = must(await m.client.from("merchants").insert({ owner_id: m.id, name: `Notes ${run}` }).select("id").single()).id;
+    await other.client.from("merchants").insert({ owner_id: other.id, name: `Other ${run}` });
+    const pid = must(await m.client.from("pickup_points").insert({ merchant_id: mid, name: "P", lat: 1, lng: 1, timezone: "UTC" }).select("id").single()).id;
+    const fid = must(await m.client.from("food_items").insert({ merchant_id: mid, name: "F" }).select("id").single()).id;
+    const oid = must(
+      await m.client
+        .from("offerings")
+        .insert({ merchant_id: mid, pickup_point_id: pid, pickup_date: ymd(4), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published", instructions: "North gate, red tent", translations: { es: { instructions: "Puerta norte, carpa roja" } } })
+        .select("id")
+        .single(),
+    ).id;
+    const oi = must(await m.client.from("offering_items").insert({ offering_id: oid, food_item_id: fid }).select("id").single()).id;
+
+    // Customers read the instructions (and their translation) of a published offering.
+    const seen = must(await c.client.from("offerings").select("instructions, translations").eq("id", oid).single());
+    expect(seen).toEqual({ instructions: "North gate, red tent", translations: { es: { instructions: "Puerta norte, carpa roja" } } });
+    // Instruction length is enforced by the database.
+    expect((await m.client.from("offerings").update({ instructions: "x".repeat(501) }).eq("id", oid)).error).not.toBeNull();
+
+    // Place an order with a note (also exercises the optional parameter), and update it.
+    const items = [{ offering_item_id: oi, qty: 1 }];
+    const orderId = must(await c.client.rpc("place_order", { p_offering: oid, p_items: items, p_note: "  Severe nut allergy  " }));
+    const noteOf = async (client: Client) => must(await client.from("orders").select("note").eq("id", orderId)).map((r) => r.note);
+    expect(await noteOf(c.client)).toEqual(["Severe nut allergy"]);
+    expect(await noteOf(m.client)).toEqual(["Severe nut allergy"]); // the merchant of this offering sees it
+    expect(await noteOf(other.client)).toEqual([]); // another merchant does not
+    expect(await noteOf(c2.client)).toEqual([]); // another customer does not
+
+    must(await c.client.rpc("update_order", { p_order: orderId, p_items: items })); // old-style call: note unchanged
+    expect(await noteOf(c.client)).toEqual(["Severe nut allergy"]);
+    must(await c.client.rpc("update_order", { p_order: orderId, p_items: items, p_note: "No sesame either" }));
+    expect(await noteOf(c.client)).toEqual(["No sesame either"]);
+    expect((await c.client.rpc("update_order", { p_order: orderId, p_items: items, p_note: "x".repeat(301) })).error?.message).toMatch(/Note is too long/);
+
+    // Customers cannot edit the note directly; it only changes through update_order (and not for others' orders).
+    await c.client.from("orders").update({ note: "sneaky" }).eq("id", orderId);
+    expect(await noteOf(c.client)).toEqual(["No sesame either"]);
+    expect((await c2.client.rpc("update_order", { p_order: orderId, p_items: items, p_note: "hijack" })).error?.message).toMatch(/Order not found/);
+
+    must(await c.client.rpc("update_order", { p_order: orderId, p_items: items, p_note: "" })); // blank clears
+    expect(await noteOf(c.client)).toEqual([null]);
+  }, 40_000);
 });

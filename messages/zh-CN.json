@@ -45,13 +45,17 @@
     "pickup": "自取地点：{place}",
     "orderBy": "请在 {time} 前下单",
     "closed": "已截止下单。",
-    "placeOrder": "提交订单"
+    "placeOrder": "提交订单",
+    "instructionsTitle": "取餐说明"
   },
   "orderForm": {
     "quantityOf": "{name} 的数量",
     "left": "剩余 {count} 份",
     "chooseOne": "请至少选择一件商品。",
-    "chooseOneOrCancel": "请至少选择一件商品，或者取消订单。"
+    "chooseOneOrCancel": "请至少选择一件商品，或者取消订单。",
+    "note": "给商家的备注（可选）",
+    "noteHelp": "请注明过敏或特殊要求。只有您和商家能看到。",
+    "notePlaceholder": "例如：请不要放坚果，严重过敏"
   },
   "orders": {
     "title": "我的订单",
@@ -71,7 +75,9 @@
     "yourItems": "您的商品",
     "canChangeUntil": "您可以在 {time} 前修改此订单。",
     "saveChanges": "保存修改",
-    "cancelOrder": "取消订单"
+    "cancelOrder": "取消订单",
+    "instructionsTitle": "取餐说明",
+    "noteTitle": "您给商家的备注"
   },
   "map": {
     "sharing": "商家正在共享实时位置。",
@@ -106,7 +112,8 @@
     "title": "翻译（可选）",
     "help": "如果您提供了翻译，顾客将看到其所选语言的版本，否则显示上方的原文。留空即可跳过。",
     "name": "名称",
-    "description": "说明"
+    "description": "说明",
+    "instructions": "取餐说明"
   },
   "dashboard": {
     "upcoming": "即将到来的自取",
@@ -172,7 +179,10 @@
     "editTitle": "编辑场次",
     "save": "保存修改",
     "lockedHint": "该场次已有订单，无法更改自取点和日期。您仍可调整时间、截止时间和菜品。",
-    "pastHint": "该自取日期已过，无法编辑时间安排。"
+    "pastHint": "该自取日期已过，无法编辑时间安排。",
+    "instructions": "取餐说明（可选）",
+    "instructionsHelp": "告诉顾客在哪里、怎样找到您，例如“北门，找红色帐篷”。",
+    "instructionsTooLong": "取餐说明太长（最多 500 个字符）。"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",
@@ -190,7 +200,9 @@
     "delete": "删除场次",
     "deleteConfirm": "确定删除此场次吗？此操作无法撤销。",
     "deleteBlocked": "已有订单的场次无法删除。请改为关闭下单。",
-    "back": "返回场次"
+    "back": "返回场次",
+    "customerNotes": "顾客备注（{count}）",
+    "noteLabel": "备注："
   },
   "location": {
     "onlyPickupDay": "自取当天才能开启实时位置共享。",
@@ -262,7 +274,8 @@
     "imageType": "请选择 JPEG 或 PNG 照片。",
     "imageTooLarge": "照片太大，请换一张小一点的。",
     "imageInvalid": "该文件不是有效的照片。",
-    "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。"
+    "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。",
+    "noteTooLong": "备注太长（最多 300 个字符）。"
   },
   "account": {
     "title": "账户",

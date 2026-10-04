@@ -18,7 +18,8 @@ Neighborhood Eats is a web app (mobile apps planned) where **independent local f
 | Name, email, profile-picture URL, provider and provider user id | Supabase Auth (`auth.users`, `auth.identities`), `profiles` (name, picture URL, language) | Google / Facebook / GitHub / Apple sign-in | The user; merchants see **name and picture** of customers who ordered from them (not the email) | Account, showing who ordered |
 | Language choice | `profiles.locale`, cookie `NEXT_LOCALE` | User | The user | Show the app in their language |
 | Orders: items, quantities, status, timestamps, offering and pickup point, **QR token** | `orders`, `order_items` | Customer | The customer and the merchant of that offering | Ordering and confirming pickup |
-| Merchant business data: name, description, country, foods, translations | `merchants`, `food_items` | Merchant | All signed-in users (shown to customers) | Listing |
+| **Order note** (optional free text ≤ 300 chars, e.g. allergies) | `orders.note` | Customer | The customer and the merchant of that offering only | Let the merchant honour allergies/special requests; deleted with the order |
+| Merchant business data: name, description, country, foods (with optional **photos**, GPS metadata stripped), offerings with optional **pickup instructions**, translations | `merchants`, `food_items` | Merchant | All signed-in users (shown to customers) | Listing |
 | **Pickup points: name, address, latitude/longitude, timezone** | `pickup_points` | Merchant (may be a **home address**) | All signed-in users | Where to collect |
 | **Merchant live location** (latest position only, overwritten, no history) | `location_shares` | Merchant's device, only if they switch it on, only on the pickup date | Customers who have an active order for that offering | Show the merchant's location |
 | Sign-in IP address and timestamps | Supabase Auth audit logs | Automatic | Operator (Supabase dashboard) | Security |
@@ -54,10 +55,11 @@ Open-Meteo's free API is understood to be **non-commercial use**; terms should b
 1. Which regimes apply given where users and the operator are (GDPR / UK GDPR / CCPA-CPRA / other US state laws / PIPEDA…)? Required extra sections (lawful bases, retention table, categories of personal information, "we do not sell/share", appeals, DPO/representative, international-transfer mechanism such as SCCs)?
 2. Is "strictly necessary cookies only, no banner" acceptable for the markets targeted?
 3. **Merchants receive customers' names and orders**: should the policy say merchants are independent controllers of that data, and should merchants accept data-protection duties in the Terms?
-4. Is the location-sharing disclosure sufficient (consent, purpose, deletion)? Should it be an explicit opt-in step with a notice?
-5. Minimum age: drafts say **13** (US COPPA); EU member states set 13–16. Should it be 16, or 18 for merchants?
-6. Breach-notification and data-subject-request timelines to state?
-7. Are the Apple privacy "nutrition labels" and Google Play Data-safety answers derivable from this policy (they will be needed for the mobile apps)?
+4. **Order notes are free text and will often contain health information (allergies, dietary needs).** Is a notice/consent at the point of entry required (GDPR Art. 9 special-category data), and is the current wording ("only you and that merchant can see it") adequate? Merchants then hold that data: what duties should the Terms put on them?
+5. Is the location-sharing disclosure sufficient (consent, purpose, deletion)? Should it be an explicit opt-in step with a notice?
+6. Minimum age: drafts say **13** (US COPPA); EU member states set 13–16. Should it be 16, or 18 for merchants?
+7. Breach-notification and data-subject-request timelines to state?
+8. Are the Apple privacy "nutrition labels" and Google Play Data-safety answers derivable from this policy (they will be needed for the mobile apps)?
 
 **Terms of service**
 1. The service is a **marketplace connecting independent home/local food sellers with consumers**. Is the disclaimer of food-safety and allergen responsibility adequate? Should merchants **represent and warrant** that they hold all required food licences/cottage-food permits, and **indemnify** the operator? (Currently not required and no indemnity clause.)

@@ -45,13 +45,17 @@
     "pickup": "自取地點：{place}",
     "orderBy": "請於 {time} 前下單",
     "closed": "已截止下單。",
-    "placeOrder": "送出訂單"
+    "placeOrder": "送出訂單",
+    "instructionsTitle": "取餐說明"
   },
   "orderForm": {
     "quantityOf": "{name} 的數量",
     "left": "剩餘 {count} 份",
     "chooseOne": "請至少選擇一個品項。",
-    "chooseOneOrCancel": "請至少選擇一個品項，或取消訂單。"
+    "chooseOneOrCancel": "請至少選擇一個品項，或取消訂單。",
+    "note": "給商家的備註（選填）",
+    "noteHelp": "請註明過敏或特殊需求。只有您和商家看得到。",
+    "notePlaceholder": "例如：請不要放堅果，嚴重過敏"
   },
   "orders": {
     "title": "我的訂單",
@@ -71,7 +75,9 @@
     "yourItems": "您的品項",
     "canChangeUntil": "您可以在 {time} 前修改此訂單。",
     "saveChanges": "儲存變更",
-    "cancelOrder": "取消訂單"
+    "cancelOrder": "取消訂單",
+    "instructionsTitle": "取餐說明",
+    "noteTitle": "您給商家的備註"
   },
   "map": {
     "sharing": "商家正在分享即時位置。",
@@ -106,7 +112,8 @@
     "title": "翻譯（選填）",
     "help": "若您提供翻譯，顧客會看到其所選語言的版本，否則顯示上方原文。留空即可略過。",
     "name": "名稱",
-    "description": "說明"
+    "description": "說明",
+    "instructions": "取餐說明"
   },
   "dashboard": {
     "upcoming": "即將到來的自取",
@@ -172,7 +179,10 @@
     "editTitle": "編輯場次",
     "save": "儲存變更",
     "lockedHint": "該場次已有訂單，無法更改自取點和日期。您仍可調整時間、截止時間和餐點。",
-    "pastHint": "該自取日期已過，無法編輯時間安排。"
+    "pastHint": "該自取日期已過，無法編輯時間安排。",
+    "instructions": "取餐說明（選填）",
+    "instructionsHelp": "告訴顧客在哪裡、怎麼找到您，例如「北門，找紅色帳篷」。",
+    "instructionsTooLong": "取餐說明太長（最多 500 個字元）。"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 狀態：{status}",
@@ -190,7 +200,9 @@
     "delete": "刪除場次",
     "deleteConfirm": "確定刪除此場次嗎？此操作無法復原。",
     "deleteBlocked": "已有訂單的場次無法刪除。請改為關閉下單。",
-    "back": "返回場次"
+    "back": "返回場次",
+    "customerNotes": "顧客備註（{count}）",
+    "noteLabel": "備註："
   },
   "location": {
     "onlyPickupDay": "自取當天才能開啟即時位置分享。",
@@ -262,7 +274,8 @@
     "imageType": "請選擇 JPEG 或 PNG 照片。",
     "imageTooLarge": "照片太大，請換一張小一點的。",
     "imageInvalid": "該檔案不是有效的照片。",
-    "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。"
+    "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。",
+    "noteTooLong": "備註太長（最多 300 個字元）。"
   },
   "account": {
     "title": "帳戶",

@@ -209,6 +209,8 @@ export async function setFoodActive(id: string, active: boolean): Promise<void> 
 // Shared by createOffering and updateOffering so the two can never validate differently.
 type OfferingInput = {
   schedule: { pickup_point_id: string; pickup_date: string; pickup_start: string; pickup_end: string; cutoff_at: string };
+  instructions: string | null; // null = none
+  translations: ReturnType<typeof parseTranslations>;
   items: { food_item_id: string; quantity_limit: number | null }[];
 };
 
@@ -221,9 +223,11 @@ async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value:
       pickup_start: z.string().regex(/^\d{2}:\d{2}/, t("startRequired")),
       pickup_end: z.string().regex(/^\d{2}:\d{2}/, t("endRequired")),
       cutoff_at: z.iso.datetime({ offset: true, message: t("cutoffRequired") }),
+      instructions: text.max(500, t("instructionsTooLong")).default("").transform((v) => (v === "" ? null : v)),
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, error: await firstError(parsed.error) };
+  const { instructions, ...schedule } = parsed.data;
 
   const items: OfferingInput["items"] = [];
   for (const [key, value] of formData.entries()) {
@@ -233,7 +237,7 @@ async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value:
     items.push({ food_item_id: id, quantity_limit: Number.isFinite(lim) && lim > 0 ? lim : null });
   }
   if (items.length === 0) return { ok: false, error: { error: t("selectFood") } };
-  return { ok: true, value: { schedule: parsed.data, items } };
+  return { ok: true, value: { schedule, instructions, translations: parseTranslations(formData, ["instructions"]), items } };
 }
 
 export async function createOffering(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -243,7 +247,7 @@ export async function createOffering(_prev: FormState, formData: FormData): Prom
   const { supabase, merchant } = await requireMerchant();
   const { data: offering, error } = await supabase
     .from("offerings")
-    .insert({ ...input.value.schedule, merchant_id: merchant.id })
+    .insert({ ...input.value.schedule, instructions: input.value.instructions, translations: input.value.translations, merchant_id: merchant.id })
     .select("id")
     .single();
   if (error) return { error: await dbError(error.message) };
@@ -263,7 +267,7 @@ export async function createOffering(_prev: FormState, formData: FormData): Prom
 export async function updateOffering(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const input = await parseOfferingForm(formData);
   if (!input.ok) return input.error;
-  const { schedule, items } = input.value;
+  const { schedule, items, instructions, translations } = input.value;
 
   const { supabase } = await requireMerchant();
   const { error } = await supabase.rpc("update_offering", {
@@ -274,6 +278,8 @@ export async function updateOffering(id: string, _prev: FormState, formData: For
     p_end: schedule.pickup_end,
     p_cutoff: schedule.cutoff_at,
     p_items: items,
+    p_instructions: instructions ?? "", // the field is always submitted: blank clears
+    p_translations: translations,
   });
   if (error) return { error: await dbError(error.message) };
   revalidatePath("/merchant/offerings");

@@ -88,10 +88,10 @@ CI step: apply migrations, run `supabase gen types typescript --local`, fail if 
 **Why:** merchants can only publish/close. Repeating last week's menu is the most common action.
 **Do:** `updateOffering`, "Duplicate to new date", delete drafts. **Rules:** schedule trigger already validates cutoff; do not orphan `order_items` (FK to `offering_items`, no cascade) — block removing items that have orders, or define behavior in a migration. Add DB tests.
 
-### FEAT-2 · Food photos — P1 · M — **implemented (web)**; plan: [plans/feat-2-food-photos.md](plans/feat-2-food-photos.md)
+### FEAT-2 · Food photos — P1 · M — **done 2026-10-04 (web, verified on a phone)**; plan: [plans/feat-2-food-photos.md](plans/feat-2-food-photos.md)
 Supabase Storage bucket `food-images`, policy limiting writes to the merchant's own folder, use existing `food_items.image_url`; upload on Foods page; show in order form/home. Resize on upload (free tier storage 1 GB).
 
-### FEAT-3 · Order notes, allergies & pickup instructions — P1 · S
+### FEAT-3 · Order notes, allergies & pickup instructions — P1 · S — **implemented (web)**; plan: [plans/feat-3-order-notes-instructions.md](plans/feat-3-order-notes-instructions.md)
 `orders.note` (customer) and `offerings.instructions` (merchant, e.g. "meet at the north gate"), shown on order/offering pages and in the merchant prep list. Translate instructions like other merchant text (see I18N-3).
 
 ### FEAT-4 · Shareable merchant/offering links & QR poster — P2 · M
@@ -207,6 +207,7 @@ Google: **Publish app** (out of Testing). Facebook: privacy URL (SEC-1) then swi
 
 ## Done
 
+- Food photos (FEAT-2, 2026-10-04): resized in the browser, location data stripped on the server, owner-only storage policies; verified on a phone.
 - Edit, duplicate and delete offerings (FEAT-1, 2026-10-04) — see [plans/feat-1-edit-clone-offerings.md](plans/feat-1-edit-clone-offerings.md); also closed a data-safety gap (offering delete could cascade to customers' orders).
 - Account deletion on web (SEC-5, 2026-10-04) — mobile reuses the same rule later.
 - Privacy policy & terms pages in 4 languages (SEC-1 text, 2026-10-04) — still needs your Render settings and a legal review.
