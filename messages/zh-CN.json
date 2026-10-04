@@ -40,7 +40,9 @@
     "title": "接受预订中",
     "empty": "目前没有开放预订的商品。",
     "orderBy": "请在 {time} 前下单",
-    "slotsCount": "{count} 个取餐选项"
+    "slotsCount": "{count} 个取餐选项",
+    "openCount": "开放中的优惠：{count}",
+    "nextPickup": "最近取餐：{date}"
   },
   "offering": {
     "pickup": "自取地点：{place}",
@@ -384,5 +386,9 @@
     "button": "退订",
     "done": "已退订，不会再发送邮件。",
     "invalid": "此退订链接无效。"
+  },
+  "merchantPage": {
+    "back": "← 所有商家",
+    "empty": "该商家目前没有可下单的优惠。"
   }
 }

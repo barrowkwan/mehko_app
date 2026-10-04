@@ -114,6 +114,9 @@ Roles table; RLS currently assumes `merchants.owner_id` only (`is_merchant_owner
 ### FEAT-10 · Pickup point map picker / address search — P2 · M — **map picker done** (click/drag pin, 2026-10-04)
 Still open: address search (geocoding). Needs a provider decision first: OSM's public Nominatim has a strict usage policy and would send typed addresses to a third party (privacy page update); alternatives are a hosted geocoder with a key.
 
+### FEAT-13 · Browse pagination / search — P3 · S
+Browse is now one card per merchant (done 2026-10-04) and loads all open offerings, then groups them in the server code. When there are many merchants: group in the database (a view or function that returns one row per merchant), page it (e.g. 20 per page) and add a search box.
+
 ### FEAT-12 · Several pickup slots per offering — **done (2026-10-04)**: [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md)
 Duplicate-the-whole-group and editing shared parts from the slot list are follow-ups.
 

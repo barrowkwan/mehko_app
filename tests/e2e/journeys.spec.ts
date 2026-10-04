@@ -30,7 +30,9 @@ test("customer orders, edits, switches language and cancels", async ({ page, con
 
   await signIn(context, baseURL!, cust.email);
   await page.goto("/");
+  // Browse shows one short card per merchant; the offering is picked on the merchant's page.
   await page.getByRole("link", { name: new RegExp(kitchen) }).click();
+  await page.getByRole("link", { name: /E2E Park/ }).click();
 
   // Place an order with a note.
   await page.locator(`input[name="qty_${itemId}"]`).fill("2");
@@ -104,6 +106,7 @@ test("merchant publishes an offering through the form; stock limit stops a secon
   const p1 = await first.newPage();
   await p1.goto("/");
   await p1.getByRole("link", { name: new RegExp(kitchen) }).click();
+  await p1.getByRole("link", { name: /Form Park/ }).click();
   await p1.locator('input[name^="qty_"]').fill("2");
   await p1.getByRole("button", { name: "Place order" }).click();
   await expect(p1).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
@@ -115,6 +118,7 @@ test("merchant publishes an offering through the form; stock limit stops a secon
   const p2 = await second.newPage();
   await p2.goto("/");
   await p2.getByRole("link", { name: new RegExp(kitchen) }).click();
+  await p2.getByRole("link", { name: /Form Park/ }).click();
   await expect(p2.getByText("0 left")).toBeVisible();
   await p2.locator('input[name^="qty_"]').fill("1");
   await p2.getByRole("button", { name: "Place order" }).click();
@@ -175,8 +179,14 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await signIn(ctx, baseURL!, cust.email);
   const p = await ctx.newPage();
   await p.goto("/");
-  const card = p.locator("li", { hasText: kitchen }).first();
-  await expect(card.getByText("2 pickup options")).toBeVisible();
+  // Browse: just one short card for the merchant, no slot details.
+  const merchantCard = p.locator("li", { hasText: kitchen });
+  await expect(merchantCard).toHaveCount(1);
+  await expect(merchantCard.getByText("Open offerings: 1")).toBeVisible();
+  await expect(merchantCard.getByText("North Gate")).toHaveCount(0);
+  await merchantCard.getByRole("link").click();
+  const card = p.locator("li", { hasText: "2 pickup options" });
+  await expect(card).toBeVisible();
   await card.getByRole("link", { name: /5:00/ }).click() // the North Gate slot (17:00);
   await expect(p.getByText("Other pickup options")).toBeVisible();
   await p.locator('input[name^="qty_"]').fill("2");
@@ -239,11 +249,40 @@ test("same pickup point at two times: merchant gets a warning, customer sees bot
   await signIn(cctx, baseURL!, cust.email);
   const p = await cctx.newPage();
   await p.goto("/");
-  const card = p.locator("li", { hasText: kitchen }).first();
+  await p.locator("li", { hasText: kitchen }).getByRole("link").click();
+  const card = p.locator("li", { hasText: "2 pickup times here" });
   await expect(card.getByText("2 pickup times here")).toBeVisible();
   await expect(card.getByRole("link")).toHaveCount(2);
   await card.getByRole("link").first().click();
   await expect(p.getByText("2 pickup times here")).toBeVisible();
   await expect(p.locator('a[aria-current="page"]')).toHaveCount(1);
   await cctx.close();
+});
+
+test("Browse shows each merchant once, however many offerings they have", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant6");
+  const cust = await createUser("e2ecust5");
+  const kitchen = `E2E Many Kitchen ${run}`;
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: kitchen }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Many Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Many Buns" }).select("id").single()).id;
+  for (const day of [3, 4, 5]) {
+    const off = must(
+      await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: ymd(day), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published" }).select("id").single(),
+    ).id;
+    must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single());
+  }
+
+  const ctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(ctx, baseURL!, cust.email);
+  const p = await ctx.newPage();
+  await p.goto("/");
+  const card = p.locator("li", { hasText: kitchen });
+  await expect(card).toHaveCount(1);
+  await expect(card.getByText("Open offerings: 3")).toBeVisible();
+  await expect(card.getByText("Many Buns")).toHaveCount(0); // no food or place detail on Browse
+  await card.getByRole("link").click();
+  await expect(p.getByRole("heading", { name: kitchen })).toBeVisible();
+  await expect(p.getByRole("link", { name: /Many Park/ })).toHaveCount(3); // the three offerings are listed here
+  await ctx.close();
 });

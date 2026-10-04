@@ -15,3 +15,17 @@ describe("groupSlotsByPoint", () => {
     expect(groupSlotsByPoint([])).toEqual([]);
   });
 });
+
+import { groupOfferings } from "../slots";
+
+describe("groupOfferings", () => {
+  it("joins rows with the same group_id, keeps ungrouped rows alone and keeps first-seen order", () => {
+    const rows = [
+      { id: "a", group_id: "G1" },
+      { id: "b", group_id: null },
+      { id: "c", group_id: "G1" },
+      { id: "d", group_id: "G2" },
+    ];
+    expect(groupOfferings(rows).map((g) => g.map((r) => r.id))).toEqual([["a", "c"], ["b"], ["d"]]);
+  });
+});

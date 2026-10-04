@@ -12,3 +12,19 @@ export function groupSlotsByPoint<T extends SlotLike>(slots: T[]): { pointId: st
   }
   return groups;
 }
+
+// One offering = its slots (rows sharing a group_id); a row without a group is an offering of one slot.
+// Keeps the order in which offerings first appear.
+export function groupOfferings<T extends { id: string; group_id: string | null }>(rows: T[]): T[][] {
+  const groups: T[][] = [];
+  const index = new Map<string, number>();
+  for (const r of rows) {
+    const key = r.group_id ?? r.id;
+    const at = index.get(key);
+    if (at === undefined) {
+      index.set(key, groups.length);
+      groups.push([r]);
+    } else groups[at].push(r);
+  }
+  return groups;
+}

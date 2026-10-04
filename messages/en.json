@@ -40,7 +40,9 @@
     "title": "Open for ordering",
     "empty": "Nothing is open for ordering right now.",
     "orderBy": "Order by {time}",
-    "slotsCount": "{count} pickup options"
+    "slotsCount": "{count} pickup options",
+    "openCount": "Open offerings: {count}",
+    "nextPickup": "Next pickup: {date}"
   },
   "offering": {
     "pickup": "Pickup: {place}",
@@ -384,5 +386,9 @@
     "button": "Unsubscribe",
     "done": "You're unsubscribed. No more emails will be sent.",
     "invalid": "This unsubscribe link is not valid."
+  },
+  "merchantPage": {
+    "back": "← All merchants",
+    "empty": "This merchant has nothing open for ordering right now."
   }
 }

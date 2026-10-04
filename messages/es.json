@@ -40,7 +40,9 @@
     "title": "Abierto para pedidos",
     "empty": "Por ahora no hay nada abierto para pedidos.",
     "orderBy": "Pide antes de {time}",
-    "slotsCount": "{count} opciones de recogida"
+    "slotsCount": "{count} opciones de recogida",
+    "openCount": "Ofertas abiertas: {count}",
+    "nextPickup": "Próxima recogida: {date}"
   },
   "offering": {
     "pickup": "Recogida: {place}",
@@ -384,5 +386,9 @@
     "button": "Cancelar suscripción",
     "done": "Has cancelado la suscripción. No se enviarán más correos.",
     "invalid": "Este enlace para cancelar la suscripción no es válido."
+  },
+  "merchantPage": {
+    "back": "← Todos los comerciantes",
+    "empty": "Este comerciante no tiene nada abierto para pedidos ahora."
   }
 }

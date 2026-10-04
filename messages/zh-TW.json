@@ -40,7 +40,9 @@
     "title": "接受預訂中",
     "empty": "目前沒有開放預訂的商品。",
     "orderBy": "請於 {time} 前下單",
-    "slotsCount": "{count} 個取餐選項"
+    "slotsCount": "{count} 個取餐選項",
+    "openCount": "開放中的優惠：{count}",
+    "nextPickup": "最近取餐：{date}"
   },
   "offering": {
     "pickup": "自取地點：{place}",
@@ -384,5 +386,9 @@
     "button": "取消訂閱",
     "done": "已取消訂閱，不會再寄送郵件。",
     "invalid": "此取消訂閱連結無效。"
+  },
+  "merchantPage": {
+    "back": "← 所有商家",
+    "empty": "此商家目前沒有可下單的優惠。"
   }
 }
