@@ -210,6 +210,11 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(m.getByRole("heading", { name: "Prep list" }).locator("..").getByText("2× Slot Buns").first()).toBeVisible();
   await expect(m.getByText("By pickup slot")).toBeVisible();
   await expect(m.getByRole("heading", { name: "Orders (1)" })).toBeVisible();
+  // Dashboard: one card for the offering, with orders per slot.
+  await m.goto("/merchant");
+  const dash = m.locator("ul.grid > li", { hasText: "Gate" });
+  await expect(dash).toHaveCount(1);
+  await expect(dash.getByText("1 order · 0 picked up")).toBeVisible();
   await mctx.close();
 });
 

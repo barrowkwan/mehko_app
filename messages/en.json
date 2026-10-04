@@ -129,7 +129,8 @@
     "upcoming": "Upcoming pickups",
     "newOffering": "+ New offering",
     "none": "No upcoming offerings.",
-    "stats": "{orders, plural, one {# order} other {# orders}} · {picked} picked up · {status}"
+    "stats": "{orders, plural, one {# order} other {# orders}} · {picked} picked up · {status}",
+    "slotStats": "{orders} orders, {picked} picked up"
   },
   "pickupPoints": {
     "title": "Pickup points",

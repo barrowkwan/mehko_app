@@ -129,7 +129,8 @@
     "upcoming": "即將到來的自取",
     "newOffering": "+ 新增場次",
     "none": "目前沒有即將到來的場次。",
-    "stats": "{orders} 筆訂單 · {picked} 筆已取餐 · {status}"
+    "stats": "{orders} 筆訂單 · {picked} 筆已取餐 · {status}",
+    "slotStats": "{orders} 筆訂單，{picked} 筆已取"
   },
   "pickupPoints": {
     "title": "自取點",
