@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Weekly, grouped so there is one PR per ecosystem instead of dozens. Majors are left to a deliberate upgrade
+  # (Next.js, React and Tailwind change a lot between majors); security fixes still arrive immediately.
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 3
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      actions:
+        patterns: ["*"]

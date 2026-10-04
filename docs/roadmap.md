@@ -70,7 +70,7 @@ Move deploy secrets to a GitHub **Environment** `production` with required revie
 ### OPS-8 · Custom domain — P2 · S
 Render custom domain + DNS; update `SITE_URL`, Supabase Site URL/Redirect URLs, Google OAuth JavaScript origins, Render env. ~$10–15/yr for the domain.
 
-### OPS-9 · Dependency updates — P3 · S
+### OPS-9 · Dependency updates — P3 · S — **Dependabot added (weekly, grouped, no majors)**; the Supabase CLI pin in `ci.yml` is still bumped by hand
 Dependabot/Renovate for npm and GitHub Actions; bump the pinned Supabase CLI deliberately (`ci.yml`).
 
 ### OPS-10 · Check weather/holiday API terms — P2 · S (research)
@@ -178,7 +178,7 @@ Required for Facebook login to go **Live**; needed anyway (location sharing, ord
 ### SEC-2 · Rate limiting / abuse protection — P2 · M
 Server actions and `/api/cron/fetch-context` (secret-protected already). Supabase Auth has its own limits; consider per-IP limits at the edge.
 
-### SEC-3 · Security headers (CSP etc.) — P2 · S
+### SEC-3 · Security headers (CSP etc.) — P2 · S — **baseline done** (framing, sniffing, base/object/form-action, permissions, HSTS; `lib/security-headers.ts`). Open: nonce-based script-src CSP
 Careful with Leaflet tiles (OpenStreetMap), Supabase websockets/HTTPS, inline styles.
 
 ### SEC-5 · Account deletion & data export — **P1** · M  (store requirement) — **web implemented**; mobile calls the same rule via an authenticated endpoint (MOB M3/M5); data export still open
