@@ -16,6 +16,7 @@ export default async function MerchantDashboard() {
     .from("offerings")
     .select("id, group_id, pickup_date, pickup_start, pickup_end, status, pickup_point:pickup_points(name), orders(status)")
     .eq("merchant_id", merchant.id)
+    .neq("status", "closed") // the dashboard is the working view: closed offerings live in History
     .gte("pickup_date", since)
     .order("pickup_date")
     .order("pickup_start");

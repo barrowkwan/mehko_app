@@ -96,7 +96,7 @@
   },
   "merchantNav": {
     "dashboard": "总览",
-    "offerings": "售卖场次",
+    "offerings": "历史记录",
     "foods": "菜品",
     "pickupPoints": "自取点",
     "scan": "扫码核销",
@@ -219,7 +219,12 @@
       "duplicateTitle": "同一取餐点被多次使用",
       "duplicateBody": "“{point}”在当天被用于多个取餐时间（例如上午和晚上）。顾客会分别看到每个时间。请确认这是您想要的。"
     },
-    "slotsSummary": "{count} 个取餐时段"
+    "slotsSummary": "{count} 个取餐时段",
+    "historyTitle": "优惠历史记录",
+    "filterLabel": "按状态筛选",
+    "filterAll": "全部",
+    "historyEmpty": "没有符合此筛选的内容。",
+    "ordersCount": "订单：{count}"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",

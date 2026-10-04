@@ -291,3 +291,34 @@ test("Browse shows each merchant once, however many offerings they have", async 
   await expect(p.getByRole("link", { name: /Many Park/ })).toHaveCount(3); // the three offerings are listed here
   await ctx.close();
 });
+
+test("Dashboard hides closed offerings; History lists everything with status filters", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant7");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E History Kitchen ${run}` }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "History Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "History Buns" }).select("id").single()).id;
+  for (const [day, status] of [[3, "draft"], [4, "published"], [5, "closed"]] as const) {
+    const off = must(
+      await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: ymd(day), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status }).select("id").single(),
+    ).id;
+    must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single());
+  }
+
+  const ctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(ctx, baseURL!, mer.email);
+  const p = await ctx.newPage();
+
+  await p.goto("/merchant");
+  await expect(p.locator("ul.grid > li")).toHaveCount(2); // draft + published, not the closed one
+
+  await p.goto("/merchant/offerings");
+  await expect(p.getByRole("heading", { name: "Offering history" })).toBeVisible();
+  await expect(p.getByRole("link", { name: "All (3)" })).toBeVisible();
+  await expect(p.locator("main ul > li")).toHaveCount(3);
+  await p.getByRole("link", { name: "Closed (1)" }).click();
+  await expect(p.locator("main ul > li")).toHaveCount(1);
+  await expect(p.getByText("Closed").nth(1)).toBeVisible();
+  await p.getByRole("link", { name: "Published (1)" }).click();
+  await expect(p.locator("main ul > li")).toHaveCount(1);
+  await ctx.close();
+});

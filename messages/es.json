@@ -96,7 +96,7 @@
   },
   "merchantNav": {
     "dashboard": "Panel",
-    "offerings": "Ofertas",
+    "offerings": "Historial",
     "foods": "Comidas",
     "pickupPoints": "Puntos de recogida",
     "scan": "Escanear QR",
@@ -219,7 +219,12 @@
       "duplicateTitle": "Mismo punto de recogida usado más de una vez",
       "duplicateBody": "«{point}» se usa para más de un horario de recogida ese día (por ejemplo mañana y tarde). Los clientes verán cada horario por separado. Asegúrate de que es lo que quieres."
     },
-    "slotsSummary": "{count} franjas de recogida"
+    "slotsSummary": "{count} franjas de recogida",
+    "historyTitle": "Historial de ofertas",
+    "filterLabel": "Filtrar por estado",
+    "filterAll": "Todas",
+    "historyEmpty": "Nada coincide con este filtro.",
+    "ordersCount": "Pedidos: {count}"
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",

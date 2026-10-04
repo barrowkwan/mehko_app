@@ -96,7 +96,7 @@
   },
   "merchantNav": {
     "dashboard": "總覽",
-    "offerings": "販售場次",
+    "offerings": "歷史記錄",
     "foods": "餐點",
     "pickupPoints": "自取點",
     "scan": "掃碼核銷",
@@ -219,7 +219,12 @@
       "duplicateTitle": "同一取餐點被多次使用",
       "duplicateBody": "「{point}」在當天被用於多個取餐時間（例如上午和晚上）。顧客會分別看到每個時間。請確認這是您想要的。"
     },
-    "slotsSummary": "{count} 個取餐時段"
+    "slotsSummary": "{count} 個取餐時段",
+    "historyTitle": "優惠歷史記錄",
+    "filterLabel": "依狀態篩選",
+    "filterAll": "全部",
+    "historyEmpty": "沒有符合此篩選的項目。",
+    "ordersCount": "訂單：{count}"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 狀態：{status}",

@@ -96,7 +96,7 @@
   },
   "merchantNav": {
     "dashboard": "Dashboard",
-    "offerings": "Offerings",
+    "offerings": "History",
     "foods": "Foods",
     "pickupPoints": "Pickup points",
     "scan": "Scan QR",
@@ -219,7 +219,12 @@
       "duplicateTitle": "Same pickup point used more than once",
       "duplicateBody": "“{point}” is used for more than one pickup time on this day (for example morning and evening). Customers will see each time separately. Make sure this is what you want."
     },
-    "slotsSummary": "{count} pickup slots"
+    "slotsSummary": "{count} pickup slots",
+    "historyTitle": "Offering history",
+    "filterLabel": "Filter by status",
+    "filterAll": "All",
+    "historyEmpty": "Nothing matches this filter.",
+    "ordersCount": "Orders: {count}"
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
