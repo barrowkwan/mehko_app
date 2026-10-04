@@ -29,6 +29,7 @@
 - **Times were shown in the server's timezone (UTC on Render).** Cutoff times are now formatted in the pickup point's timezone with the zone name (`formatInstant`), and "today"/"pickup day" use `todayIn(pickupTz)` instead of the server date.
 - **Backups must be encrypted:** the repo is public and artifacts of public repos are downloadable by anyone; the backup workflow encrypts the dump (openssl AES-256/PBKDF2) before upload and excludes session/token tables. Don't upload plaintext dumps anywhere public.
 - **Account deletion cascade order:** deleting a merchant failed (`offering_items_food_item_id_fkey`, then `order_items_offering_item_id_fkey`) because Postgres cascades merchant → foods before offerings, and the strict FKs reject it. Fixed with a before-delete trigger on `merchants` that deletes orders then offerings first; `orders.offering_id` is `ON DELETE CASCADE`. Always verify deletion cascades against the real auth service (integration test), not only PGlite.
+- **Legal text is AI-drafted structured data, not Markdown:** `content/legal/*.ts` is checked by tests for identical structure across languages and for covering what the app does; it must be reviewed by a qualified person before store release. `/privacy` and `/terms` are the only public pages besides login (`lib/public-paths.ts`), because providers and stores need reachable URLs.
 - **Cutoff check by timezone hack.** Validation lives in trigger `check_offering_schedule`, evaluated in the pickup point's timezone — not in TypeScript.
 
 ## Gotchas

@@ -20,6 +20,7 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | 14 | PWA | ✅ | `app/manifest.ts`, `public/icons/icon.svg` | — | — | manual |
 | 14b | Multi-language (en/es/zh-CN/zh-TW), merchant translations | ✅ | header switcher, `/merchant/profile`, foods edit | `lib/locale.ts`, `i18n/request.ts`, `messages/*.json`, `app/actions/locale.ts` | `profiles.locale`, `merchants/food_items.translations` | `lib/__tests__/{locale,messages,format,db-errors}.test.ts`, DB tests |
 | 14c | Account deletion (store requirement) | ✅ web · mobile later | `/account` (nav → Account), blocked notice for merchants with active orders | `app/account/actions.ts` (`deleteAccount`, admin API), `lib/supabase/admin.ts` | `account_deletion_blocker()`, cascade FK + `merchants_delete_offerings_first` | `tests/db/account-deletion.test.ts`, live cascade test in `tests/integration/api.test.ts` |
+| 14d | Privacy policy & terms (public, 4 languages) | ✅ web | `/privacy`, `/terms`, footer + login line | `content/legal/*`, `lib/legal.ts`, `lib/site.ts`, `lib/public-paths.ts` | — | `lib/__tests__/{legal,legal-content,public-paths}.test.ts` |
 | 15 | Manual payment tracking (cash/Venmo/Zelle) — planned last | 🔌 | — | — | `orders.payment_*` | — |
 | 15b | Card payments (optional, much later) | 🔌 | — | — | `orders.payment_status/payment_ref`, `food_items.price_cents` | — |
 | 16 | Notifications, native apps, e2e tests | ⛔ | — | — | — | — |

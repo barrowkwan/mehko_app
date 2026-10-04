@@ -132,6 +132,10 @@ Supabase supports any OpenID Connect provider as a **custom provider** with a `c
 
 This path is documented by Supabase but has **not been tested in this project** — verify end to end before relying on it.
 
+## Legal URLs the providers ask for
+
+Google, Facebook (and later the app stores) require a privacy policy URL, and Facebook also needs terms and a data-deletion URL before an app can go live. They are `/privacy`, `/terms` and `/privacy#deleting-your-data` on your site; exact fields are in [legal-pages.md](legal-pages.md#where-to-paste-the-urls).
+
 ## Troubleshooting
 
 | Symptom | Likely cause |

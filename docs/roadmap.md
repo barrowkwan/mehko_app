@@ -172,7 +172,7 @@ Render in `profiles.locale`; add `email.*` namespace to all catalogs.
 
 ## Security, privacy & legal
 
-### SEC-1 · Privacy policy & terms pages — P1 · M
+### SEC-1 · Privacy policy & terms pages — P1 · M — **drafted & live in 4 languages; needs your setup and a legal review** (set `NEXT_PUBLIC_CONTACT_EMAIL`/`NEXT_PUBLIC_OPERATOR_NAME` in Render, get the text reviewed; see [legal-pages.md](legal-pages.md))
 Required for Facebook login to go **Live**; needed anyway (location sharing, order history). Content needs legal review; make translatable. Link in footer and in provider consoles.
 
 ### SEC-2 · Rate limiting / abuse protection — P2 · M

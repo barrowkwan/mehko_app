@@ -246,5 +246,12 @@
     "confirmLabel": "输入 DELETE 以确认",
     "confirmMismatch": "请准确输入 DELETE 以确认。",
     "submit": "永久删除我的账户"
+  },
+  "legal": {
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "onThisPage": "本页内容",
+    "contactFallback": "本网站运营方提供的联系地址",
+    "agree": "继续即表示您同意我们的<terms>服务条款</terms>和<privacy>隐私政策</privacy>。"
   }
 }

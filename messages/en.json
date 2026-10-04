@@ -246,5 +246,12 @@
     "confirmLabel": "Type DELETE to confirm",
     "confirmMismatch": "Please type DELETE exactly to confirm.",
     "submit": "Delete my account permanently"
+  },
+  "legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "onThisPage": "On this page",
+    "contactFallback": "the contact address provided by the operator of this site",
+    "agree": "By continuing you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>."
   }
 }

@@ -23,6 +23,7 @@ export const viewport: Viewport = { themeColor: "#ea580c" };
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const locale = await getLocale();
   const t = await getTranslations("nav");
+  const tl = await getTranslations("legal");
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
@@ -53,6 +54,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </nav>
           </header>
           <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col">{children}</div>
+          <footer className="border-t border-neutral-200 dark:border-neutral-800">
+            <div className="mx-auto flex max-w-4xl flex-wrap gap-4 p-4 text-xs text-neutral-500">
+              <Link href="/privacy" className="hover:underline">
+                {tl("privacy")}
+              </Link>
+              <Link href="/terms" className="hover:underline">
+                {tl("terms")}
+              </Link>
+            </div>
+          </footer>
         </NextIntlClientProvider>
       </body>
     </html>
