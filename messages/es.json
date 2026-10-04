@@ -288,7 +288,11 @@
     "blocked": "Todavía no puedes eliminar tu cuenta: hay clientes con pedidos próximos contigo. Cancela o completa esos pedidos primero.",
     "confirmLabel": "Escribe DELETE para confirmar",
     "confirmMismatch": "Escribe DELETE exactamente para confirmar.",
-    "submit": "Eliminar mi cuenta definitivamente"
+    "submit": "Eliminar mi cuenta definitivamente",
+    "emailTitle": "Notificaciones por correo",
+    "emailIntro": "Confirmaciones de pedido, recordatorios de recogida y (para comerciantes) resúmenes de pedidos.",
+    "emailLabel": "Enviarme correos",
+    "save": "Guardar"
   },
   "legal": {
     "privacy": "Política de privacidad",
@@ -296,5 +300,45 @@
     "onThisPage": "En esta página",
     "contactFallback": "la dirección de contacto facilitada por el operador de este sitio",
     "agree": "Al continuar aceptas nuestros <terms>Términos del servicio</terms> y nuestra <privacy>Política de privacidad</privacy>."
+  },
+  "email": {
+    "greeting": "Hola {name}:",
+    "greetingAnon": "Hola:",
+    "orderConfirmed": {
+      "subject": "Pedido confirmado: {merchant}, {date}",
+      "intro": "¡Gracias! Tu pedido con {merchant} está confirmado.",
+      "yourOrder": "Tu pedido",
+      "pickup": "Recogida",
+      "changeUntil": "Puedes modificar o cancelar tu pedido hasta {time}.",
+      "instructions": "Instrucciones de recogida",
+      "button": "Ver tu pedido y el código QR"
+    },
+    "pickupReminder": {
+      "subject": "Recogida pronto: {merchant}, {date} a las {start}",
+      "intro": "Se acerca tu recogida con {merchant}.",
+      "showQr": "Muestra tu código QR al comerciante cuando recojas tu pedido.",
+      "button": "Abrir tu pedido y el código QR"
+    },
+    "merchantSummary": {
+      "subject": "{count, plural, one {# pedido} other {# pedidos}} para el {date}: {merchant}",
+      "intro": "Se cerraron los pedidos del {date}. Esto es lo que debes preparar.",
+      "toPrepare": "Para preparar",
+      "orders": "Pedidos",
+      "customerNotes": "Notas de clientes",
+      "noNotes": "No hay notas de clientes.",
+      "button": "Abrir la oferta"
+    },
+    "common": {
+      "when": "{date}, {start}–{end}",
+      "footerReason": "Recibes este correo por tu actividad en {site}.",
+      "unsubscribe": "Darme de baja de estos correos"
+    }
+  },
+  "unsubscribe": {
+    "title": "Cancelar suscripción a los correos",
+    "intro": "¿Dejar de enviar todos los correos de Neighborhood Eats a esta cuenta? Puedes reactivarlos en Cuenta.",
+    "button": "Cancelar suscripción",
+    "done": "Has cancelado la suscripción. No se enviarán más correos.",
+    "invalid": "Este enlace para cancelar la suscripción no es válido."
   }
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { isPublicPath } from "../public-paths";
 
 describe("isPublicPath", () => {
-  it.each(["/login", "/auth/callback", "/auth/signout", "/privacy", "/terms", "/privacy/", "/terms/", "/api/health"])("%s is public", (p) => {
+  it.each(["/login", "/auth/callback", "/auth/signout", "/privacy", "/terms", "/privacy/", "/terms/", "/api/health", "/unsubscribe", "/api/unsubscribe"])("%s is public", (p) => {
     expect(isPublicPath(p)).toBe(true);
   });
   it.each(["/", "/orders", "/account", "/merchant", "/merchant/foods", "/offerings/abc"])("%s requires login", (p) => {
@@ -15,5 +15,8 @@ describe("isPublicPath", () => {
     expect(isPublicPath("/account/privacy")).toBe(false);
     expect(isPublicPath("/api/health-check-evil")).toBe(false);
     expect(isPublicPath("/api/healthz")).toBe(false);
+    expect(isPublicPath("/unsubscribe-all")).toBe(false);
+    expect(isPublicPath("/api/unsubscribe-everyone")).toBe(false);
+    expect(isPublicPath("/api/cron/send-notifications")).toBe(false); // protected by its own secret, not public
   });
 });

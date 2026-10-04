@@ -1,6 +1,6 @@
 # NOTIF-1 · Email notifications
 
-**Status:** Planned — design check done 2026-10-04 (see "Open decisions"). The pipeline can be built and tested before real delivery is enabled; **real delivery needs a domain you own**.
+**Status:** In progress (started 2026-10-04). Decisions made: owner **has a domain**, provider **Resend**, v1 emails = **order confirmation, pickup reminder, merchant cutoff summary** ("merchant is on the way" deferred). The pipeline starts in `dry-run` mode; real delivery is switched on after the domain is verified in Resend.
 **Roadmap items:** NOTIF-1 (+ OPS-8 custom domain, I18N-7 localized emails)   **Size:** M–L   **Owner:** Claude + product owner
 
 ## Goal
@@ -38,18 +38,28 @@ Customers get an order confirmation and a pickup reminder; merchants get a summa
 - **Web:** Account toggle, unsubscribe page, sender route.
 - **Mobile:** none for email (push later).
 
-## Open decisions (owner)
-1. **Domain:** do you own one, will you buy one, or should the pipeline be built now with delivery switched off (dry-run) until you have one?
-2. **Provider:** Resend (recommended) or Brevo.
-3. **Which emails in v1:** order confirmation · pickup reminder · merchant cutoff summary · "merchant is on the way".
+## Decisions (owner, 2026-10-04)
+1. Domain: **already owned** — add the DNS records Resend gives you; sender e.g. `Neighborhood Eats <orders@yourdomain>`.
+2. Provider: **Resend** (free: 3,000/month, max 100/day).
+3. v1 emails: order confirmation · pickup reminder · merchant orders summary at cutoff. Deferred: "merchant is on the way".
+
+## Scheduling (refined)
+Producers that depend on time (pickup reminder, cutoff summary) run in `enqueue_due_notifications()`, called at the start of every sender run. The sender is poked every ~10 minutes by a scheduled GitHub Action (`notifications.yml`, free, no secrets stored in the database) and immediately after a web order via Next's `after()`. pg_cron + pg_net is a later optimization (needs the app URL and secret inside the database).
 
 ## Tasks
-- [ ] Decisions above
-- [ ] Migration: outbox, preferences, producers, pg_cron schedule (hosted only)
-- [ ] Sender route + provider adapters + templates (4 languages) with tests (fake provider receiver)
-- [ ] Account toggle + signed unsubscribe
-- [ ] Privacy policy / brief, docs
-- [ ] End-to-end locally (dry-run + fake receiver); enable on production when the domain is verified
+- [x] Decisions above
+- [x] Migration: outbox, preferences, producers (scheduling via GitHub Action instead of pg_cron)
+- [x] Sender route + provider adapters + templates (4 languages) with tests
+- [x] Account toggle + signed unsubscribe
+- [x] Privacy policy, docs
+- [x] Live local end-to-end (outbox → store → processor)
+- [ ] Enable on production (see "Turning it on" below)
+
+## Turning it on
+1. Resend: add your domain, add the SPF/DKIM DNS records it shows, create an API key.
+2. Render env: `NOTIFICATIONS_PROVIDER=resend`, `EMAIL_API_KEY`, `EMAIL_FROM` (e.g. `Neighborhood Eats <orders@yourdomain>`), `UNSUBSCRIBE_SECRET` (long random string), optionally `EMAIL_REPLY_TO`, `NEXT_PUBLIC_SITE_URL`.
+3. GitHub repo variable `NOTIFICATIONS_ENABLED=true` (starts the 10-minute sender; needs `CRON_SECRET`/`SITE_URL`/`DEPLOY_ENABLED` already set).
+4. Try `NOTIFICATIONS_PROVIDER=dry-run` first (logs only), then place an order with your own account.
 
 ## Verification
 DB tests for producers/dedupe; template tests per language; adapter tests against a fake HTTP receiver (as done for Sentry); a full local run (place order → outbox → sender → captured email). Real delivery is verified once with your own mailbox after DNS is set.

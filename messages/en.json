@@ -288,7 +288,11 @@
     "blocked": "You can't delete your account yet: customers have upcoming orders with you. Cancel or complete those orders first.",
     "confirmLabel": "Type DELETE to confirm",
     "confirmMismatch": "Please type DELETE exactly to confirm.",
-    "submit": "Delete my account permanently"
+    "submit": "Delete my account permanently",
+    "emailTitle": "Email notifications",
+    "emailIntro": "Order confirmations, pickup reminders and (for merchants) order summaries.",
+    "emailLabel": "Send me emails",
+    "save": "Save"
   },
   "legal": {
     "privacy": "Privacy Policy",
@@ -296,5 +300,45 @@
     "onThisPage": "On this page",
     "contactFallback": "the contact address provided by the operator of this site",
     "agree": "By continuing you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>."
+  },
+  "email": {
+    "greeting": "Hi {name},",
+    "greetingAnon": "Hello,",
+    "orderConfirmed": {
+      "subject": "Order confirmed: {merchant}, {date}",
+      "intro": "Thanks! Your order with {merchant} is confirmed.",
+      "yourOrder": "Your order",
+      "pickup": "Pickup",
+      "changeUntil": "You can change or cancel your order until {time}.",
+      "instructions": "Pickup instructions",
+      "button": "View your order and QR code"
+    },
+    "pickupReminder": {
+      "subject": "Pickup soon: {merchant}, {date} at {start}",
+      "intro": "Your pickup with {merchant} is coming up.",
+      "showQr": "Show your QR code to the merchant when you collect your order.",
+      "button": "Open your order and QR code"
+    },
+    "merchantSummary": {
+      "subject": "{count, plural, one {# order} other {# orders}} for {date}: {merchant}",
+      "intro": "Ordering has closed for {date}. Here is what to prepare.",
+      "toPrepare": "To prepare",
+      "orders": "Orders",
+      "customerNotes": "Customer notes",
+      "noNotes": "No customer notes.",
+      "button": "Open the offering"
+    },
+    "common": {
+      "when": "{date}, {start}–{end}",
+      "footerReason": "You receive this email because of your activity on {site}.",
+      "unsubscribe": "Unsubscribe from these emails"
+    }
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe from emails",
+    "intro": "Stop all Neighborhood Eats emails to this account? You can turn them back on in Account.",
+    "button": "Unsubscribe",
+    "done": "You're unsubscribed. No more emails will be sent.",
+    "invalid": "This unsubscribe link is not valid."
   }
 }

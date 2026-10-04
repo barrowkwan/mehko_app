@@ -117,7 +117,7 @@ The original plan had a map pin picker; only lat/lng inputs (+ "use my location"
 
 ## Notifications
 
-### NOTIF-1 · Email notifications — P1 · M — **design done; waiting on 3 decisions (domain, provider, v1 emails)**: [plans/notif-1-email-notifications.md](plans/notif-1-email-notifications.md)
+### NOTIF-1 · Email notifications — P1 · M — **built (order confirmation, pickup reminder, merchant cutoff summary; Resend, 4 languages); off until the Resend domain/API key are set**: [plans/notif-1-email-notifications.md](plans/notif-1-email-notifications.md)
 Order confirmation, cutoff reminder, offering cancelled, "merchant is on the way". **Constraints:** Render free blocks SMTP ports → use an email provider's **HTTPS API** (Resend/Postmark/…); Facebook (and Apple "hide my email") users may have **no usable email** → fall back gracefully; render in the recipient's `profiles.locale` (see I18N-7); add unsubscribe/preferences. Needs a scheduler for reminders (extend the daily job or Supabase pg_cron).
 
 ### NOTIF-2 · Web push (PWA) — P2 · M–L

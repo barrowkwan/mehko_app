@@ -288,7 +288,11 @@
     "blocked": "暂时无法删除账户：有顾客在您这里有未完成的订单。请先取消或完成这些订单。",
     "confirmLabel": "输入 DELETE 以确认",
     "confirmMismatch": "请准确输入 DELETE 以确认。",
-    "submit": "永久删除我的账户"
+    "submit": "永久删除我的账户",
+    "emailTitle": "邮件通知",
+    "emailIntro": "订单确认、取餐提醒，以及（商家）订单汇总。",
+    "emailLabel": "给我发送邮件",
+    "save": "保存"
   },
   "legal": {
     "privacy": "隐私政策",
@@ -296,5 +300,45 @@
     "onThisPage": "本页内容",
     "contactFallback": "本网站运营方提供的联系地址",
     "agree": "继续即表示您同意我们的<terms>服务条款</terms>和<privacy>隐私政策</privacy>。"
+  },
+  "email": {
+    "greeting": "{name}，您好：",
+    "greetingAnon": "您好：",
+    "orderConfirmed": {
+      "subject": "订单已确认：{merchant}，{date}",
+      "intro": "谢谢！您在 {merchant} 的订单已确认。",
+      "yourOrder": "您的订单",
+      "pickup": "自取",
+      "changeUntil": "您可以在 {time} 前修改或取消订单。",
+      "instructions": "取餐说明",
+      "button": "查看订单和二维码"
+    },
+    "pickupReminder": {
+      "subject": "即将取餐：{merchant}，{date} {start}",
+      "intro": "您在 {merchant} 的取餐时间快到了。",
+      "showQr": "取餐时请向商家出示您的二维码。",
+      "button": "打开订单和二维码"
+    },
+    "merchantSummary": {
+      "subject": "{date} 共 {count} 笔订单：{merchant}",
+      "intro": "{date} 的下单已截止。以下是需要准备的内容。",
+      "toPrepare": "需要准备",
+      "orders": "订单",
+      "customerNotes": "顾客备注",
+      "noNotes": "没有顾客备注。",
+      "button": "打开该场次"
+    },
+    "common": {
+      "when": "{date}，{start}–{end}",
+      "footerReason": "您收到此邮件，是因为您在 {site} 上的活动。",
+      "unsubscribe": "退订这些邮件"
+    }
+  },
+  "unsubscribe": {
+    "title": "退订邮件",
+    "intro": "要停止向此账户发送所有 Neighborhood Eats 邮件吗？你可以在“账户”中重新开启。",
+    "button": "退订",
+    "done": "已退订，不会再发送邮件。",
+    "invalid": "此退订链接无效。"
   }
 }

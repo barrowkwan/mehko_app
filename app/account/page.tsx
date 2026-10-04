@@ -1,13 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
-import { deleteAccount } from "./actions";
+import { deleteAccount, setEmailNotifications } from "./actions";
 
 export default async function AccountPage() {
   const { supabase, user } = await requireUser();
   const t = await getTranslations("account");
   const { data: blocker } = await supabase.rpc("account_deletion_blocker");
-  const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("display_name, email_notifications").eq("id", user.id).maybeSingle();
   const name = profile?.display_name || user.email || "";
 
   return (
@@ -16,6 +16,17 @@ export default async function AccountPage() {
         <h1 className="text-xl font-bold">{t("title")}</h1>
         <p className="text-sm text-neutral-500">{t("signedInAs", { name })}</p>
       </div>
+
+      <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 p-4 dark:border-neutral-700">
+        <h2 className="font-semibold">{t("emailTitle")}</h2>
+        <p className="text-sm">{t("emailIntro")}</p>
+        <ActionForm action={setEmailNotifications} submitLabel={t("save")}>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="enabled" defaultChecked={profile?.email_notifications ?? true} />
+            {t("emailLabel")}
+          </label>
+        </ActionForm>
+      </section>
 
       <section className="flex flex-col gap-3 rounded-lg border border-red-300 p-4 dark:border-red-900">
         <h2 className="font-semibold text-red-700 dark:text-red-400">{t("dangerTitle")}</h2>

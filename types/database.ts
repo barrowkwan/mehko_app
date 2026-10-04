@@ -86,6 +86,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"notification_outbox": {
+                  Row: {
+                    "attempts": number,"claimed_at": string | null,"created_at": string,"due_at": string,"entity_id": string,"id": string,"last_error": string | null,"sent_at": string | null,"status": string,"type": string,"user_id": string
+                  }
+                  Insert: {
+                    "attempts"?: number,"claimed_at"?: string | null,"created_at"?: string,"due_at"?: string,"entity_id": string,"id"?: string,"last_error"?: string | null,"sent_at"?: string | null,"status"?: string,"type": string,"user_id": string
+                  }
+                  Update: {
+                    "attempts"?: number,"claimed_at"?: string | null,"created_at"?: string,"due_at"?: string,"entity_id"?: string,"id"?: string,"last_error"?: string | null,"sent_at"?: string | null,"status"?: string,"type"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "notification_outbox_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"offering_context": {
                   Row: {
                     "fetched_at": string,"holiday_name": string | null,"is_holiday": boolean,"offering_id": string,"precip_mm": number | null,"temp_max_c": number | null,"weather_bucket": string | null,"weather_summary": string | null
@@ -250,13 +269,13 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"id": string,"locale": string | null
+                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"email_notifications": boolean,"id": string,"locale": string | null
                   }
                   Insert: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string | null
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"email_notifications"?: boolean,"id": string,"locale"?: string | null
                   }
                   Update: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string | null
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"email_notifications"?: boolean,"id"?: string,"locale"?: string | null
                   }
                   Relationships: [
                     
@@ -304,6 +323,26 @@ isOneToOne: false
 "cancel_order":
 { Args: { "p_order": string }; Returns: undefined
                            },
+"claim_notifications":
+{ Args: { "p_limit"?: number }; Returns: {
+              "attempts": number,
+"claimed_at": string | null,
+"created_at": string,
+"due_at": string,
+"entity_id": string,
+"id": string,
+"last_error": string | null,
+"sent_at": string | null,
+"status": string,
+"type": string,
+"user_id": string
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "notification_outbox"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "confirm_pickup":
 { Args: { "p_token": string }; Returns: {
               "already_picked_up": boolean,"customer_name": string,"order_id": string
@@ -311,6 +350,9 @@ isOneToOne: false
                            },
 "duplicate_offering":
 { Args: { "p_new_date": string,"p_offering": string }; Returns: string
+                           },
+"enqueue_due_notifications":
+{ Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "has_order_on":
 { Args: { "o": string }; Returns: boolean

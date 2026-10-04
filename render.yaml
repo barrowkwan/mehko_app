@@ -21,6 +21,15 @@ services:
         sync: false
       - key: CRON_SECRET
         sync: false
+      # Email notifications (off until set up). See docs/plans/notif-1-email-notifications.md.
+      - key: NOTIFICATIONS_PROVIDER
+        value: "off"
+      - key: EMAIL_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: UNSUBSCRIBE_SECRET
+        sync: false
       # Shown on /privacy and /terms (build-time). Set real values; see docs/legal-pages.md.
       - key: NEXT_PUBLIC_CONTACT_EMAIL
         sync: false

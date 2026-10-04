@@ -288,7 +288,11 @@
     "blocked": "目前無法刪除帳戶：有顧客在您這裡有未完成的訂單。請先取消或完成這些訂單。",
     "confirmLabel": "輸入 DELETE 以確認",
     "confirmMismatch": "請準確輸入 DELETE 以確認。",
-    "submit": "永久刪除我的帳戶"
+    "submit": "永久刪除我的帳戶",
+    "emailTitle": "電子郵件通知",
+    "emailIntro": "訂單確認、取餐提醒，以及（商家）訂單彙總。",
+    "emailLabel": "寄送電子郵件給我",
+    "save": "儲存"
   },
   "legal": {
     "privacy": "隱私權政策",
@@ -296,5 +300,45 @@
     "onThisPage": "本頁內容",
     "contactFallback": "本網站營運方提供的聯絡地址",
     "agree": "繼續即表示您同意我們的<terms>服務條款</terms>和<privacy>隱私權政策</privacy>。"
+  },
+  "email": {
+    "greeting": "{name}，您好：",
+    "greetingAnon": "您好：",
+    "orderConfirmed": {
+      "subject": "訂單已確認：{merchant}，{date}",
+      "intro": "謝謝！您在 {merchant} 的訂單已確認。",
+      "yourOrder": "您的訂單",
+      "pickup": "自取",
+      "changeUntil": "您可以在 {time} 前修改或取消訂單。",
+      "instructions": "取餐說明",
+      "button": "查看訂單和 QR 碼"
+    },
+    "pickupReminder": {
+      "subject": "即將取餐：{merchant}，{date} {start}",
+      "intro": "您在 {merchant} 的取餐時間快到了。",
+      "showQr": "取餐時請向商家出示您的 QR 碼。",
+      "button": "開啟訂單和 QR 碼"
+    },
+    "merchantSummary": {
+      "subject": "{date} 共 {count} 筆訂單：{merchant}",
+      "intro": "{date} 的下單已截止。以下是需要準備的內容。",
+      "toPrepare": "需要準備",
+      "orders": "訂單",
+      "customerNotes": "顧客備註",
+      "noNotes": "沒有顧客備註。",
+      "button": "開啟該場次"
+    },
+    "common": {
+      "when": "{date}，{start}–{end}",
+      "footerReason": "您收到此郵件，是因為您在 {site} 上的活動。",
+      "unsubscribe": "取消訂閱這些郵件"
+    }
+  },
+  "unsubscribe": {
+    "title": "取消訂閱郵件",
+    "intro": "要停止向此帳戶寄送所有 Neighborhood Eats 郵件嗎？你可以在「帳戶」中重新開啟。",
+    "button": "取消訂閱",
+    "done": "已取消訂閱，不會再寄送郵件。",
+    "invalid": "此取消訂閱連結無效。"
   }
 }

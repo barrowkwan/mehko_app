@@ -1,10 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { translateDbError } from "@/lib/db-errors";
 import { createClient } from "@/lib/supabase/server";
+import { runNotifications } from "@/lib/notifications/run";
 
 export type FormState = { error?: string; saved?: boolean } | undefined;
 
@@ -34,6 +37,13 @@ export async function placeOrder(offeringId: string, _prev: FormState, formData:
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("place_order", { p_offering: offeringId, p_items: items, p_note: note.note });
   if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
+  // Best effort: send the confirmation right away. If it fails, the scheduled sender picks it up.
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (host) {
+    const siteUrl = `${h.get("x-forwarded-proto") ?? "https"}://${host}`;
+    after(() => runNotifications({ siteUrl, limit: 5 }).catch((e) => console.error("Immediate notification send failed:", e instanceof Error ? e.message : e)));
+  }
   redirect(`/orders/${data}`);
 }
 

@@ -1,0 +1,26 @@
+name: Send notifications
+
+# Pokes the app every ~10 minutes to queue and send due emails (pickup reminders, merchant order summaries,
+# retries). Runs only when the repository variable NOTIFICATIONS_ENABLED is "true", so it stays off until
+# the email provider is set up. GitHub may delay scheduled runs; that only delays reminders slightly.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  send:
+    if: vars.DEPLOY_ENABLED == 'true' && vars.NOTIFICATIONS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call /api/cron/send-notifications
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl --fail --silent --show-error --max-time 120 \
+            --retry 5 --retry-delay 20 --retry-all-errors \
+            -X POST -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${SITE_URL%/}/api/cron/send-notifications"

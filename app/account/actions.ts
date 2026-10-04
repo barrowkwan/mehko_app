@@ -7,6 +7,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { FOOD_IMAGE_BUCKET } from "@/lib/images";
 import type { FormState } from "@/app/orders/actions";
 
+// Turns the signed-in user's notification emails on or off (RLS: a user can update only their own profile).
+export async function setEmailNotifications(_prev: FormState, formData: FormData): Promise<FormState> {
+  const { supabase, user } = await requireUser();
+  const { error } = await supabase.from("profiles").update({ email_notifications: formData.get("enabled") === "on" }).eq("id", user.id);
+  if (error) return { error: (await getTranslations("errors"))("generic") };
+  return { saved: true };
+}
+
 // Permanently deletes the signed-in user's account (store requirement). Order of checks matters:
 //  1. explicit confirmation, 2. database rule (a merchant with upcoming active orders is blocked,
 //  enforced by the account_deletion_blocker() RPC under the user's own RLS), 3. delete the auth user

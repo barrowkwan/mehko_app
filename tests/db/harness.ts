@@ -16,6 +16,7 @@ const SUPABASE_STUBS = `
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
   create role anon nologin;
   create role authenticated nologin;
+  create role service_role nologin bypassrls;
   grant usage on schema public, auth to anon, authenticated;
   create publication supabase_realtime;
 
@@ -51,14 +52,19 @@ export async function createDb() {
   const db = new PGlite();
   await db.exec(SUPABASE_STUBS);
 
+  // Supabase grants these by default when a table is created; RLS then decides what is visible.
+  await db.exec(`
+    alter default privileges in schema public grant select, insert, update, delete on tables to authenticated;
+    alter default privileges in schema public grant select on tables to anon;
+    alter default privileges in schema public grant all on tables to service_role;
+    grant usage on schema public to service_role;
+  `);
+
   const dir = join(root, "supabase/migrations");
   for (const f of readdirSync(dir).sort()) await db.exec(readFileSync(join(dir, f), "utf8"));
 
-  // Supabase grants these by default; RLS then decides what is visible.
-  await db.exec(`
-    grant select, insert, update, delete on all tables in schema public to authenticated;
-    grant select on all tables in schema public to anon;
-  `);
+  // (grants are applied at table-creation time, like Supabase's default privileges, so a migration's explicit
+  // REVOKE is not silently undone afterwards)
   await db.exec(readFileSync(join(root, "supabase/seed.sql"), "utf8"));
   await db.exec(`
     insert into auth.users (id, email, raw_user_meta_data)
