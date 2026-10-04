@@ -42,9 +42,4 @@ Useful as a dependency map: each step only needs the ones above it.
 
 ## Known gaps / ideas
 
-- No browser e2e (Playwright) tests; OAuth, camera scan and the Leaflet map are not automated.
-- Merchants can't edit an offering after creation (only publish/close); no offering delete. (Foods and the merchant profile *are* editable.)
-- No image upload for foods (`image_url` column unused).
-- Closing/cancelling an offering doesn't notify customers.
-- Live location needs the merchant's page open (browser geolocation, no background tracking).
-- Reports have no date-range filter and aggregate in the app (fine to ~10k lines; move to SQL views if larger).
+Moved to the backlog: see [roadmap.md](roadmap.md) (e.g. FEAT-1 edit/clone offerings, FEAT-2 food photos, FEAT-5 reports upgrades, NOTIF-1/2 notifications, QA-1 browser e2e, SEC-1 privacy/terms). Add new ideas there.
