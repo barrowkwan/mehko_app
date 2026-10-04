@@ -15,6 +15,14 @@ describe("dbErrorKey", () => {
     ["This order was cancelled", "orderCancelled"],
     ["Cutoff must be before the pickup start time", "cutoffAfterPickup"],
     ["Not authenticated", "notAuthenticated"],
+    ["Past offerings cannot be edited", "pastOfferingLocked"],
+    ["Cannot move an offering that has orders", "offeringHasOrdersLocked"],
+    ["Offering has orders", "offeringHasOrders"],
+    ["Item has orders", "itemHasOrders"],
+    ["Limit is below the quantity already ordered (8)", "limitBelowOrdered"],
+    ["The new date is in the past", "newDatePast"],
+    ["Offering not found", "offeringNotFound"],
+    ["An offering must contain at least one item", "emptyOffering"],
   ])("maps %s", (msg, key) => {
     expect(dbErrorKey(msg)).toBe(key);
   });

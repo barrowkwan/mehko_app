@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatInstant, formatTime, todayIn } from "../format";
+import { formatDate, formatInstant, formatTime, isoToLocalInput, todayIn } from "../format";
 
 describe("formatDate / formatTime", () => {
   it("formats the calendar day without a timezone shift", () => {
@@ -32,5 +32,22 @@ describe("formatInstant", () => {
 describe("todayIn", () => {
   it("returns a YYYY-MM-DD string", () => {
     expect(todayIn("UTC")).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+});
+
+describe("isoToLocalInput", () => {
+  it("renders an ISO instant as the browser-local value a datetime-local input expects", () => {
+    const local = new Date(2026, 9, 5, 14, 30); // local wall-clock time, whatever the machine's timezone
+    expect(isoToLocalInput(local.toISOString())).toBe("2026-10-05T14:30");
+  });
+  it("pads single-digit parts and survives a round trip to the same minute", () => {
+    const local = new Date(2027, 0, 2, 3, 4);
+    const text = isoToLocalInput(local.toISOString());
+    expect(text).toBe("2027-01-02T03:04");
+    expect(new Date(text).getTime()).toBe(local.getTime());
+  });
+  it("returns an empty string for invalid input", () => {
+    expect(isoToLocalInput("")).toBe("");
+    expect(isoToLocalInput("not a date")).toBe("");
   });
 });

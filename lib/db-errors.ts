@@ -6,6 +6,14 @@ export type ErrorKey = keyof typeof messages.errors;
 // UI can show them in the user's language. Order matters: first match wins.
 const PATTERNS: [RegExp, ErrorKey][] = [
   [/not authenticated/i, "notAuthenticated"],
+  [/past offerings cannot be edited/i, "pastOfferingLocked"],
+  [/cannot move an offering that has orders/i, "offeringHasOrdersLocked"],
+  [/offering has orders/i, "offeringHasOrders"],
+  [/item has orders/i, "itemHasOrders"],
+  [/below the quantity already ordered/i, "limitBelowOrdered"],
+  [/new date is in the past/i, "newDatePast"],
+  [/offering must contain at least one item/i, "emptyOffering"],
+  [/offering not found/i, "offeringNotFound"],
   [/offering is not available/i, "offeringUnavailable"],
   [/cutoff has passed/i, "cutoffPassed"],
   [/already have an order/i, "alreadyOrdered"],

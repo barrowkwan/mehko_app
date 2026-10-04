@@ -309,6 +309,9 @@ isOneToOne: false
               "already_picked_up": boolean,"customer_name": string,"order_id": string
             }[]
                            },
+"duplicate_offering":
+{ Args: { "p_new_date": string,"p_offering": string }; Returns: string
+                           },
 "has_order_on":
 { Args: { "o": string }; Returns: boolean
                            },
@@ -325,6 +328,9 @@ isOneToOne: false
                            },
 "place_order":
 { Args: { "p_items": Json,"p_offering": string }; Returns: string
+                           },
+"update_offering":
+{ Args: { "p_cutoff": string,"p_date": string,"p_end": string,"p_items": Json,"p_offering": string,"p_pickup_point": string,"p_start": string }; Returns: undefined
                            },
 "update_order":
 { Args: { "p_items": Json,"p_order": string }; Returns: undefined

@@ -16,6 +16,8 @@ Size: **S** ≤ half a day · **M** 1–3 days · **L** a week or more. Priority
 - _Phase A (in progress):_ OPS-1, SEC-5, SEC-1 are being implemented first (below).
 - **Planned (after Phase A):** [MOB · Native iOS + Android apps with Expo (Plan A)](plans/mobile-native-expo.md) — detailed plan, milestones M-1…M5, security gate.
 
+- [FEAT-1 Edit, duplicate & delete offerings](plans/feat-1-edit-clone-offerings.md) — implemented 2026-10-04, verifying after deploy.
+
 (Link plans here: `- [FEAT-1 Edit & clone offerings](plans/feat-1-edit-clone-offerings.md) — started YYYY-MM-DD`)
 
 ## Suggested order
@@ -84,7 +86,7 @@ CI step: apply migrations, run `supabase gen types typescript --local`, fail if 
 
 ## Product features
 
-### FEAT-1 · Edit & clone offerings, delete drafts — P1 · M
+### FEAT-1 · Edit & clone offerings, delete drafts — P1 · M — **implemented (web)**; plan: [plans/feat-1-edit-clone-offerings.md](plans/feat-1-edit-clone-offerings.md)
 **Why:** merchants can only publish/close. Repeating last week's menu is the most common action.
 **Do:** `updateOffering`, "Duplicate to new date", delete drafts. **Rules:** schedule trigger already validates cutoff; do not orphan `order_items` (FK to `offering_items`, no cascade) — block removing items that have orders, or define behavior in a migration. Add DB tests.
 

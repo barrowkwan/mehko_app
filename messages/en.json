@@ -164,7 +164,11 @@
       "draft": "Draft",
       "published": "Published",
       "closed": "Closed"
-    }
+    },
+    "editTitle": "Edit offering",
+    "save": "Save changes",
+    "lockedHint": "This offering already has orders, so the pickup point and date can't be changed. You can still adjust the times, cutoff and foods.",
+    "pastHint": "This pickup date has passed, so the schedule can't be edited."
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
@@ -173,7 +177,16 @@
     "prepList": "Prep list",
     "limit": "(limit {count})",
     "liveLocation": "Live location",
-    "orders": "Orders ({count})"
+    "orders": "Orders ({count})",
+    "edit": "Edit",
+    "duplicateTitle": "Repeat on another date",
+    "duplicateHelp": "Creates a draft with the same pickup point, times and foods. Review it and publish when ready.",
+    "duplicateDate": "New pickup date",
+    "duplicateSubmit": "Create draft copy",
+    "delete": "Delete offering",
+    "deleteConfirm": "Delete this offering? This can't be undone.",
+    "deleteBlocked": "Offerings with orders can't be deleted. Close ordering instead.",
+    "back": "Back to offering"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",
@@ -233,7 +246,15 @@
     "otherMerchant": "This order belongs to a different merchant.",
     "orderCancelled": "This order was cancelled.",
     "cutoffAfterPickup": "The cutoff must be before the pickup start time.",
-    "merchantHasActiveOrders": "You still have upcoming orders from customers. Cancel or complete them before deleting your account."
+    "merchantHasActiveOrders": "You still have upcoming orders from customers. Cancel or complete them before deleting your account.",
+    "pastOfferingLocked": "This pickup date has passed, so its schedule can no longer be edited.",
+    "offeringHasOrdersLocked": "This offering already has orders, so its pickup point and date can't be changed.",
+    "offeringHasOrders": "This offering has orders and can't be deleted. Close ordering instead.",
+    "itemHasOrders": "A food that customers have already ordered can't be removed from this offering.",
+    "limitBelowOrdered": "An item's limit can't be lower than the quantity already ordered.",
+    "newDatePast": "Choose a date that is today or later.",
+    "offeringNotFound": "Offering not found.",
+    "emptyOffering": "An offering must include at least one food."
   },
   "account": {
     "title": "Account",

@@ -136,7 +136,13 @@ export async function setFoodActive(id: string, active: boolean): Promise<void> 
 
 // ───────── offerings ─────────
 
-export async function createOffering(_prev: FormState, formData: FormData): Promise<FormState> {
+// Shared by createOffering and updateOffering so the two can never validate differently.
+type OfferingInput = {
+  schedule: { pickup_point_id: string; pickup_date: string; pickup_start: string; pickup_end: string; cutoff_at: string };
+  items: { food_item_id: string; quantity_limit: number | null }[];
+};
+
+async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value: OfferingInput } | { ok: false; error: FormState }> {
   const t = await getTranslations("offerings");
   const parsed = z
     .object({
@@ -147,34 +153,85 @@ export async function createOffering(_prev: FormState, formData: FormData): Prom
       cutoff_at: z.iso.datetime({ offset: true, message: t("cutoffRequired") }),
     })
     .safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return await firstError(parsed.error);
+  if (!parsed.success) return { ok: false, error: await firstError(parsed.error) };
 
-  const items: { food_item_id: string; quantity_limit: number | null }[] = [];
+  const items: OfferingInput["items"] = [];
   for (const [key, value] of formData.entries()) {
     if (!key.startsWith("food_") || value !== "on") continue;
     const id = key.slice(5);
     const lim = Number.parseInt(String(formData.get(`limit_${id}`) ?? ""), 10);
     items.push({ food_item_id: id, quantity_limit: Number.isFinite(lim) && lim > 0 ? lim : null });
   }
-  if (items.length === 0) return { error: t("selectFood") };
+  if (items.length === 0) return { ok: false, error: { error: t("selectFood") } };
+  return { ok: true, value: { schedule: parsed.data, items } };
+}
+
+export async function createOffering(_prev: FormState, formData: FormData): Promise<FormState> {
+  const input = await parseOfferingForm(formData);
+  if (!input.ok) return input.error;
 
   const { supabase, merchant } = await requireMerchant();
   const { data: offering, error } = await supabase
     .from("offerings")
-    .insert({ ...parsed.data, merchant_id: merchant.id })
+    .insert({ ...input.value.schedule, merchant_id: merchant.id })
     .select("id")
     .single();
   if (error) return { error: await dbError(error.message) };
 
   const { error: itemsError } = await supabase
     .from("offering_items")
-    .insert(items.map((i) => ({ ...i, offering_id: offering.id })));
+    .insert(input.value.items.map((i) => ({ ...i, offering_id: offering.id })));
   if (itemsError) {
     await supabase.from("offerings").delete().eq("id", offering.id);
     return { error: await dbError(itemsError.message) };
   }
   revalidatePath("/merchant/offerings");
   redirect(`/merchant/offerings/${offering.id}`);
+}
+
+// One atomic database call (update_offering): a rejected change leaves the offering untouched.
+export async function updateOffering(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const input = await parseOfferingForm(formData);
+  if (!input.ok) return input.error;
+  const { schedule, items } = input.value;
+
+  const { supabase } = await requireMerchant();
+  const { error } = await supabase.rpc("update_offering", {
+    p_offering: id,
+    p_pickup_point: schedule.pickup_point_id,
+    p_date: schedule.pickup_date,
+    p_start: schedule.pickup_start,
+    p_end: schedule.pickup_end,
+    p_cutoff: schedule.cutoff_at,
+    p_items: items,
+  });
+  if (error) return { error: await dbError(error.message) };
+  revalidatePath("/merchant/offerings");
+  revalidatePath(`/merchant/offerings/${id}`);
+  redirect(`/merchant/offerings/${id}`);
+}
+
+// A draft copy on a new date (same pickup point, times, foods); the merchant reviews and publishes it.
+export async function duplicateOffering(id: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const t = await getTranslations("offeringDetail");
+  const date = String(formData.get("new_date") ?? "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: t("duplicateDate") };
+
+  const { supabase } = await requireMerchant();
+  const { data, error } = await supabase.rpc("duplicate_offering", { p_offering: id, p_new_date: date });
+  if (error) return { error: await dbError(error.message) };
+  revalidatePath("/merchant/offerings");
+  redirect(`/merchant/offerings/${data}`);
+}
+
+// The database refuses to delete an offering that has placed/picked-up orders (customers' orders are never lost).
+export async function deleteOffering(id: string): Promise<FormState> {
+  const { supabase } = await requireMerchant();
+  const { data, error } = await supabase.from("offerings").delete().eq("id", id).select("id");
+  if (error) return { error: await dbError(error.message) };
+  if (!data?.length) return { error: (await getTranslations("errors"))("offeringNotFound") };
+  revalidatePath("/merchant/offerings");
+  redirect("/merchant/offerings");
 }
 
 export async function setOfferingStatus(id: string, status: "draft" | "published" | "closed"): Promise<void> {

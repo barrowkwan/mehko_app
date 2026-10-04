@@ -25,12 +25,18 @@ View: `order_lines` (`security_invoker`) — one row per ordered item with merch
 | --- | --- |
 | `place_order(offering, items jsonb)` | Offering published; `now() < cutoff_at`; stock; one active order |
 | `update_order(order, items jsonb)` | Own order, status `placed`, before cutoff; stock (excluding own lines) |
+| `update_offering(offering, point, date, start, end, cutoff, items jsonb)` | Invoker rights, atomic. Owner only (`Offering not found` otherwise). Replaces schedule and items in one call; items = `[{food_item_id, quantity_limit}]`; all-or-nothing, so a rejected change leaves the offering untouched. Subject to the protection triggers below |
+| `duplicate_offering(offering, new_date)` | Invoker rights. Owner only. Creates a **draft** copy on `new_date` (not in the past): same pickup point, times, items/limits (archived foods skipped, orders never copied); cutoff keeps the same *wall-clock* lead before pickup in the pickup point's timezone (DST-safe). Returns the new id |
 | `account_deletion_blocker()` | Invoker rights (RLS). Returns `'merchant_active_orders'` if the caller owns a merchant with an active (`placed`) order whose pickup date is today or later, else null. Used by the Account page / `deleteAccount` before the auth user is deleted |
 | `cancel_order(order)` | Own order, `placed`, before cutoff |
 | `confirm_pickup(token)` | Token's offering belongs to caller's merchant; not cancelled; idempotent (returns `already_picked_up`) |
 | `offering_stock(offering)` | Remaining quantity for limited items (customers can't read others' orders) |
 
 `items` = `[{"offering_item_id": "<uuid>", "qty": <int>}]`. Helpers: `is_merchant_owner`, `offering_merchant`, `has_order_on`, `can_share_location`, internal `_write_order_items`.
+
+## Offering edit protection (migration `20261006000000_edit_clone_offerings.sql`)
+
+Triggers enforce these for every client: **moving** an offering (pickup point or date) is refused while it has `placed` orders; the **schedule of a past offering** (pickup date over at the pickup point) can't change (status still can); an offering with `placed`/`picked_up` orders **can't be deleted** (cancelled orders go with it — without this guard the `ON DELETE CASCADE` added for account deletion would let an owner wipe other customers' orders through the API); an **item** with active orders can't be removed (only-cancelled lines are cleaned up); an item's **limit** can't drop below the quantity already ordered; an item's food/offering can't be re-pointed. Account deletion still works because it removes orders before offerings (`merchants_delete_offerings_first`).
 
 ## Account deletion
 

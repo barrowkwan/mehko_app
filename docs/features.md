@@ -8,7 +8,7 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | 2 | Merchant registration | ✅ | `/merchant/setup` | `createMerchant` | `merchants` | — |
 | 3 | Multiple pickup points | ✅ | `/merchant/pickup-points` (+`geo-fill.tsx`) | `addPickupPoint`, `setPickupPointActive` | `pickup_points` | RLS cross-merchant test |
 | 4 | Foods | ✅ | `/merchant/foods` | `addFood`, `setFoodActive` | `food_items` | — |
-| 5 | Offerings (food, date, pickup, cutoff) | ✅ | `/merchant/offerings`, `/new` (+`cutoff-input.tsx`), `/[id]` | `createOffering`, `setOfferingStatus` | `offerings`, `offering_items`, `check_offering_schedule` | schedule trigger test |
+| 5 | Offerings (food, date, pickup, cutoff) — create, **edit, duplicate to a new date, delete** | ✅ | `/merchant/offerings`, `/new` (+`cutoff-input.tsx`), `/[id]` | `createOffering`, `setOfferingStatus` | `offerings`, `offering_items`, `check_offering_schedule` | schedule trigger test |
 | 6 | Browse & order | ✅ | `/`, `/offerings/[id]` | `placeOrder`, `OrderForm` | `place_order`, `offering_stock` | ordering tests |
 | 7 | Edit/cancel until cutoff | ✅ | `/orders/[id]` | `updateOrder`, `cancelOrder` | `update_order`, `cancel_order` | cutoff tests |
 | 8 | Order history (customer) | ✅ | `/orders` | RSC query | RLS on `orders` | RLS tests |

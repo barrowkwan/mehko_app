@@ -164,7 +164,11 @@
       "draft": "草稿",
       "published": "已發布",
       "closed": "已關閉"
-    }
+    },
+    "editTitle": "編輯場次",
+    "save": "儲存變更",
+    "lockedHint": "該場次已有訂單，無法更改自取點和日期。您仍可調整時間、截止時間和餐點。",
+    "pastHint": "該自取日期已過，無法編輯時間安排。"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 狀態：{status}",
@@ -173,7 +177,16 @@
     "prepList": "備餐清單",
     "limit": "（限量 {count}）",
     "liveLocation": "即時位置",
-    "orders": "訂單（{count}）"
+    "orders": "訂單（{count}）",
+    "edit": "編輯",
+    "duplicateTitle": "在其他日期重複",
+    "duplicateHelp": "建立一份草稿，沿用相同的自取點、時間和餐點。檢查後再發布。",
+    "duplicateDate": "新的自取日期",
+    "duplicateSubmit": "建立草稿副本",
+    "delete": "刪除場次",
+    "deleteConfirm": "確定刪除此場次嗎？此操作無法復原。",
+    "deleteBlocked": "已有訂單的場次無法刪除。請改為關閉下單。",
+    "back": "返回場次"
   },
   "location": {
     "onlyPickupDay": "自取當天才能開啟即時位置分享。",
@@ -233,7 +246,15 @@
     "otherMerchant": "此訂單屬於其他商家。",
     "orderCancelled": "此訂單已被取消。",
     "cutoffAfterPickup": "下單截止時間必須早於自取開始時間。",
-    "merchantHasActiveOrders": "您仍有顧客的未完成訂單。請先取消或完成這些訂單，再刪除帳戶。"
+    "merchantHasActiveOrders": "您仍有顧客的未完成訂單。請先取消或完成這些訂單，再刪除帳戶。",
+    "pastOfferingLocked": "該自取日期已過，無法再編輯其時間安排。",
+    "offeringHasOrdersLocked": "該場次已有訂單，無法更改自取點和日期。",
+    "offeringHasOrders": "該場次已有訂單，無法刪除。請改為關閉下單。",
+    "itemHasOrders": "顧客已訂購的餐點不能從該場次中移除。",
+    "limitBelowOrdered": "品項的限量不能低於已訂購的數量。",
+    "newDatePast": "請選擇今天或之後的日期。",
+    "offeringNotFound": "找不到該場次。",
+    "emptyOffering": "一個場次至少要包含一道餐點。"
   },
   "account": {
     "title": "帳戶",

@@ -1,10 +1,12 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { LocationToggle } from "@/components/location-toggle";
-import { setOfferingStatus } from "../../actions";
+import { deleteOffering, duplicateOffering, setOfferingStatus } from "../../actions";
 
 export default async function MerchantOfferingPage({ params }: PageProps<"/merchant/offerings/[id]">) {
   const { id } = await params;
@@ -42,7 +44,10 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   );
 
   const tz = o.pickup_point?.timezone ?? "UTC";
-  const isPickupDay = todayIn(tz) === o.pickup_date;
+  const today = todayIn(tz);
+  const isPickupDay = today === o.pickup_date;
+  const past = today > o.pickup_date;
+  const canDelete = (orders?.length ?? 0) === 0; // cancelled orders are not listed; they go with the offering
   const status = o.status as "draft" | "published" | "closed";
 
   return (
@@ -67,8 +72,37 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
               <button className="text-orange-600 hover:underline">{t("closeOrdering")}</button>
             </form>
           )}
+          {!past && (
+            <Link href={`/merchant/offerings/${id}/edit`} className="text-orange-600 hover:underline">
+              {t("edit")}
+            </Link>
+          )}
         </div>
       </div>
+
+      <section className="flex max-w-md flex-col gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
+        <details>
+          <summary className="cursor-pointer text-sm font-medium text-orange-600">{t("duplicateTitle")}</summary>
+          <p className="my-2 text-xs text-neutral-500">{t("duplicateHelp")}</p>
+          <ActionForm action={duplicateOffering.bind(null, id)} submitLabel={t("duplicateSubmit")}>
+            <Field label={t("duplicateDate")}>
+              <input type="date" name="new_date" required min={today} className={inputClass} />
+            </Field>
+          </ActionForm>
+        </details>
+        {canDelete ? (
+          <ActionForm
+            action={deleteOffering.bind(null, id)}
+            submitLabel={t("delete")}
+            buttonClassName="bg-red-600 hover:bg-red-700"
+            confirmMessage={t("deleteConfirm")}
+          >
+            <></>
+          </ActionForm>
+        ) : (
+          <p className="text-xs text-neutral-500">{t("deleteBlocked")}</p>
+        )}
+      </section>
 
       <section>
         <h2 className="mb-2 font-semibold">{t("prepList")}</h2>

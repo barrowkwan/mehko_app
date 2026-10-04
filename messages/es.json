@@ -164,7 +164,11 @@
       "draft": "Borrador",
       "published": "Publicada",
       "closed": "Cerrada"
-    }
+    },
+    "editTitle": "Editar oferta",
+    "save": "Guardar cambios",
+    "lockedHint": "Esta oferta ya tiene pedidos, así que no se puede cambiar el punto de recogida ni la fecha. Aún puedes ajustar los horarios, el cierre y las comidas.",
+    "pastHint": "La fecha de esta recogida ya pasó, así que no se puede editar el horario."
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",
@@ -173,7 +177,16 @@
     "prepList": "Lista de preparación",
     "limit": "(límite {count})",
     "liveLocation": "Ubicación en vivo",
-    "orders": "Pedidos ({count})"
+    "orders": "Pedidos ({count})",
+    "edit": "Editar",
+    "duplicateTitle": "Repetir en otra fecha",
+    "duplicateHelp": "Crea un borrador con el mismo punto de recogida, horarios y comidas. Revísalo y publícalo cuando esté listo.",
+    "duplicateDate": "Nueva fecha de recogida",
+    "duplicateSubmit": "Crear copia en borrador",
+    "delete": "Eliminar oferta",
+    "deleteConfirm": "¿Eliminar esta oferta? No se puede deshacer.",
+    "deleteBlocked": "Las ofertas con pedidos no se pueden eliminar. Cierra los pedidos en su lugar.",
+    "back": "Volver a la oferta"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
@@ -233,7 +246,15 @@
     "otherMerchant": "Este pedido pertenece a otro comerciante.",
     "orderCancelled": "Este pedido fue cancelado.",
     "cutoffAfterPickup": "El cierre de pedidos debe ser antes del inicio de la recogida.",
-    "merchantHasActiveOrders": "Todavía tienes pedidos próximos de clientes. Cancélalos o complétalos antes de eliminar tu cuenta."
+    "merchantHasActiveOrders": "Todavía tienes pedidos próximos de clientes. Cancélalos o complétalos antes de eliminar tu cuenta.",
+    "pastOfferingLocked": "La fecha de esta recogida ya pasó, así que su horario ya no se puede editar.",
+    "offeringHasOrdersLocked": "Esta oferta ya tiene pedidos, así que no se puede cambiar su punto de recogida ni su fecha.",
+    "offeringHasOrders": "Esta oferta tiene pedidos y no se puede eliminar. Cierra los pedidos en su lugar.",
+    "itemHasOrders": "No se puede quitar de esta oferta una comida que los clientes ya han pedido.",
+    "limitBelowOrdered": "El límite de un artículo no puede ser menor que la cantidad ya pedida.",
+    "newDatePast": "Elige una fecha de hoy o posterior.",
+    "offeringNotFound": "Oferta no encontrada.",
+    "emptyOffering": "Una oferta debe incluir al menos una comida."
   },
   "account": {
     "title": "Cuenta",

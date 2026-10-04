@@ -10,17 +10,25 @@ export function ActionForm({
   children,
   className = "flex flex-col gap-3",
   buttonClassName = "bg-orange-600 hover:bg-orange-700",
+  confirmMessage,
 }: {
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
   children: ReactNode;
   className?: string;
   buttonClassName?: string;
+  confirmMessage?: string; // asks before submitting (e.g. destructive actions)
 }) {
   const t = useTranslations("common");
   const [state, formAction, pending] = useActionState(action, undefined);
   return (
-    <form action={formAction} className={className}>
+    <form
+      action={formAction}
+      className={className}
+      onSubmit={(e) => {
+        if (confirmMessage && !window.confirm(confirmMessage)) e.preventDefault();
+      }}
+    >
       {children}
       {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
       {state?.saved && !state.error && <p className="text-sm text-green-700">{t("saved")}</p>}

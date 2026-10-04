@@ -44,7 +44,10 @@ describe("account_deletion_blocker()", () => {
 
   it("ignores orders on past offerings", async () => {
     await asUser(db, IDS.customer, () => placeOrder(IDS.meiOffering, porkItem));
+    // Simulate time passing: moving an offering that has orders is (rightly) forbidden, so bypass triggers for this setup only.
+    await db.exec("set session_replication_role = replica");
     await db.exec(`update offerings set pickup_date = current_date - 10, cutoff_at = now() - interval '11 days' where id = '${IDS.meiOffering}'`);
+    await db.exec("set session_replication_role = origin");
     expect(await blocker(IDS.meiOwner)).toBeNull();
   });
 

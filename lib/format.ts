@@ -45,3 +45,12 @@ export function todayIn(timeZone: string): string {
 export function yesterdayUtc(): string {
   return new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
 }
+
+// An ISO instant as the value a <input type="datetime-local"> expects, in the browser's local time
+// ("2026-10-05T14:30"). Only meaningful in the browser (uses its timezone); "" for invalid input.
+export function isoToLocalInput(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}

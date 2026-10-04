@@ -266,4 +266,68 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("live Supabase", () => {
     expect((await admin.auth.admin.deleteUser(c.id)).error).toBeNull();
     expect(await rows("profiles", "id", c.id)).toBe(0);
   }, 30_000);
+  it("offering edit/duplicate/delete rules hold through the real API (RLS + triggers)", async () => {
+    const m = await signUp("editmerchant");
+    const c = await signUp("editcustomer");
+    const mid = must(await m.client.from("merchants").insert({ owner_id: m.id, name: `Editor ${run}` }).select("id").single()).id;
+    const pid = must(await m.client.from("pickup_points").insert({ merchant_id: mid, name: "P", lat: 1, lng: 1, timezone: "UTC" }).select("id").single()).id;
+    const f1 = must(await m.client.from("food_items").insert({ merchant_id: mid, name: "A" }).select("id").single()).id;
+    const f2 = must(await m.client.from("food_items").insert({ merchant_id: mid, name: "B" }).select("id").single()).id;
+    const date = ymd(5);
+    const oid = must(
+      await m.client
+        .from("offerings")
+        .insert({ merchant_id: mid, pickup_point_id: pid, pickup_date: date, pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published" })
+        .select("id")
+        .single(),
+    ).id;
+    const oi1 = must(await m.client.from("offering_items").insert({ offering_id: oid, food_item_id: f1, quantity_limit: 10 }).select("id").single()).id;
+    await m.client.from("offering_items").insert({ offering_id: oid, food_item_id: f2 }).select("id").single();
+    const cutoff = new Date(Date.now() + 2 * 86_400_000).toISOString();
+    const upd = (over: Partial<{ date: string; end: string; items: { food_item_id: string; quantity_limit: number | null }[] }>) =>
+      m.client.rpc("update_offering", {
+        p_offering: oid, p_pickup_point: pid, p_date: over.date ?? date, p_start: "17:00", p_end: over.end ?? "19:00", p_cutoff: cutoff,
+        p_items: over.items ?? [{ food_item_id: f1, quantity_limit: 10 }, { food_item_id: f2, quantity_limit: null }],
+      });
+
+    // No orders yet: everything is editable, including moving the date.
+    expect((await upd({ date: ymd(6) })).error).toBeNull();
+    expect((await upd({ date })).error).toBeNull();
+
+    // A customer orders 4 of item A.
+    const orderId = must(await c.client.rpc("place_order", { p_offering: oid, p_items: [{ offering_item_id: oi1, qty: 4 }] }));
+
+    // Delete is refused, and the order survives.
+    const del = await m.client.from("offerings").delete().eq("id", oid);
+    expect(del.error?.message).toMatch(/Offering has orders/);
+    expect(must(await c.client.from("orders").select("id").eq("id", orderId))).toHaveLength(1);
+
+    // The date is locked; times can still change; a limit below the ordered amount and removing the item are refused.
+    expect((await upd({ date: ymd(6) })).error?.message).toMatch(/Cannot move an offering that has orders/);
+    expect((await upd({ end: "20:00" })).error).toBeNull();
+    expect((await upd({ items: [{ food_item_id: f1, quantity_limit: 3 }, { food_item_id: f2, quantity_limit: null }] })).error?.message).toMatch(/below the quantity already ordered/);
+    expect((await upd({ items: [{ food_item_id: f2, quantity_limit: null }] })).error?.message).toMatch(/Item has orders/);
+    // ...and a rejected change left the data as it was.
+    const after = must(await m.client.from("offering_items").select("food_item_id, quantity_limit").eq("offering_id", oid));
+    expect(after).toHaveLength(2);
+
+    // Non-owners get "not found" for both RPCs.
+    const other = await signUp("editother");
+    expect((await other.client.rpc("update_offering", { p_offering: oid, p_pickup_point: pid, p_date: date, p_start: "17:00", p_end: "19:00", p_cutoff: cutoff, p_items: [{ food_item_id: f1, quantity_limit: 1 }] })).error?.message).toMatch(/Offering not found/);
+    expect((await other.client.rpc("duplicate_offering", { p_offering: oid, p_new_date: ymd(12) })).error?.message).toMatch(/Offering not found/);
+
+    // Duplicate: a draft the customer cannot see, with the same items/limits and no orders.
+    const copyId = must(await m.client.rpc("duplicate_offering", { p_offering: oid, p_new_date: ymd(12) }));
+    const copy = must(await m.client.from("offerings").select("status, pickup_point_id, pickup_date, offering_items(food_item_id, quantity_limit)").eq("id", copyId).single());
+    expect(copy).toMatchObject({ status: "draft", pickup_point_id: pid, pickup_date: ymd(12) });
+    expect(copy.offering_items).toHaveLength(2);
+    expect(must(await c.client.from("offerings").select("id").eq("id", copyId))).toHaveLength(0);
+    expect((await m.client.rpc("duplicate_offering", { p_offering: oid, p_new_date: ymd(-3) })).error?.message).toMatch(/in the past/);
+
+    // After the customer cancels, the original can be deleted (the cancelled order goes with it); the draft copy too.
+    must(await c.client.rpc("cancel_order", { p_order: orderId }));
+    expect((await m.client.from("offerings").delete().eq("id", oid)).error).toBeNull();
+    expect((await m.client.from("offerings").delete().eq("id", copyId)).error).toBeNull();
+    expect(must(await admin.from("orders").select("id").eq("id", orderId))).toHaveLength(0);
+  }, 40_000);
 });
