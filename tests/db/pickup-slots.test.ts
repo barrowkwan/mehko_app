@@ -56,6 +56,15 @@ describe("add_offering_slot", () => {
     expect(items.map((i) => i.quantity_limit)).toEqual([20, 40]);
   });
 
+  it("allows the same pickup point again, on another day or at another time", async () => {
+    const sameDayLater = await asUser(db, IDS.meiOwner, async () =>
+      (await db.query<{ id: string }>(`select add_offering_slot($1, $2, current_date + 3, '19:30', '20:30') as id`, [IDS.meiOffering, IDS.meiPoint])).rows[0].id);
+    const nextDay = await addSlot(IDS.meiOwner, IDS.meiOffering, IDS.meiPoint, 4);
+    const rows = (await db.query<{ n: number }>("select count(*)::int as n from offerings where pickup_point_id = $1 and group_id is not null", [IDS.meiPoint])).rows[0].n;
+    expect(rows).toBe(3); // the original slot plus the two repeats, all at the same point
+    expect(new Set([IDS.meiOffering, sameDayLater, nextDay]).size).toBe(3);
+  });
+
   it("is refused for someone else's offering, for another merchant's point and for past dates", async () => {
     await expect(addSlot(IDS.luisOwner)).rejects.toThrow(/Offering not found/);
     await expect(addSlot(IDS.meiOwner, IDS.meiOffering, LUIS_POINT)).rejects.toThrow(/Pickup point not found/);
