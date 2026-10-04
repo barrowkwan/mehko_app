@@ -39,8 +39,8 @@ describe("topFoodsBy", () => {
 
   it("separates holidays from regular days", () => {
     const keys = topFoodsBy(lines, "holiday").map((x) => x.key);
-    expect(keys).toContain("Holiday: Thanksgiving");
-    expect(keys).toContain("Regular day");
+    expect(keys).toContain("holiday:Thanksgiving");
+    expect(keys).toContain("regular");
   });
 
   it("groups by weather bucket and labels missing weather as unknown", () => {

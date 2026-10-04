@@ -2,9 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
+import { translateDbError } from "@/lib/db-errors";
 import { createClient } from "@/lib/supabase/server";
 
-export type FormState = { error?: string } | undefined;
+export type FormState = { error?: string; saved?: boolean } | undefined;
 
 function parseItems(formData: FormData) {
   const items: { offering_item_id: string; qty: number }[] = [];
@@ -18,21 +20,21 @@ function parseItems(formData: FormData) {
 
 export async function placeOrder(offeringId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const items = parseItems(formData);
-  if (items.length === 0) return { error: "Choose at least one item." };
+  if (items.length === 0) return { error: (await getTranslations("orderForm"))("chooseOne") };
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("place_order", { p_offering: offeringId, p_items: items });
-  if (error) return { error: error.message };
+  if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
   redirect(`/orders/${data}`);
 }
 
 export async function updateOrder(orderId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const items = parseItems(formData);
-  if (items.length === 0) return { error: "Choose at least one item, or cancel the order instead." };
+  if (items.length === 0) return { error: (await getTranslations("orderForm"))("chooseOneOrCancel") };
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("update_order", { p_order: orderId, p_items: items });
-  if (error) return { error: error.message };
+  if (error) return { error: translateDbError(await getTranslations("errors"), error.message) };
   revalidatePath(`/orders/${orderId}`);
   revalidatePath("/orders");
   return undefined;
@@ -41,7 +43,7 @@ export async function updateOrder(orderId: string, _prev: FormState, formData: F
 export async function cancelOrder(orderId: string): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.rpc("cancel_order", { p_order: orderId });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(translateDbError(await getTranslations("errors"), error.message));
   revalidatePath("/orders");
   redirect("/orders");
 }

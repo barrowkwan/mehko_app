@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "保存",
+    "saving": "保存中…",
+    "add": "添加",
+    "edit": "编辑",
+    "cancel": "取消",
+    "enable": "启用",
+    "disable": "停用",
+    "archive": "归档",
+    "restore": "恢复",
+    "customer": "顾客",
+    "item": "商品",
+    "unknown": "未知",
+    "redirecting": "正在跳转…",
+    "saved": "已保存。"
+  },
+  "meta": {
+    "title": "Neighborhood Eats",
+    "description": "向本地商家预订美食，并在附近自取。"
+  },
+  "nav": {
+    "brand": "Neighborhood Eats",
+    "browse": "浏览",
+    "myOrders": "我的订单",
+    "merchant": "商家",
+    "signOut": "退出登录",
+    "language": "语言"
+  },
+  "login": {
+    "title": "欢迎",
+    "subtitle": "登录后即可向本地商家订餐。",
+    "failed": "登录失败，请重试。",
+    "continueWith": "使用 {provider} 继续"
+  },
+  "home": {
+    "title": "接受预订中",
+    "empty": "目前没有开放预订的商品。",
+    "orderBy": "请在 {time} 前下单"
+  },
+  "offering": {
+    "pickup": "自取地点：{place}",
+    "orderBy": "请在 {time} 前下单",
+    "closed": "已截止下单。",
+    "placeOrder": "提交订单"
+  },
+  "orderForm": {
+    "quantityOf": "{name} 的数量",
+    "left": "剩余 {count} 份",
+    "chooseOne": "请至少选择一件商品。",
+    "chooseOneOrCancel": "请至少选择一件商品，或者取消订单。"
+  },
+  "orders": {
+    "title": "我的订单",
+    "empty": "您还没有下过订单。",
+    "status": {
+      "placed": "已下单",
+      "cancelled": "已取消",
+      "picked_up": "已取餐"
+    }
+  },
+  "order": {
+    "statusLabel": "状态：",
+    "showQr": "取餐时请向商家出示此二维码",
+    "qrAlt": "订单二维码",
+    "pickedUp": "已取餐，祝您用餐愉快！",
+    "merchantLocation": "商家位置",
+    "yourItems": "您的商品",
+    "canChangeUntil": "您可以在 {time} 前修改此订单。",
+    "saveChanges": "保存修改",
+    "cancelOrder": "取消订单"
+  },
+  "map": {
+    "sharing": "商家正在共享实时位置。",
+    "notSharing": "商家目前没有共享位置。",
+    "merchantMarker": "商家"
+  },
+  "merchantNav": {
+    "dashboard": "总览",
+    "offerings": "售卖场次",
+    "foods": "菜品",
+    "pickupPoints": "自取点",
+    "scan": "扫码核销",
+    "customers": "顾客",
+    "reports": "报表",
+    "profile": "资料"
+  },
+  "setup": {
+    "title": "成为商家",
+    "intro": "创建商家资料，开始发布可自取的美食。",
+    "name": "商家名称",
+    "description": "简介",
+    "country": "国家代码（用于识别公共假日）",
+    "submit": "创建商家",
+    "nameRequired": "请填写名称",
+    "countryInvalid": "请使用两位国家代码，例如 US"
+  },
+  "profile": {
+    "title": "商家资料",
+    "submit": "保存资料"
+  },
+  "translations": {
+    "title": "翻译（可选）",
+    "help": "如果您提供了翻译，顾客将看到其所选语言的版本，否则显示上方的原文。留空即可跳过。",
+    "name": "名称",
+    "description": "说明"
+  },
+  "dashboard": {
+    "upcoming": "即将到来的自取",
+    "newOffering": "+ 新建场次",
+    "none": "暂无即将到来的场次。",
+    "stats": "{orders} 笔订单 · {picked} 笔已取餐 · {status}"
+  },
+  "pickupPoints": {
+    "title": "自取点",
+    "addTitle": "添加自取点",
+    "name": "名称",
+    "address": "地址",
+    "latitude": "纬度",
+    "longitude": "经度",
+    "useMyLocation": "使用我当前的位置",
+    "timezone": "时区（IANA）",
+    "submit": "添加自取点",
+    "nameRequired": "请填写名称",
+    "latInvalid": "纬度必须在 -90 到 90 之间",
+    "lngInvalid": "经度必须在 -180 到 180 之间",
+    "timezoneRequired": "请填写时区",
+    "timezoneUnknown": "未知时区（请使用 IANA 名称，例如 America/New_York）"
+  },
+  "foods": {
+    "title": "菜品",
+    "addTitle": "添加菜品",
+    "name": "名称",
+    "description": "说明",
+    "submit": "添加菜品",
+    "nameRequired": "请填写名称",
+    "editTitle": "编辑菜品"
+  },
+  "offerings": {
+    "title": "售卖场次",
+    "newButton": "新建场次",
+    "newTitle": "新建场次",
+    "needFirst": "请先至少创建一个<points>自取点</points>和一个<foods>菜品</foods>。",
+    "pickupPoint": "自取点",
+    "pickupDate": "自取日期",
+    "pickupFrom": "自取开始时间",
+    "pickupUntil": "自取结束时间",
+    "cutoff": "下单截止时间",
+    "foodsOnSale": "在售菜品（可为每项设置限量）",
+    "limit": "限量",
+    "publish": "发布场次",
+    "choosePoint": "请选择自取点",
+    "dateRequired": "请填写自取日期",
+    "startRequired": "请填写自取开始时间",
+    "endRequired": "请填写自取结束时间",
+    "cutoffRequired": "请填写截止日期和时间",
+    "selectFood": "请至少选择一个菜品",
+    "status": {
+      "draft": "草稿",
+      "published": "已发布",
+      "closed": "已关闭"
+    }
+  },
+  "offeringDetail": {
+    "cutoffLine": "截止：{time} · 状态：{status}",
+    "publish": "发布",
+    "closeOrdering": "关闭下单",
+    "prepList": "备餐清单",
+    "limit": "（限量 {count}）",
+    "liveLocation": "实时位置",
+    "orders": "订单（{count}）"
+  },
+  "location": {
+    "onlyPickupDay": "自取当天才能开启实时位置共享。",
+    "share": "向顾客共享我的位置",
+    "stop": "停止共享位置",
+    "hint": "只有为此次自取下过单的顾客才能看到。共享期间请保持此页面打开。",
+    "notSupported": "此设备不支持定位功能。"
+  },
+  "scan": {
+    "title": "确认取餐",
+    "instructions": "请扫描顾客订单上的二维码。",
+    "manualPlaceholder": "或手动输入取餐码",
+    "confirm": "确认",
+    "confirmed": "已确认 {name} 取餐。",
+    "already": "已经取过餐（{name}）。"
+  },
+  "customers": {
+    "title": "顾客",
+    "none": "暂无顾客。",
+    "line": "{orders} 笔订单 · {picked} 笔已取餐"
+  },
+  "reports": {
+    "title": "最受欢迎的菜品",
+    "byDate": "按日期",
+    "byLocation": "按地点",
+    "byHoliday": "按节假日",
+    "byWeather": "按天气",
+    "weatherNote": "天气和节假日数据会按自取日期自动补充；最近或未来的场次可能显示为未知。",
+    "empty": "暂无订单。",
+    "items": "（{count} 件）",
+    "regularDay": "普通日",
+    "holiday": "节假日：{name}",
+    "publicHoliday": "公共假日",
+    "weather": {
+      "clear": "晴",
+      "cloudy": "多云",
+      "rain": "雨",
+      "snow": "雪",
+      "hot": "炎热",
+      "cold": "寒冷",
+      "unknown": "未知"
+    }
+  },
+  "errors": {
+    "generic": "出了点问题，请重试。",
+    "notAuthenticated": "请重新登录。",
+    "offeringUnavailable": "此场次已不可用。",
+    "cutoffPassed": "已过下单截止时间。",
+    "alreadyOrdered": "您已经为此场次下过单，请直接修改该订单。",
+    "noStock": "其中某个商品库存不足。",
+    "cannotChange": "此订单已无法修改。",
+    "orderNotFound": "未找到订单。",
+    "emptyOrder": "订单至少需要包含一件商品。",
+    "invalidQuantity": "数量无效。",
+    "itemNotInOffering": "有商品不属于此场次。",
+    "unknownQr": "无法识别的二维码。",
+    "otherMerchant": "此订单属于其他商家。",
+    "orderCancelled": "此订单已被取消。",
+    "cutoffAfterPickup": "下单截止时间必须早于自取开始时间。"
+  }
+}

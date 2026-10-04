@@ -11,6 +11,8 @@
 | Cutoff stored as absolute `timestamptz`; the form converts `datetime-local` using the merchant's **browser** timezone | Simple; the DB trigger validates against the pickup point's timezone. Merchants traveling across timezones could mis-set the cutoff |
 | Cron route instead of a Supabase Edge Function | Shares/tests `lib/context-fetch.ts` with the app; any scheduler can call it |
 | Render free + hosted Supabase free, deployed by GitHub Actions deploy hook | Vercel Hobby forbids commercial use; Render free allows it and needs no card. Trade-off: cold starts, Supabase pauses (daily job keeps it awake), no backups |
+| next-intl without URL prefix; locale = cookie → browser → `en`, saved to profile | Same URLs for all languages (OAuth callback and redirects unchanged); a returning user gets their language on any device |
+| Merchant text translated by the merchant (optional), not auto-translated | No API cost, no machine errors on allergen/food names; original text is always the fallback |
 | Leaflet + OpenStreetMap, circle markers | No API key; avoids Leaflet's bundled marker-icon asset issue under bundlers |
 | `types/database.ts` generated from the local DB | Typed embeds and RPCs; was hand-written first and matched except view columns (generated as nullable) |
 | PGlite for DB tests + opt-in live-stack integration tests | PGlite: fast, no Docker, stubbed auth schema/roles. Integration tests cover what PGlite can't (Auth, PostgREST, Realtime) |
@@ -23,6 +25,7 @@
 - **CI: `supabase/setup-cli` `version: latest` hit a GitHub API rate limit.** The Supabase CLI version is pinned in `.github/workflows/ci.yml` (both jobs). Bump it deliberately; keep it close to the CLI you use locally.
 - **CI: `supabase db push` couldn't connect (IPv6).** GitHub runners are IPv4-only and the direct DB host is IPv6-only on the free plan; CI uses the session-pooler string in `SUPABASE_DB_URL`.
 - **Login redirected to `https://localhost:10000` on Render.** Behind a reverse proxy, `request.url` / `request.nextUrl.origin` in route handlers is the server's internal address. Route handlers that redirect (`/auth/callback`, `/auth/signout`) now use `publicOrigin()` (`lib/origin.ts`, from `x-forwarded-host`/`Host` + `x-forwarded-proto`). `proxy.ts` redirects were unaffected. Rule: never build redirect URLs from `request.url` in route handlers.
+- **Times were shown in the server's timezone (UTC on Render).** Cutoff times are now formatted in the pickup point's timezone with the zone name (`formatInstant`), and "today"/"pickup day" use `todayIn(pickupTz)` instead of the server date.
 - **Cutoff check by timezone hack.** Validation lives in trigger `check_offering_schedule`, evaluated in the pickup point's timezone — not in TypeScript.
 
 ## Gotchas

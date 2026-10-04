@@ -6,10 +6,10 @@ Source of truth: `supabase/migrations/*.sql`. Mirror any change in `types/databa
 
 | Table | Purpose | Key columns / constraints |
 | --- | --- | --- |
-| `profiles` | One per auth user (trigger `handle_new_user`) | `id` = `auth.users.id`, `display_name`, `avatar_url` |
-| `merchants` | A business owned by a user | `owner_id`, `country_code` (holiday lookup) |
+| `profiles` | One per auth user (trigger `handle_new_user`) | `id` = `auth.users.id`, `display_name`, `avatar_url`, `locale` (en/es/zh-CN/zh-TW, null = not chosen yet) |
+| `merchants` | A business owned by a user | `owner_id`, `country_code` (holiday lookup), `translations` jsonb (optional name/description per language) |
 | `pickup_points` | Merchant's pickup locations (many) | `lat`, `lng`, `timezone` (IANA), `active` |
-| `food_items` | Merchant's menu | `active`, `price_cents` (unused until payments) |
+| `food_items` | Merchant's menu | `active`, `price_cents` (unused until payments), `translations` jsonb (optional name/description per language) |
 | `offerings` | A sale event: one pickup point on one date | `pickup_date`, `pickup_start/end`, `cutoff_at`, `status` draft/published/closed. Trigger `check_offering_schedule`: cutoff ≤ pickup start in the point's timezone |
 | `offering_items` | Foods in an offering | `quantity_limit` (null = unlimited), unique (offering, food) |
 | `orders` | A customer's order on an offering | `status` placed/cancelled/picked_up, `qr_token` (unique), `picked_up_at`, `payment_status` (default `'none'`), `payment_ref`. **Partial unique** index: one non-cancelled order per (customer, offering) |

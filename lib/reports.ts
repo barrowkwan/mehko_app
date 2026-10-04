@@ -10,11 +10,12 @@ export type OrderLine = {
 
 export type Dimension = "date" | "location" | "holiday" | "weather";
 
-export const DIMENSIONS: { id: Dimension; label: string }[] = [
-  { id: "date", label: "By date" },
-  { id: "location", label: "By location" },
-  { id: "holiday", label: "By holiday" },
-  { id: "weather", label: "By weather" },
+// Labels live in messages/*.json (reports.byDate …); ids are what the URL carries.
+export const DIMENSIONS: { id: Dimension; labelKey: "byDate" | "byLocation" | "byHoliday" | "byWeather" }[] = [
+  { id: "date", labelKey: "byDate" },
+  { id: "location", labelKey: "byLocation" },
+  { id: "holiday", labelKey: "byHoliday" },
+  { id: "weather", labelKey: "byWeather" },
 ];
 
 export type Group = {
@@ -23,6 +24,8 @@ export type Group = {
   foods: { name: string; qty: number }[];
 };
 
+// Group keys are language-neutral: the page turns them into labels with the active locale.
+//   holiday dimension: "regular" or "holiday:<name>"; weather dimension: a bucket or "unknown".
 export function groupKey(line: OrderLine, dim: Dimension): string {
   switch (dim) {
     case "date":
@@ -30,7 +33,7 @@ export function groupKey(line: OrderLine, dim: Dimension): string {
     case "location":
       return line.pickup_point_name;
     case "holiday":
-      return line.is_holiday ? `Holiday: ${line.holiday_name ?? "public holiday"}` : "Regular day";
+      return line.is_holiday ? `holiday:${line.holiday_name ?? ""}` : "regular";
     case "weather":
       return line.weather_bucket ?? "unknown";
   }

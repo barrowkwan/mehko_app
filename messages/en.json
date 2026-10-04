@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "Save",
+    "saving": "Saving…",
+    "add": "Add",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "enable": "Enable",
+    "disable": "Disable",
+    "archive": "Archive",
+    "restore": "Restore",
+    "customer": "Customer",
+    "item": "Item",
+    "unknown": "Unknown",
+    "redirecting": "Redirecting…",
+    "saved": "Saved."
+  },
+  "meta": {
+    "title": "Neighborhood Eats",
+    "description": "Pre-order food from local merchants and pick it up nearby."
+  },
+  "nav": {
+    "brand": "Neighborhood Eats",
+    "browse": "Browse",
+    "myOrders": "My orders",
+    "merchant": "Merchant",
+    "signOut": "Sign out",
+    "language": "Language"
+  },
+  "login": {
+    "title": "Welcome",
+    "subtitle": "Sign in to order food from local merchants.",
+    "failed": "Sign-in failed. Please try again.",
+    "continueWith": "Continue with {provider}"
+  },
+  "home": {
+    "title": "Open for ordering",
+    "empty": "Nothing is open for ordering right now.",
+    "orderBy": "Order by {time}"
+  },
+  "offering": {
+    "pickup": "Pickup: {place}",
+    "orderBy": "Order by {time}",
+    "closed": "Ordering is closed.",
+    "placeOrder": "Place order"
+  },
+  "orderForm": {
+    "quantityOf": "Quantity of {name}",
+    "left": "{count} left",
+    "chooseOne": "Choose at least one item.",
+    "chooseOneOrCancel": "Choose at least one item, or cancel the order instead."
+  },
+  "orders": {
+    "title": "My orders",
+    "empty": "You haven't ordered anything yet.",
+    "status": {
+      "placed": "Placed",
+      "cancelled": "Cancelled",
+      "picked_up": "Picked up"
+    }
+  },
+  "order": {
+    "statusLabel": "Status:",
+    "showQr": "Show this code to the merchant at pickup",
+    "qrAlt": "Order QR code",
+    "pickedUp": "Picked up. Enjoy your meal!",
+    "merchantLocation": "Merchant location",
+    "yourItems": "Your items",
+    "canChangeUntil": "You can change this order until {time}.",
+    "saveChanges": "Save changes",
+    "cancelOrder": "Cancel order"
+  },
+  "map": {
+    "sharing": "Merchant is sharing their live location.",
+    "notSharing": "The merchant isn't sharing their location right now.",
+    "merchantMarker": "Merchant"
+  },
+  "merchantNav": {
+    "dashboard": "Dashboard",
+    "offerings": "Offerings",
+    "foods": "Foods",
+    "pickupPoints": "Pickup points",
+    "scan": "Scan QR",
+    "customers": "Customers",
+    "reports": "Reports",
+    "profile": "Profile"
+  },
+  "setup": {
+    "title": "Become a merchant",
+    "intro": "Create your merchant profile to start listing food for pickup.",
+    "name": "Business name",
+    "description": "Description",
+    "country": "Country code (for public holidays)",
+    "submit": "Create merchant",
+    "nameRequired": "Name is required",
+    "countryInvalid": "Use a 2-letter country code, e.g. US"
+  },
+  "profile": {
+    "title": "Merchant profile",
+    "submit": "Save profile"
+  },
+  "translations": {
+    "title": "Translations (optional)",
+    "help": "Customers see their own language when you provide it, otherwise the original text above. Leave blank to skip.",
+    "name": "Name",
+    "description": "Description"
+  },
+  "dashboard": {
+    "upcoming": "Upcoming pickups",
+    "newOffering": "+ New offering",
+    "none": "No upcoming offerings.",
+    "stats": "{orders, plural, one {# order} other {# orders}} · {picked} picked up · {status}"
+  },
+  "pickupPoints": {
+    "title": "Pickup points",
+    "addTitle": "Add a pickup point",
+    "name": "Name",
+    "address": "Address",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "useMyLocation": "Use my current location",
+    "timezone": "Timezone (IANA)",
+    "submit": "Add pickup point",
+    "nameRequired": "Name is required",
+    "latInvalid": "Latitude must be between -90 and 90",
+    "lngInvalid": "Longitude must be between -180 and 180",
+    "timezoneRequired": "Timezone is required",
+    "timezoneUnknown": "Unknown timezone (use an IANA name such as America/New_York)"
+  },
+  "foods": {
+    "title": "Foods",
+    "addTitle": "Add a food",
+    "name": "Name",
+    "description": "Description",
+    "submit": "Add food",
+    "nameRequired": "Name is required",
+    "editTitle": "Edit food"
+  },
+  "offerings": {
+    "title": "Offerings",
+    "newButton": "New offering",
+    "newTitle": "New offering",
+    "needFirst": "You need at least one <points>pickup point</points> and one <foods>food</foods> first.",
+    "pickupPoint": "Pickup point",
+    "pickupDate": "Pickup date",
+    "pickupFrom": "Pickup from",
+    "pickupUntil": "Pickup until",
+    "cutoff": "Order cutoff",
+    "foodsOnSale": "Foods on sale (optional limit per item)",
+    "limit": "limit",
+    "publish": "Publish offering",
+    "choosePoint": "Choose a pickup point",
+    "dateRequired": "Pickup date is required",
+    "startRequired": "Pickup start is required",
+    "endRequired": "Pickup end is required",
+    "cutoffRequired": "Cutoff date/time is required",
+    "selectFood": "Select at least one food item",
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "closed": "Closed"
+    }
+  },
+  "offeringDetail": {
+    "cutoffLine": "Cutoff: {time} · Status: {status}",
+    "publish": "Publish",
+    "closeOrdering": "Close ordering",
+    "prepList": "Prep list",
+    "limit": "(limit {count})",
+    "liveLocation": "Live location",
+    "orders": "Orders ({count})"
+  },
+  "location": {
+    "onlyPickupDay": "Live location can be turned on during the pickup date.",
+    "share": "Share my location with customers",
+    "stop": "Stop sharing location",
+    "hint": "Only customers with an order for this pickup can see it. Keep this page open while sharing.",
+    "notSupported": "Geolocation isn't supported on this device."
+  },
+  "scan": {
+    "title": "Confirm pickup",
+    "instructions": "Scan the QR code on the customer's order.",
+    "manualPlaceholder": "Or enter code manually",
+    "confirm": "Confirm",
+    "confirmed": "Pickup confirmed for {name}.",
+    "already": "Already picked up ({name})."
+  },
+  "customers": {
+    "title": "Customers",
+    "none": "No customers yet.",
+    "line": "{orders, plural, one {# order} other {# orders}} · {picked} picked up"
+  },
+  "reports": {
+    "title": "Most ordered foods",
+    "byDate": "By date",
+    "byLocation": "By location",
+    "byHoliday": "By holiday",
+    "byWeather": "By weather",
+    "weatherNote": "Weather and holiday data is added automatically for each pickup date; very recent or future offerings may show as unknown.",
+    "empty": "No orders yet.",
+    "items": "({count, plural, one {# item} other {# items}})",
+    "regularDay": "Regular day",
+    "holiday": "Holiday: {name}",
+    "publicHoliday": "public holiday",
+    "weather": {
+      "clear": "Clear",
+      "cloudy": "Cloudy",
+      "rain": "Rain",
+      "snow": "Snow",
+      "hot": "Hot",
+      "cold": "Cold",
+      "unknown": "Unknown"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "notAuthenticated": "Please sign in again.",
+    "offeringUnavailable": "This offering is not available.",
+    "cutoffPassed": "The ordering cutoff has passed.",
+    "alreadyOrdered": "You already have an order for this offering; edit it instead.",
+    "noStock": "Not enough stock remaining for one of the items.",
+    "cannotChange": "This order can no longer be changed.",
+    "orderNotFound": "Order not found.",
+    "emptyOrder": "An order must contain at least one item.",
+    "invalidQuantity": "Invalid quantity.",
+    "itemNotInOffering": "An item doesn't belong to this offering.",
+    "unknownQr": "Unknown QR code.",
+    "otherMerchant": "This order belongs to a different merchant.",
+    "orderCancelled": "This order was cancelled.",
+    "cutoffAfterPickup": "The cutoff must be before the pickup start time."
+  }
+}

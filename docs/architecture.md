@@ -32,7 +32,9 @@ Supabase
 | `components/` | `order-form`, `action-form` (+`Field`), `live-map` (+`live-map-loader`), `location-toggle` |
 | `lib/auth.ts` | `requireUser`, `getMyMerchant`, `requireMerchant`, `safeNext` |
 | `lib/supabase/` | `client.ts` (browser), `server.ts` (RSC/actions), `admin.ts` (service role, cron only), `proxy.ts` (session refresh) |
-| `lib/cutoff.ts`, `lib/format.ts` | Pure helpers |
+| `lib/cutoff.ts`, `lib/format.ts` | Pure helpers (`format.ts`: locale-aware dates, instants in a timezone) |
+| `lib/locale.ts`, `i18n/`, `messages/` | Languages, locale negotiation, merchant-translation fallback, UI strings — see [i18n.md](i18n.md) |
+| `lib/db-errors.ts` | Maps English database errors to translated messages |
 | `lib/reports.ts` | Pure report aggregation (`topFoodsBy`) |
 | `lib/context-fetch.ts` | Open-Meteo + Nager.Date clients, `weatherBucket` |
 | `types/database.ts` | Generated DB types (`supabase gen types typescript --local`) |

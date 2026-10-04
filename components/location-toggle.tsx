@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateLocation } from "@/app/merchant/actions";
 
 // Optional live location sharing for pickup day. Pushes the position at most every 10s.
 export function LocationToggle({ offeringId, enabled }: { offeringId: string; enabled: boolean }) {
+  const t = useTranslations("location");
   const [sharing, setSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const watchId = useRef<number | null>(null);
@@ -19,7 +21,7 @@ export function LocationToggle({ offeringId, enabled }: { offeringId: string; en
 
   function start() {
     setError(null);
-    if (!navigator.geolocation) return setError("Geolocation isn't supported on this device.");
+    if (!navigator.geolocation) return setError(t("notSupported"));
     setSharing(true);
     watchId.current = navigator.geolocation.watchPosition(
       async (p) => {
@@ -49,7 +51,7 @@ export function LocationToggle({ offeringId, enabled }: { offeringId: string; en
   );
 
   if (!enabled) {
-    return <p className="text-sm text-neutral-500">Live location can be turned on during the pickup date.</p>;
+    return <p className="text-sm text-neutral-500">{t("onlyPickupDay")}</p>;
   }
   return (
     <div className="flex flex-col gap-2">
@@ -57,11 +59,9 @@ export function LocationToggle({ offeringId, enabled }: { offeringId: string; en
         onClick={sharing ? stop : start}
         className={`self-start rounded-lg px-4 py-2 font-medium text-white ${sharing ? "bg-red-600" : "bg-green-600"}`}
       >
-        {sharing ? "Stop sharing location" : "Share my location with customers"}
+        {sharing ? t("stop") : t("share")}
       </button>
-      <p className="text-xs text-neutral-500">
-        Only customers with an order for this pickup can see it. Keep this page open while sharing.
-      </p>
+      <p className="text-xs text-neutral-500">{t("hint")}</p>
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );

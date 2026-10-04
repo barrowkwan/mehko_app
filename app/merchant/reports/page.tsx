@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { DIMENSIONS, topFoodsBy, type Dimension, type OrderLine } from "@/lib/reports";
 import { formatDate } from "@/lib/format";
@@ -7,6 +8,8 @@ export default async function ReportsPage({ searchParams }: PageProps<"/merchant
   const sp = await searchParams;
   const by = (DIMENSIONS.find((d) => d.id === sp.by)?.id ?? "date") as Dimension;
   const { supabase, merchant } = await requireMerchant();
+  const t = await getTranslations("reports");
+  const locale = await getLocale();
 
   const { data: lines } = await supabase
     .from("order_lines")
@@ -16,10 +19,10 @@ export default async function ReportsPage({ searchParams }: PageProps<"/merchant
 
   // View columns are typed nullable by Postgres; rows from a valid join always have these set.
   const rows: OrderLine[] = (lines ?? []).map((l) => ({
-    food_name: l.food_name ?? "Unknown",
+    food_name: l.food_name ?? "?",
     qty: l.qty ?? 0,
     pickup_date: l.pickup_date ?? "",
-    pickup_point_name: l.pickup_point_name ?? "Unknown",
+    pickup_point_name: l.pickup_point_name ?? "?",
     is_holiday: l.is_holiday ?? false,
     holiday_name: l.holiday_name,
     weather_bucket: l.weather_bucket,
@@ -27,32 +30,38 @@ export default async function ReportsPage({ searchParams }: PageProps<"/merchant
   const groups = topFoodsBy(rows, by);
   const max = Math.max(1, ...groups.flatMap((g) => g.foods.map((f) => f.qty)));
 
+  const weatherKeys = ["clear", "cloudy", "rain", "snow", "hot", "cold", "unknown"] as const;
+  function label(key: string): string {
+    if (by === "date") return formatDate(key, locale);
+    if (by === "holiday") {
+      if (key === "regular") return t("regularDay");
+      return t("holiday", { name: key.slice("holiday:".length) || t("publicHoliday") });
+    }
+    if (by === "weather") return (weatherKeys as readonly string[]).includes(key) ? t(`weather.${key as (typeof weatherKeys)[number]}`) : key;
+    return key;
+  }
+
   return (
     <main className="flex flex-col gap-4 p-4">
-      <h1 className="text-xl font-bold">Most ordered foods</h1>
-      <div className="flex gap-2 text-sm">
+      <h1 className="text-xl font-bold">{t("title")}</h1>
+      <div className="flex flex-wrap gap-2 text-sm">
         {DIMENSIONS.map((d) => (
           <Link
             key={d.id}
             href={`/merchant/reports?by=${d.id}`}
             className={`rounded-full border px-3 py-1 ${by === d.id ? "border-orange-600 bg-orange-600 text-white" : "border-neutral-300 dark:border-neutral-700"}`}
           >
-            {d.label}
+            {t(d.labelKey)}
           </Link>
         ))}
       </div>
-      {by === "weather" && (
-        <p className="text-xs text-neutral-500">
-          Weather and holiday data is added automatically for each pickup date; very recent or future offerings may show as unknown.
-        </p>
-      )}
-      {!groups.length && <p className="text-neutral-500">No orders yet.</p>}
+      {by === "weather" && <p className="text-xs text-neutral-500">{t("weatherNote")}</p>}
+      {!groups.length && <p className="text-neutral-500">{t("empty")}</p>}
       <div className="grid gap-4 sm:grid-cols-2">
         {groups.map((g) => (
           <section key={g.key} className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
             <h2 className="mb-2 font-semibold">
-              {by === "date" ? formatDate(g.key) : g.key}{" "}
-              <span className="text-sm font-normal text-neutral-500">({g.total} items)</span>
+              {label(g.key)} <span className="text-sm font-normal text-neutral-500">{t("items", { count: g.total })}</span>
             </h2>
             <ul className="flex flex-col gap-1.5">
               {g.foods.map((f) => (

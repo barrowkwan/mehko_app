@@ -1,8 +1,10 @@
 import QRCode from "qrcode";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
-import { formatCutoff, isPastCutoff } from "@/lib/cutoff";
-import { formatDate, formatTime } from "@/lib/format";
+import { isPastCutoff } from "@/lib/cutoff";
+import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
+import { localized } from "@/lib/locale";
 import { OrderForm } from "@/components/order-form";
 import { LiveMapLoader } from "@/components/live-map-loader";
 import { cancelOrder, updateOrder } from "@/app/orders/actions";
@@ -10,15 +12,19 @@ import { cancelOrder, updateOrder } from "@/app/orders/actions";
 export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   const { id } = await params;
   const { supabase, user } = await requireUser();
+  const t = await getTranslations("order");
+  const tStatus = await getTranslations("orders.status");
+  const tc = await getTranslations("common");
+  const locale = await getLocale();
 
   const { data: order } = await supabase
     .from("orders")
     .select(
       `id, status, qr_token, offering_id,
        offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at,
-         merchant:merchants(name),
-         pickup_point:pickup_points(name, address, lat, lng),
-         offering_items(id, quantity_limit, food_item:food_items(name, description))),
+         merchant:merchants(name, translations),
+         pickup_point:pickup_points(name, address, lat, lng, timezone),
+         offering_items(id, quantity_limit, food_item:food_items(name, description, translations))),
        order_items(offering_item_id, qty)`,
     )
     .eq("id", id)
@@ -27,44 +33,49 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
   if (!order || !order.offering) notFound();
 
   const off = order.offering;
+  const tz = off.pickup_point?.timezone ?? "UTC";
   const editable = order.status === "placed" && !isPastCutoff(off.cutoff_at);
   const mine = new Map(order.order_items.map((i) => [i.offering_item_id, i.qty]));
+  const foodName = (f: { name: string; translations: unknown } | null) =>
+    f ? localized(f.name, f.translations, locale, "name") : tc("item");
 
   const { data: stock } = await supabase.rpc("offering_stock", { p_offering: order.offering_id });
   const remaining = new Map((stock ?? []).map((s) => [s.offering_item_id, s.remaining]));
 
   const qr = order.status === "cancelled" ? null : await QRCode.toDataURL(order.qr_token, { margin: 1, width: 280 });
-  const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD in the viewer's timezone
-  const showMap = order.status === "placed" && off.pickup_date === today;
+  // "Pickup day" is the calendar date at the pickup point, not at the server.
+  const showMap = order.status === "placed" && off.pickup_date === todayIn(tz);
 
   return (
     <main className="flex flex-col gap-5 p-4">
       <div>
-        <h1 className="text-xl font-bold">{off.merchant?.name}</h1>
+        <h1 className="text-xl font-bold">
+          {off.merchant && localized(off.merchant.name, off.merchant.translations, locale, "name")}
+        </h1>
         <p>
-          {formatDate(off.pickup_date)}, {formatTime(off.pickup_start)}–{formatTime(off.pickup_end)}
+          {formatDate(off.pickup_date, locale)}, {formatTime(off.pickup_start, locale)}–{formatTime(off.pickup_end, locale)}
         </p>
         <p className="text-neutral-500">
           {off.pickup_point?.name}
           {off.pickup_point?.address ? ` · ${off.pickup_point.address}` : ""}
         </p>
         <p className="mt-1 text-sm">
-          Status: <strong>{order.status.replace("_", " ")}</strong>
+          {t("statusLabel")} <strong>{tStatus(order.status as "placed" | "cancelled" | "picked_up")}</strong>
         </p>
       </div>
 
       {qr && order.status === "placed" && (
         <section className="flex flex-col items-center gap-2 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-          <p className="text-sm text-neutral-500">Show this code to the merchant at pickup</p>
+          <p className="text-sm text-neutral-500">{t("showQr")}</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={qr} alt="Order QR code" width={280} height={280} className="rounded bg-white" />
+          <img src={qr} alt={t("qrAlt")} width={280} height={280} className="rounded bg-white" />
         </section>
       )}
-      {order.status === "picked_up" && <p className="text-green-700">Picked up. Enjoy your meal!</p>}
+      {order.status === "picked_up" && <p className="text-green-700">{t("pickedUp")}</p>}
 
       {showMap && off.pickup_point && (
         <section>
-          <h2 className="mb-2 font-semibold">Merchant location</h2>
+          <h2 className="mb-2 font-semibold">{t("merchantLocation")}</h2>
           <LiveMapLoader
             offeringId={order.offering_id}
             pickup={{ lat: off.pickup_point.lat, lng: off.pickup_point.lng, name: off.pickup_point.name }}
@@ -73,23 +84,27 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
       )}
 
       <section>
-        <h2 className="mb-2 font-semibold">Your items</h2>
+        <h2 className="mb-2 font-semibold">{t("yourItems")}</h2>
         {editable ? (
           <>
-            <p className="mb-2 text-sm text-orange-700">You can change this order until {formatCutoff(off.cutoff_at)}.</p>
+            <p className="mb-2 text-sm text-orange-700">
+              {t("canChangeUntil", { time: formatInstant(off.cutoff_at, locale, tz) })}
+            </p>
             <OrderForm
               action={updateOrder.bind(null, id)}
-              submitLabel="Save changes"
+              submitLabel={t("saveChanges")}
               items={off.offering_items.map((i) => ({
                 offeringItemId: i.id,
-                name: i.food_item?.name ?? "Item",
-                description: i.food_item?.description ?? null,
+                name: foodName(i.food_item),
+                description: i.food_item?.description
+                  ? localized(i.food_item.description, i.food_item.translations, locale, "description")
+                  : null,
                 remaining: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) + (mine.get(i.id) ?? 0) : null,
                 qty: mine.get(i.id) ?? 0,
               }))}
             />
             <form action={cancelOrder.bind(null, id)} className="mt-3">
-              <button className="text-sm text-red-600 hover:underline">Cancel order</button>
+              <button className="text-sm text-red-600 hover:underline">{t("cancelOrder")}</button>
             </form>
           </>
         ) : (
@@ -98,7 +113,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
               .filter((i) => mine.has(i.id))
               .map((i) => (
                 <li key={i.id}>
-                  {mine.get(i.id)}× {i.food_item?.name}
+                  {mine.get(i.id)}× {foodName(i.food_item)}
                 </li>
               ))}
           </ul>

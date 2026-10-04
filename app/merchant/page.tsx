@@ -1,15 +1,20 @@
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
-import { formatDate, formatTime } from "@/lib/format";
+import { formatDate, formatTime, yesterdayUtc } from "@/lib/format";
 
 export default async function MerchantDashboard() {
   const { supabase, merchant } = await requireMerchant();
-  const today = new Date().toLocaleDateString("en-CA");
+  const t = await getTranslations("dashboard");
+  const tStatus = await getTranslations("offerings.status");
+  const locale = await getLocale();
+  // Show offerings from yesterday on so pickups in timezones behind the server's aren't hidden.
+  const since = yesterdayUtc();
   const { data: offerings } = await supabase
     .from("offerings")
     .select("id, pickup_date, pickup_start, status, pickup_point:pickup_points(name), orders(status)")
     .eq("merchant_id", merchant.id)
-    .gte("pickup_date", today)
+    .gte("pickup_date", since)
     .order("pickup_date")
     .order("pickup_start");
 
@@ -17,12 +22,12 @@ export default async function MerchantDashboard() {
     <main className="flex flex-col gap-4 p-4">
       <h1 className="text-xl font-bold">{merchant.name}</h1>
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold">Upcoming pickups</h2>
+        <h2 className="font-semibold">{t("upcoming")}</h2>
         <Link href="/merchant/offerings/new" className="text-sm text-orange-600 hover:underline">
-          + New offering
+          {t("newOffering")}
         </Link>
       </div>
-      {!offerings?.length && <p className="text-neutral-500">No upcoming offerings.</p>}
+      {!offerings?.length && <p className="text-neutral-500">{t("none")}</p>}
       <ul className="grid gap-3 sm:grid-cols-2">
         {offerings?.map((o) => {
           const active = o.orders.filter((x) => x.status !== "cancelled");
@@ -34,11 +39,15 @@ export default async function MerchantDashboard() {
                 className="block rounded-lg border border-neutral-200 p-4 hover:border-orange-500 dark:border-neutral-800"
               >
                 <p className="font-semibold">
-                  {formatDate(o.pickup_date)}, {formatTime(o.pickup_start)}
+                  {formatDate(o.pickup_date, locale)}, {formatTime(o.pickup_start, locale)}
                 </p>
                 <p className="text-sm text-neutral-500">{o.pickup_point?.name}</p>
                 <p className="mt-1 text-sm">
-                  {active.length} orders · {picked} picked up · {o.status}
+                  {t("stats", {
+                    orders: active.length,
+                    picked,
+                    status: tStatus(o.status as "draft" | "published" | "closed"),
+                  })}
                 </p>
               </Link>
             </li>

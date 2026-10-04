@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "儲存",
+    "saving": "儲存中…",
+    "add": "新增",
+    "edit": "編輯",
+    "cancel": "取消",
+    "enable": "啟用",
+    "disable": "停用",
+    "archive": "封存",
+    "restore": "還原",
+    "customer": "顧客",
+    "item": "品項",
+    "unknown": "未知",
+    "redirecting": "正在跳轉…",
+    "saved": "已儲存。"
+  },
+  "meta": {
+    "title": "Neighborhood Eats",
+    "description": "向在地商家預訂美食，並在附近自取。"
+  },
+  "nav": {
+    "brand": "Neighborhood Eats",
+    "browse": "瀏覽",
+    "myOrders": "我的訂單",
+    "merchant": "商家",
+    "signOut": "登出",
+    "language": "語言"
+  },
+  "login": {
+    "title": "歡迎",
+    "subtitle": "登入後即可向在地商家訂餐。",
+    "failed": "登入失敗，請再試一次。",
+    "continueWith": "使用 {provider} 繼續"
+  },
+  "home": {
+    "title": "接受預訂中",
+    "empty": "目前沒有開放預訂的商品。",
+    "orderBy": "請於 {time} 前下單"
+  },
+  "offering": {
+    "pickup": "自取地點：{place}",
+    "orderBy": "請於 {time} 前下單",
+    "closed": "已截止下單。",
+    "placeOrder": "送出訂單"
+  },
+  "orderForm": {
+    "quantityOf": "{name} 的數量",
+    "left": "剩餘 {count} 份",
+    "chooseOne": "請至少選擇一個品項。",
+    "chooseOneOrCancel": "請至少選擇一個品項，或取消訂單。"
+  },
+  "orders": {
+    "title": "我的訂單",
+    "empty": "您還沒有下過訂單。",
+    "status": {
+      "placed": "已下單",
+      "cancelled": "已取消",
+      "picked_up": "已取餐"
+    }
+  },
+  "order": {
+    "statusLabel": "狀態：",
+    "showQr": "取餐時請向商家出示此 QR 碼",
+    "qrAlt": "訂單 QR 碼",
+    "pickedUp": "已取餐，祝您用餐愉快！",
+    "merchantLocation": "商家位置",
+    "yourItems": "您的品項",
+    "canChangeUntil": "您可以在 {time} 前修改此訂單。",
+    "saveChanges": "儲存變更",
+    "cancelOrder": "取消訂單"
+  },
+  "map": {
+    "sharing": "商家正在分享即時位置。",
+    "notSharing": "商家目前沒有分享位置。",
+    "merchantMarker": "商家"
+  },
+  "merchantNav": {
+    "dashboard": "總覽",
+    "offerings": "販售場次",
+    "foods": "餐點",
+    "pickupPoints": "自取點",
+    "scan": "掃碼核銷",
+    "customers": "顧客",
+    "reports": "報表",
+    "profile": "資料"
+  },
+  "setup": {
+    "title": "成為商家",
+    "intro": "建立商家資料，開始刊登可自取的美食。",
+    "name": "商家名稱",
+    "description": "簡介",
+    "country": "國家代碼（用於辨識國定假日）",
+    "submit": "建立商家",
+    "nameRequired": "請填寫名稱",
+    "countryInvalid": "請使用兩位國家代碼，例如 US"
+  },
+  "profile": {
+    "title": "商家資料",
+    "submit": "儲存資料"
+  },
+  "translations": {
+    "title": "翻譯（選填）",
+    "help": "若您提供翻譯，顧客會看到其所選語言的版本，否則顯示上方原文。留空即可略過。",
+    "name": "名稱",
+    "description": "說明"
+  },
+  "dashboard": {
+    "upcoming": "即將到來的自取",
+    "newOffering": "+ 新增場次",
+    "none": "目前沒有即將到來的場次。",
+    "stats": "{orders} 筆訂單 · {picked} 筆已取餐 · {status}"
+  },
+  "pickupPoints": {
+    "title": "自取點",
+    "addTitle": "新增自取點",
+    "name": "名稱",
+    "address": "地址",
+    "latitude": "緯度",
+    "longitude": "經度",
+    "useMyLocation": "使用我目前的位置",
+    "timezone": "時區（IANA）",
+    "submit": "新增自取點",
+    "nameRequired": "請填寫名稱",
+    "latInvalid": "緯度必須介於 -90 到 90 之間",
+    "lngInvalid": "經度必須介於 -180 到 180 之間",
+    "timezoneRequired": "請填寫時區",
+    "timezoneUnknown": "未知的時區（請使用 IANA 名稱，例如 America/New_York）"
+  },
+  "foods": {
+    "title": "餐點",
+    "addTitle": "新增餐點",
+    "name": "名稱",
+    "description": "說明",
+    "submit": "新增餐點",
+    "nameRequired": "請填寫名稱",
+    "editTitle": "編輯餐點"
+  },
+  "offerings": {
+    "title": "販售場次",
+    "newButton": "新增場次",
+    "newTitle": "新增場次",
+    "needFirst": "請先建立至少一個<points>自取點</points>和一道<foods>餐點</foods>。",
+    "pickupPoint": "自取點",
+    "pickupDate": "自取日期",
+    "pickupFrom": "自取開始時間",
+    "pickupUntil": "自取結束時間",
+    "cutoff": "下單截止時間",
+    "foodsOnSale": "販售餐點（可為每項設定限量）",
+    "limit": "限量",
+    "publish": "發布場次",
+    "choosePoint": "請選擇自取點",
+    "dateRequired": "請填寫自取日期",
+    "startRequired": "請填寫自取開始時間",
+    "endRequired": "請填寫自取結束時間",
+    "cutoffRequired": "請填寫截止日期與時間",
+    "selectFood": "請至少選擇一道餐點",
+    "status": {
+      "draft": "草稿",
+      "published": "已發布",
+      "closed": "已關閉"
+    }
+  },
+  "offeringDetail": {
+    "cutoffLine": "截止：{time} · 狀態：{status}",
+    "publish": "發布",
+    "closeOrdering": "關閉下單",
+    "prepList": "備餐清單",
+    "limit": "（限量 {count}）",
+    "liveLocation": "即時位置",
+    "orders": "訂單（{count}）"
+  },
+  "location": {
+    "onlyPickupDay": "自取當天才能開啟即時位置分享。",
+    "share": "向顧客分享我的位置",
+    "stop": "停止分享位置",
+    "hint": "只有為此次自取下過單的顧客才看得到。分享期間請保持此頁面開啟。",
+    "notSupported": "此裝置不支援定位功能。"
+  },
+  "scan": {
+    "title": "確認取餐",
+    "instructions": "請掃描顧客訂單上的 QR 碼。",
+    "manualPlaceholder": "或手動輸入取餐碼",
+    "confirm": "確認",
+    "confirmed": "已確認 {name} 取餐。",
+    "already": "已經取過餐（{name}）。"
+  },
+  "customers": {
+    "title": "顧客",
+    "none": "目前沒有顧客。",
+    "line": "{orders} 筆訂單 · {picked} 筆已取餐"
+  },
+  "reports": {
+    "title": "最受歡迎的餐點",
+    "byDate": "依日期",
+    "byLocation": "依地點",
+    "byHoliday": "依節假日",
+    "byWeather": "依天氣",
+    "weatherNote": "天氣與節假日資料會依自取日期自動補上；最近或未來的場次可能顯示為未知。",
+    "empty": "目前沒有訂單。",
+    "items": "（{count} 件）",
+    "regularDay": "一般日",
+    "holiday": "節假日：{name}",
+    "publicHoliday": "國定假日",
+    "weather": {
+      "clear": "晴",
+      "cloudy": "多雲",
+      "rain": "雨",
+      "snow": "雪",
+      "hot": "炎熱",
+      "cold": "寒冷",
+      "unknown": "未知"
+    }
+  },
+  "errors": {
+    "generic": "發生問題，請再試一次。",
+    "notAuthenticated": "請重新登入。",
+    "offeringUnavailable": "此場次已無法使用。",
+    "cutoffPassed": "已超過下單截止時間。",
+    "alreadyOrdered": "您已經為此場次下過單，請直接修改該訂單。",
+    "noStock": "其中某個品項庫存不足。",
+    "cannotChange": "此訂單已無法修改。",
+    "orderNotFound": "找不到訂單。",
+    "emptyOrder": "訂單至少需要包含一個品項。",
+    "invalidQuantity": "數量無效。",
+    "itemNotInOffering": "有品項不屬於此場次。",
+    "unknownQr": "無法辨識的 QR 碼。",
+    "otherMerchant": "此訂單屬於其他商家。",
+    "orderCancelled": "此訂單已被取消。",
+    "cutoffAfterPickup": "下單截止時間必須早於自取開始時間。"
+  }
+}

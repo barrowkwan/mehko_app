@@ -237,3 +237,40 @@ describe("live location", () => {
     });
   });
 });
+
+describe("i18n columns", () => {
+  it("restricts profiles.locale to supported languages and lets users set their own", async () => {
+    await asUser(db, IDS.customer, async () => {
+      await db.query("update profiles set locale = 'zh-TW' where id = $1", [IDS.customer]);
+      const r = await db.query<{ locale: string }>("select locale from profiles where id = $1", [IDS.customer]);
+      expect(r.rows[0].locale).toBe("zh-TW");
+      await expect(db.query("update profiles set locale = 'fr' where id = $1", [IDS.customer])).rejects.toThrow(/check constraint|violates/i);
+    });
+  });
+
+  it("stores merchant translations as a JSON object and rejects non-objects", async () => {
+    await asUser(db, IDS.meiOwner, async () => {
+      await db.query(
+        "update food_items set translations = $1::jsonb where id = $2",
+        [JSON.stringify({ es: { name: "Empanadillas" }, "zh-CN": { name: "饺子" } }), IDS.porkFood],
+      );
+      await expect(
+        db.query("update food_items set translations = '[1]'::jsonb where id = $1", [IDS.porkFood]),
+      ).rejects.toThrow(/check constraint|violates/i);
+    });
+    const r = await db.query<{ t: { es: { name: string } } }>("select translations as t from food_items where id = $1", [IDS.porkFood]);
+    expect(r.rows[0].t.es.name).toBe("Empanadillas");
+    // customers can read the translations along with the food
+    await asUser(db, IDS.customer, async () => {
+      const c = await db.query("select translations from food_items where id = $1", [IDS.porkFood]);
+      expect(c.rows).toHaveLength(1);
+    });
+  });
+
+  it("prevents other merchants from editing translations", async () => {
+    await asUser(db, IDS.luisOwner, async () => {
+      const r = await db.query("update food_items set translations = '{}'::jsonb where id = $1 returning id", [IDS.porkFood]);
+      expect(r.rows).toHaveLength(0);
+    });
+  });
+});

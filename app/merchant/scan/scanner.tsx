@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { confirmPickup, type PickupResult } from "../actions";
 
 export function Scanner() {
+  const t = useTranslations();
   const [result, setResult] = useState<PickupResult | null>(null);
   const [manual, setManual] = useState("");
   const busy = useRef(false);
@@ -47,9 +49,9 @@ export function Scanner() {
           role="status"
         >
           {result.ok
-            ? result.alreadyPickedUp
-              ? `Already picked up (${result.customerName ?? "customer"}).`
-              : `Pickup confirmed for ${result.customerName ?? "customer"}.`
+            ? t(result.alreadyPickedUp ? "scan.already" : "scan.confirmed", {
+                name: result.customerName ?? t("common.customer"),
+              })
             : result.error}
         </div>
       )}
@@ -63,10 +65,10 @@ export function Scanner() {
         <input
           value={manual}
           onChange={(e) => setManual(e.target.value)}
-          placeholder="Or enter code manually"
+          placeholder={t("scan.manualPlaceholder")}
           className="flex-1 rounded border border-neutral-300 bg-transparent p-2 dark:border-neutral-700"
         />
-        <button className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white">Confirm</button>
+        <button className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white">{t("scan.confirm")}</button>
       </form>
     </div>
   );

@@ -1,0 +1,232 @@
+{
+  "common": {
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "add": "Añadir",
+    "edit": "Editar",
+    "cancel": "Cancelar",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "archive": "Archivar",
+    "restore": "Restaurar",
+    "customer": "Cliente",
+    "item": "Artículo",
+    "unknown": "Desconocido",
+    "redirecting": "Redirigiendo…",
+    "saved": "Guardado."
+  },
+  "meta": {
+    "title": "Neighborhood Eats",
+    "description": "Haz pedidos anticipados a comerciantes locales y recógelos cerca de ti."
+  },
+  "nav": {
+    "brand": "Neighborhood Eats",
+    "browse": "Explorar",
+    "myOrders": "Mis pedidos",
+    "merchant": "Comerciante",
+    "signOut": "Cerrar sesión",
+    "language": "Idioma"
+  },
+  "login": {
+    "title": "Bienvenido",
+    "subtitle": "Inicia sesión para pedir comida a comerciantes locales.",
+    "failed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+    "continueWith": "Continuar con {provider}"
+  },
+  "home": {
+    "title": "Abierto para pedidos",
+    "empty": "Por ahora no hay nada abierto para pedidos.",
+    "orderBy": "Pide antes de {time}"
+  },
+  "offering": {
+    "pickup": "Recogida: {place}",
+    "orderBy": "Pide antes de {time}",
+    "closed": "Los pedidos están cerrados.",
+    "placeOrder": "Hacer pedido"
+  },
+  "orderForm": {
+    "quantityOf": "Cantidad de {name}",
+    "left": "{count} disponibles",
+    "chooseOne": "Elige al menos un artículo.",
+    "chooseOneOrCancel": "Elige al menos un artículo, o cancela el pedido."
+  },
+  "orders": {
+    "title": "Mis pedidos",
+    "empty": "Todavía no has hecho ningún pedido.",
+    "status": {
+      "placed": "Realizado",
+      "cancelled": "Cancelado",
+      "picked_up": "Recogido"
+    }
+  },
+  "order": {
+    "statusLabel": "Estado:",
+    "showQr": "Muestra este código al comerciante al recoger",
+    "qrAlt": "Código QR del pedido",
+    "pickedUp": "Recogido. ¡Buen provecho!",
+    "merchantLocation": "Ubicación del comerciante",
+    "yourItems": "Tus artículos",
+    "canChangeUntil": "Puedes modificar este pedido hasta {time}.",
+    "saveChanges": "Guardar cambios",
+    "cancelOrder": "Cancelar pedido"
+  },
+  "map": {
+    "sharing": "El comerciante está compartiendo su ubicación en vivo.",
+    "notSharing": "El comerciante no está compartiendo su ubicación ahora.",
+    "merchantMarker": "Comerciante"
+  },
+  "merchantNav": {
+    "dashboard": "Panel",
+    "offerings": "Ofertas",
+    "foods": "Comidas",
+    "pickupPoints": "Puntos de recogida",
+    "scan": "Escanear QR",
+    "customers": "Clientes",
+    "reports": "Informes",
+    "profile": "Perfil"
+  },
+  "setup": {
+    "title": "Hazte comerciante",
+    "intro": "Crea tu perfil de comerciante para empezar a ofrecer comida para recoger.",
+    "name": "Nombre del negocio",
+    "description": "Descripción",
+    "country": "Código de país (para festivos)",
+    "submit": "Crear comerciante",
+    "nameRequired": "El nombre es obligatorio",
+    "countryInvalid": "Usa un código de país de 2 letras, p. ej. US"
+  },
+  "profile": {
+    "title": "Perfil del comerciante",
+    "submit": "Guardar perfil"
+  },
+  "translations": {
+    "title": "Traducciones (opcional)",
+    "help": "Los clientes verán su propio idioma si lo proporcionas; si no, verán el texto original de arriba. Déjalo en blanco para omitirlo.",
+    "name": "Nombre",
+    "description": "Descripción"
+  },
+  "dashboard": {
+    "upcoming": "Próximas recogidas",
+    "newOffering": "+ Nueva oferta",
+    "none": "No hay ofertas próximas.",
+    "stats": "{orders, plural, one {# pedido} other {# pedidos}} · {picked} recogidos · {status}"
+  },
+  "pickupPoints": {
+    "title": "Puntos de recogida",
+    "addTitle": "Añadir un punto de recogida",
+    "name": "Nombre",
+    "address": "Dirección",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "useMyLocation": "Usar mi ubicación actual",
+    "timezone": "Zona horaria (IANA)",
+    "submit": "Añadir punto de recogida",
+    "nameRequired": "El nombre es obligatorio",
+    "latInvalid": "La latitud debe estar entre -90 y 90",
+    "lngInvalid": "La longitud debe estar entre -180 y 180",
+    "timezoneRequired": "La zona horaria es obligatoria",
+    "timezoneUnknown": "Zona horaria desconocida (usa un nombre IANA como America/New_York)"
+  },
+  "foods": {
+    "title": "Comidas",
+    "addTitle": "Añadir una comida",
+    "name": "Nombre",
+    "description": "Descripción",
+    "submit": "Añadir comida",
+    "nameRequired": "El nombre es obligatorio",
+    "editTitle": "Editar comida"
+  },
+  "offerings": {
+    "title": "Ofertas",
+    "newButton": "Nueva oferta",
+    "newTitle": "Nueva oferta",
+    "needFirst": "Primero necesitas al menos un <points>punto de recogida</points> y una <foods>comida</foods>.",
+    "pickupPoint": "Punto de recogida",
+    "pickupDate": "Fecha de recogida",
+    "pickupFrom": "Recogida desde",
+    "pickupUntil": "Recogida hasta",
+    "cutoff": "Cierre de pedidos",
+    "foodsOnSale": "Comidas a la venta (límite opcional por artículo)",
+    "limit": "límite",
+    "publish": "Publicar oferta",
+    "choosePoint": "Elige un punto de recogida",
+    "dateRequired": "La fecha de recogida es obligatoria",
+    "startRequired": "La hora de inicio de recogida es obligatoria",
+    "endRequired": "La hora de fin de recogida es obligatoria",
+    "cutoffRequired": "La fecha y hora de cierre son obligatorias",
+    "selectFood": "Selecciona al menos una comida",
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicada",
+      "closed": "Cerrada"
+    }
+  },
+  "offeringDetail": {
+    "cutoffLine": "Cierre: {time} · Estado: {status}",
+    "publish": "Publicar",
+    "closeOrdering": "Cerrar pedidos",
+    "prepList": "Lista de preparación",
+    "limit": "(límite {count})",
+    "liveLocation": "Ubicación en vivo",
+    "orders": "Pedidos ({count})"
+  },
+  "location": {
+    "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
+    "share": "Compartir mi ubicación con los clientes",
+    "stop": "Dejar de compartir ubicación",
+    "hint": "Solo los clientes con un pedido para esta recogida pueden verla. Mantén esta página abierta mientras compartes.",
+    "notSupported": "La geolocalización no es compatible con este dispositivo."
+  },
+  "scan": {
+    "title": "Confirmar recogida",
+    "instructions": "Escanea el código QR del pedido del cliente.",
+    "manualPlaceholder": "O introduce el código manualmente",
+    "confirm": "Confirmar",
+    "confirmed": "Recogida confirmada para {name}.",
+    "already": "Ya recogido ({name})."
+  },
+  "customers": {
+    "title": "Clientes",
+    "none": "Aún no hay clientes.",
+    "line": "{orders, plural, one {# pedido} other {# pedidos}} · {picked} recogidos"
+  },
+  "reports": {
+    "title": "Comidas más pedidas",
+    "byDate": "Por fecha",
+    "byLocation": "Por lugar",
+    "byHoliday": "Por festivo",
+    "byWeather": "Por clima",
+    "weatherNote": "Los datos de clima y festivos se añaden automáticamente para cada fecha de recogida; las ofertas muy recientes o futuras pueden aparecer como desconocidas.",
+    "empty": "Aún no hay pedidos.",
+    "items": "({count, plural, one {# artículo} other {# artículos}})",
+    "regularDay": "Día normal",
+    "holiday": "Festivo: {name}",
+    "publicHoliday": "día festivo",
+    "weather": {
+      "clear": "Despejado",
+      "cloudy": "Nublado",
+      "rain": "Lluvia",
+      "snow": "Nieve",
+      "hot": "Calor",
+      "cold": "Frío",
+      "unknown": "Desconocido"
+    }
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "notAuthenticated": "Vuelve a iniciar sesión.",
+    "offeringUnavailable": "Esta oferta no está disponible.",
+    "cutoffPassed": "El plazo para hacer pedidos ha terminado.",
+    "alreadyOrdered": "Ya tienes un pedido para esta oferta; edítalo en su lugar.",
+    "noStock": "No queda suficiente stock de uno de los artículos.",
+    "cannotChange": "Este pedido ya no se puede modificar.",
+    "orderNotFound": "Pedido no encontrado.",
+    "emptyOrder": "Un pedido debe tener al menos un artículo.",
+    "invalidQuantity": "Cantidad no válida.",
+    "itemNotInOffering": "Un artículo no pertenece a esta oferta.",
+    "unknownQr": "Código QR desconocido.",
+    "otherMerchant": "Este pedido pertenece a otro comerciante.",
+    "orderCancelled": "Este pedido fue cancelado.",
+    "cutoffAfterPickup": "El cierre de pedidos debe ser antes del inicio de la recogida."
+  }
+}

@@ -25,13 +25,13 @@ export type Database = {
           Tables: {
             "food_items": {
                   Row: {
-                    "active": boolean,"created_at": string,"description": string | null,"id": string,"image_url": string | null,"merchant_id": string,"name": string,"price_cents": number | null
+                    "active": boolean,"created_at": string,"description": string | null,"id": string,"image_url": string | null,"merchant_id": string,"name": string,"price_cents": number | null,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id": string,"name": string,"price_cents"?: number | null
+                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id": string,"name": string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id"?: string,"name"?: string,"price_cents"?: number | null
+                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id"?: string,"name"?: string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -69,13 +69,13 @@ isOneToOne: true
                   ]
                 },"merchants": {
                   Row: {
-                    "country_code": string,"created_at": string,"description": string | null,"id": string,"name": string,"owner_id": string
+                    "country_code": string,"created_at": string,"description": string | null,"id": string,"name": string,"owner_id": string,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name": string,"owner_id": string
+                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name": string,"owner_id": string,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name"?: string,"owner_id"?: string
+                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name"?: string,"owner_id"?: string,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -250,13 +250,13 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"id": string
+                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"id": string,"locale": string | null
                   }
                   Insert: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string | null
                   }
                   Update: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string | null
                   }
                   Relationships: [
                     

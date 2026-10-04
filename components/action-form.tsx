@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import type { FormState } from "@/app/orders/actions";
 
 export function ActionForm({
@@ -14,16 +15,18 @@ export function ActionForm({
   children: ReactNode;
   className?: string;
 }) {
+  const t = useTranslations("common");
   const [state, formAction, pending] = useActionState(action, undefined);
   return (
     <form action={formAction} className={className}>
       {children}
       {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
+      {state?.saved && !state.error && <p className="text-sm text-green-700">{t("saved")}</p>}
       <button
         disabled={pending}
         className="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-700 disabled:opacity-50"
       >
-        {pending ? "Saving…" : submitLabel}
+        {pending ? t("saving") : submitLabel}
       </button>
     </form>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import type { Map as LeafletMap, CircleMarker } from "leaflet";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type Pos = { lat: number | null; lng: number | null; active: boolean; updated_at: string };
@@ -15,6 +16,7 @@ export function LiveMap({
   offeringId: string;
   pickup: { lat: number; lng: number; name: string };
 }) {
+  const t = useTranslations("map");
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<LeafletMap | null>(null);
   const marker = useRef<CircleMarker | null>(null);
@@ -78,20 +80,20 @@ export function LiveMap({
       }
       if (!marker.current) {
         marker.current = L.circleMarker([pos.lat, pos.lng], { radius: 10, color: "#ea580c", fillOpacity: 0.9 })
-          .bindTooltip("Merchant")
+          .bindTooltip(t("merchantMarker"))
           .addTo(map.current);
       } else {
         marker.current.setLatLng([pos.lat, pos.lng]);
       }
       map.current.panTo([pos.lat, pos.lng]);
     })();
-  }, [pos]);
+  }, [pos, t]);
 
   const live = pos?.active;
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm text-neutral-500">
-        {live ? "Merchant is sharing their live location." : "The merchant isn't sharing their location right now."}
+        {live ? t("sharing") : t("notSharing")}
       </p>
       <div ref={el} className="h-72 w-full rounded-lg border border-neutral-200 dark:border-neutral-800" />
     </div>

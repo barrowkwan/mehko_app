@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 const ALL_PROVIDERS = [
-  { id: "google", label: "Continue with Google" },
-  { id: "facebook", label: "Continue with Facebook" },
-  { id: "github", label: "Continue with GitHub" },
-  { id: "apple", label: "Continue with Apple" },
+  { id: "google", label: "Google" },
+  { id: "facebook", label: "Facebook" },
+  { id: "github", label: "GitHub" },
+  { id: "apple", label: "Apple" },
 ] as const;
 
 // Only show providers that are configured in Supabase (see docs/social-login-setup.md).
@@ -15,6 +16,7 @@ const ENABLED = (process.env.NEXT_PUBLIC_AUTH_PROVIDERS ?? "google,facebook,appl
 const PROVIDERS = ALL_PROVIDERS.filter((p) => ENABLED.includes(p.id));
 
 export function LoginButtons({ next }: { next: string }) {
+  const t = useTranslations();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +42,7 @@ export function LoginButtons({ next }: { next: string }) {
           disabled={busy !== null}
           className="rounded-lg border border-neutral-300 px-4 py-3 font-medium hover:bg-neutral-100 disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
         >
-          {busy === p.id ? "Redirecting…" : p.label}
+          {busy === p.id ? t("common.redirecting") : t("login.continueWith", { provider: p.label })}
         </button>
       ))}
       {error && <p className="text-sm text-red-600">{error}</p>}

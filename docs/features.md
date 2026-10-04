@@ -18,7 +18,9 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | 12 | Reports (date/location/holiday/weather) | ✅ | `/merchant/reports` | `lib/reports.ts` | `order_lines` view | `lib/__tests__/reports.test.ts` |
 | 13 | Weather + holiday data | ✅ | — | `lib/context-fetch.ts`, `app/api/cron/fetch-context` | `offering_context` | `lib/__tests__/context-fetch.test.ts` (mocked HTTP); route manually verified against real APIs |
 | 14 | PWA | ✅ | `app/manifest.ts`, `public/icons/icon.svg` | — | — | manual |
-| 15 | Payments | 🔌 | — | — | `orders.payment_status/payment_ref`, `food_items.price_cents` | — |
+| 14b | Multi-language (en/es/zh-CN/zh-TW), merchant translations | ✅ | header switcher, `/merchant/profile`, foods edit | `lib/locale.ts`, `i18n/request.ts`, `messages/*.json`, `app/actions/locale.ts` | `profiles.locale`, `merchants/food_items.translations` | `lib/__tests__/{locale,messages,format,db-errors}.test.ts`, DB tests |
+| 15 | Manual payment tracking (cash/Venmo/Zelle) — planned last | 🔌 | — | — | `orders.payment_*` | — |
+| 15b | Card payments (optional, much later) | 🔌 | — | — | `orders.payment_status/payment_ref`, `food_items.price_cents` | — |
 | 16 | Notifications, native apps, e2e tests | ⛔ | — | — | — | — |
 
 ## Implementation breakdown (build order)
@@ -41,7 +43,7 @@ Useful as a dependency map: each step only needs the ones above it.
 ## Known gaps / ideas
 
 - No browser e2e (Playwright) tests; OAuth, camera scan and the Leaflet map are not automated.
-- Merchants can't edit an offering after creation (only publish/close); no offering delete.
+- Merchants can't edit an offering after creation (only publish/close); no offering delete. (Foods and the merchant profile *are* editable.)
 - No image upload for foods (`image_url` column unused).
 - Closing/cancelling an offering doesn't notify customers.
 - Live location needs the merchant's page open (browser geolocation, no background tracking).
