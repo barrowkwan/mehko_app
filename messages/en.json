@@ -285,7 +285,10 @@
     "share": "Share my location with customers",
     "stop": "Stop sharing location",
     "hint": "Only customers with an order for this pickup can see it. Keep this page open while sharing.",
-    "notSupported": "Geolocation isn't supported on this device."
+    "notSupported": "Geolocation isn't supported on this device.",
+    "banner": "You are sharing your live location with customers who have an order.",
+    "privacyNote": "Sharing stops when you tap Stop, leave this page or close it, and by itself after 4 hours. Customers stop seeing it within 2 minutes if updates stop.",
+    "autoStopped": "Sharing was switched off automatically after 4 hours."
   },
   "scan": {
     "title": "Confirm pickup",

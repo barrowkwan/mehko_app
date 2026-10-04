@@ -38,6 +38,8 @@ Mark each line **Pass / Fail / N/A** and note the phone + OS version for any fai
 - [ ] Merchant enables location sharing: permission prompt, toggle state is clear
 - [ ] Customer opens the order: the map shows the merchant's marker moving (keep the merchant page open; note what happens when the screen locks, this is expected to pause)
 - [ ] Merchant turns sharing off: marker disappears
+- [ ] Merchant closes the tab (or locks the phone for 3+ minutes) without pressing Stop: the customer's marker disappears within about 2 minutes
+- [ ] While sharing, the merchant page shows the red "You are sharing your live location" banner
 
 ## 7. Install to home screen
 - [ ] Android Chrome: "Install app" / "Add to Home screen" works; icon and name look right; opens full screen

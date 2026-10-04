@@ -55,6 +55,17 @@ export function LiveMap({
       .maybeSingle()
       .then(({ data }) => data && setPos(data));
 
+    // The database only returns a position refreshed in the last 2 minutes. Check again now and then, so a marker
+    // disappears by itself when the merchant stops sending (closed the page, lost signal) instead of staying for ever.
+    const poll = setInterval(() => {
+      supabase
+        .from("location_shares")
+        .select("lat, lng, active, updated_at")
+        .eq("offering_id", offeringId)
+        .maybeSingle()
+        .then(({ data }) => setPos(data ?? null));
+    }, 30_000);
+
     const channel = supabase
       .channel(`location:${offeringId}`)
       .on(
@@ -64,6 +75,7 @@ export function LiveMap({
       )
       .subscribe();
     return () => {
+      clearInterval(poll);
       supabase.removeChannel(channel);
     };
   }, [offeringId]);

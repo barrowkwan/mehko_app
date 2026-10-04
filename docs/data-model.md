@@ -45,6 +45,9 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 ## Email notifications (migration `20261009000000_email_notifications.sql`)
 `profiles.email_notifications` (opt-out) and `notification_outbox` (RLS on, no policies, no grants to anon/authenticated: server only). A trigger enqueues `order_confirmed`; `enqueue_due_notifications()` enqueues `pickup_reminder` and `merchant_cutoff_summary`; `claim_notifications()` hands rows to the sender with `for update skip locked`. Only `service_role` can execute them. Rows are unique per (user, type, entity) so nothing is sent twice.
 
+## Live-location privacy (migration `20261017000000_location_privacy.sql`)
+Customers can read a merchant's live position only while it is **fresh** (`updated_at` within 2 minutes), the row is `active`, and they have an order for that offering. The browser re-sends the last position every 45 s (standing still), switches sharing off when the page is left/closed (`POST /api/location/stop`, `keepalive`) and after 4 hours; `clear_stale_locations()` (service role, called by the daily `fetch-context` job) wipes coordinates not refreshed for 12 hours.
+
 ## Pickup slots (migration `20261011000000_multiple_pickup_slots.sql`)
 `offerings.group_id`: slots of one offering share it (null = single slot). Stock is pooled per food across the group (`offering_pool`). `add_offering_slot` (must be the same date as the offering), `change_order_slot`; `update_offering` syncs cutoff/instructions/translations/foods/limits to upcoming siblings. See [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md).
 

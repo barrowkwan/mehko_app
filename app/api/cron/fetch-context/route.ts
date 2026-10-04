@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
+  // Privacy hygiene: wipe stored live-location coordinates that have not been refreshed for 12 hours.
+  const { error: clearError } = await supabase.rpc("clear_stale_locations");
+  if (clearError) console.error("Clearing stale locations failed:", clearError.message);
   const day = 86_400_000;
   const iso = (offset: number) => new Date(Date.now() + offset * day).toISOString().slice(0, 10);
 

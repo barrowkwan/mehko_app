@@ -468,3 +468,49 @@ test("food description is a multi-line box and keeps its line breaks", async ({ 
   await expect(shown).toHaveCSS("white-space", /pre-line/);
   await ctx.close();
 });
+
+test("live location: banner while sharing, off when the merchant leaves the page, customers never see a stale position", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant13");
+  const cust = await createUser("e2ecust8");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Live Kitchen ${run}` }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Live Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Live Buns" }).select("id").single()).id;
+  const today = new Date().toISOString().slice(0, 10);
+  const off = must(
+    await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: today, pickup_start: "23:00", pickup_end: "23:59", cutoff_at: new Date(Date.now() - 3_600_000).toISOString(), status: "published" }).select("id").single(),
+  ).id;
+  const itemId = must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single()).id;
+  const order = must(await admin.from("orders").insert({ customer_id: cust.id, offering_id: off }).select("id").single()).id;
+  must(await admin.from("order_items").insert({ order_id: order, offering_item_id: itemId, qty: 1 }).select("order_id").single());
+  const row = async () => (await admin.from("location_shares").select("active, lat, lng").eq("offering_id", off).maybeSingle()).data;
+
+  // Merchant starts sharing (the browser is given a fake GPS position).
+  const mctx = await browser.newContext({ timezoneId: "UTC", permissions: ["geolocation"], geolocation: { latitude: 40.81, longitude: -73.96 } });
+  await signIn(mctx, baseURL!, mer.email);
+  const m = await mctx.newPage();
+  await m.goto(`/merchant/offerings/${off}`);
+  await m.getByRole("button", { name: "Share my location with customers" }).click();
+  await expect(m.getByRole("status")).toContainText("You are sharing your live location");
+  await expect.poll(async () => (await row())?.active, { timeout: 15_000 }).toBe(true);
+
+  // The customer who ordered sees it as live.
+  const cctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(cctx, baseURL!, cust.email);
+  const c = await cctx.newPage();
+  await c.goto(`/orders/${order}`);
+  await expect(c.getByText("Merchant is sharing their live location.")).toBeVisible();
+
+  // The merchant simply leaves the page: sharing is switched off.
+  await m.goto("/merchant");
+  await expect.poll(async () => (await row())?.active, { timeout: 15_000 }).toBe(false);
+  await mctx.close();
+
+  // Even if a row were left active (closed tab, no signal), customers stop seeing it after 2 minutes.
+  await admin.from("location_shares").update({ active: true, updated_at: new Date().toISOString() }).eq("offering_id", off);
+  await c.reload();
+  await expect(c.getByText("Merchant is sharing their live location.")).toBeVisible();
+  await admin.from("location_shares").update({ updated_at: new Date(Date.now() - 3 * 60_000).toISOString() }).eq("offering_id", off);
+  await c.reload();
+  await expect(c.getByText("The merchant isn't sharing their location right now.")).toBeVisible();
+  await cctx.close();
+});

@@ -285,7 +285,10 @@
     "share": "Compartir mi ubicación con los clientes",
     "stop": "Dejar de compartir ubicación",
     "hint": "Solo los clientes con un pedido para esta recogida pueden verla. Mantén esta página abierta mientras compartes.",
-    "notSupported": "La geolocalización no es compatible con este dispositivo."
+    "notSupported": "La geolocalización no es compatible con este dispositivo.",
+    "banner": "Estás compartiendo tu ubicación en vivo con los clientes que tienen un pedido.",
+    "privacyNote": "La ubicación deja de compartirse cuando pulsas Detener, sales de esta página o la cierras, y automáticamente tras 4 horas. Los clientes dejan de verla en 2 minutos si se detienen las actualizaciones.",
+    "autoStopped": "La ubicación se desactivó automáticamente tras 4 horas."
   },
   "scan": {
     "title": "Confirmar recogida",

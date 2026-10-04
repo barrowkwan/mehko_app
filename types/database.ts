@@ -349,6 +349,9 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
+"clear_stale_locations":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "confirm_pickup":
 { Args: { "p_token": string }; Returns: {
               "already_picked_up": boolean,"customer_name": string,"order_id": string
