@@ -44,7 +44,7 @@ Decided with the product owner: **multi-language first (done), payments last** (
 **Do:** free uptime monitor (e.g. UptimeRobot/Better Stack) hitting `/login` every 5 min with email alert. A 5–10 min ping also keeps the free service awake (744 h/month fits the 750 free hours, but only if it's your only free service).
 **Done when:** you get an alert when the site is stopped and no cold starts during the day.
 
-### OPS-3 · Error monitoring — P1 · S — **implemented, off until you set `NEXT_PUBLIC_SENTRY_DSN`** (see [monitoring.md](monitoring.md#2-error-monitoring-with-sentry))
+### OPS-3 · Error monitoring — P1 · S — **live in production since 2026-10-04** (verified with `scripts/verify-sentry.sh`); remaining: confirm the 2 test events in Sentry, resolve them, create the new-issue email alert (see [monitoring.md](monitoring.md#2-error-monitoring-with-sentry))
 **Why:** server action/RPC errors are only in Render logs. Unmapped DB errors are `console.error`ed (`lib/db-errors.ts`).
 **Do:** Sentry (free tier) for Next.js (server + client), source maps in CI, alert on new errors.
 
@@ -204,6 +204,10 @@ Google: **Publish app** (out of Testing). Facebook: privacy URL (SEC-1) then swi
 
 ## Done
 
+- Account deletion on web (SEC-5, 2026-10-04) — mobile reuses the same rule later.
+- Privacy policy & terms pages in 4 languages (SEC-1 text, 2026-10-04) — still needs your Render settings and a legal review.
+- Health endpoint `/api/health` (OPS-2 endpoint) and Sentry error reporting (OPS-3), live 2026-10-04.
+- Encrypted daily database backup workflow (OPS-1) — runs once `BACKUP_PASSPHRASE` is set.
 - Multi-language (en/es/zh-CN/zh-TW) + merchant translations — see [i18n.md](i18n.md).
 - Free deployment (Render + hosted Supabase) with CI/CD — see [deployment.md](deployment.md).
 - Social login (Google; Facebook/GitHub/Apple supported in code) — see [social-login-setup.md](social-login-setup.md).
