@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { isPastCutoff } from "@/lib/cutoff";
 import { formatDate, formatInstant, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
 import { LiveMapLoader } from "@/components/live-map-loader";
 import { cancelOrder, updateOrder } from "@/app/orders/actions";
@@ -24,7 +25,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
        offering:offerings(pickup_date, pickup_start, pickup_end, cutoff_at,
          merchant:merchants(name, translations),
          pickup_point:pickup_points(name, address, lat, lng, timezone),
-         offering_items(id, quantity_limit, food_item:food_items(name, description, translations))),
+         offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))),
        order_items(offering_item_id, qty)`,
     )
     .eq("id", id)
@@ -101,6 +102,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
                   : null,
                 remaining: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) + (mine.get(i.id) ?? 0) : null,
                 qty: mine.get(i.id) ?? 0,
+                imageUrl: foodPhotoUrl(i.food_item?.image_path),
               }))}
             />
             <form action={cancelOrder.bind(null, id)} className="mt-3">

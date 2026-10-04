@@ -18,6 +18,21 @@ const SUPABASE_STUBS = `
   create role authenticated nologin;
   grant usage on schema public, auth to anon, authenticated;
   create publication supabase_realtime;
+
+  -- Stand-ins for Supabase Storage (buckets, objects, the foldername helper) so storage policies can be tested.
+  create schema storage;
+  create table storage.buckets (
+    id text primary key, name text, public boolean default false, file_size_limit bigint, allowed_mime_types text[]
+  );
+  create table storage.objects (
+    id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets (id), name text, owner uuid
+  );
+  alter table storage.objects enable row level security;
+  create function storage.foldername(name text) returns text[] language sql immutable as
+    $$ select (string_to_array(name, '/'))[1:greatest(array_length(string_to_array(name, '/'), 1) - 1, 0)] $$;
+  grant usage on schema storage to anon, authenticated;
+  grant select, insert, update, delete on storage.objects to authenticated;
+  grant select on storage.buckets to anon, authenticated;
 `;
 
 export const IDS = {

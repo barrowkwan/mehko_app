@@ -7,6 +7,9 @@ import { z } from "zod";
 import { requireMerchant, requireUser } from "@/lib/auth";
 import { translateDbError } from "@/lib/db-errors";
 import { parseTranslations } from "@/lib/locale";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
+import { FOOD_IMAGE_BUCKET, foodImagePath, stripJpegMetadata, validateImageUpload } from "@/lib/images";
 import type { FormState } from "@/app/orders/actions";
 
 const text = z.string().trim();
@@ -94,6 +97,43 @@ export async function setPickupPointActive(id: string, active: boolean): Promise
 
 // ───────── foods ─────────
 
+// ───────── food photos (docs/plans/feat-2-food-photos.md) ─────────
+
+type Db = SupabaseClient<Database>;
+
+const uploadedFile = (formData: FormData): File | null => {
+  const f = formData.get("image");
+  return f instanceof File && f.size > 0 ? f : null;
+};
+
+// Validates, strips all metadata (EXIF/GPS, XMP, IPTC) from, and uploads a food photo with the merchant's own session
+// (storage RLS: only their own folder). Returns the stored path or a translated error message.
+async function storeFoodImage(supabase: Db, merchantId: string, foodId: string, file: File): Promise<{ path: string } | { error: string }> {
+  const te = await getTranslations("errors");
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const invalid = validateImageUpload({ size: file.size, type: file.type }, bytes);
+  if (invalid) return { error: te(invalid) };
+  let clean: Uint8Array;
+  try {
+    clean = stripJpegMetadata(bytes);
+  } catch {
+    return { error: te("imageInvalid") };
+  }
+  const path = foodImagePath(merchantId, foodId, crypto.randomUUID().replace(/-/g, "").slice(0, 10));
+  const { error } = await supabase.storage
+    .from(FOOD_IMAGE_BUCKET)
+    .upload(path, clean, { contentType: "image/jpeg", cacheControl: "31536000", upsert: false });
+  if (error) {
+    console.error("Food photo upload failed:", error.message);
+    return { error: te("imageUploadFailed") };
+  }
+  return { path };
+}
+
+async function removeFoodImage(supabase: Db, path: string | null | undefined): Promise<void> {
+  if (path) await supabase.storage.from(FOOD_IMAGE_BUCKET).remove([path]); // best effort; the old file is just orphaned if this fails
+}
+
 export async function addFood(_prev: FormState, formData: FormData): Promise<FormState> {
   const t = await getTranslations("foods");
   const parsed = z
@@ -103,8 +143,22 @@ export async function addFood(_prev: FormState, formData: FormData): Promise<For
 
   const { supabase, merchant } = await requireMerchant();
   const translations = parseTranslations(formData, ["name", "description"]);
-  const { error } = await supabase.from("food_items").insert({ ...parsed.data, translations, merchant_id: merchant.id });
+  const { data: food, error } = await supabase
+    .from("food_items")
+    .insert({ ...parsed.data, translations, merchant_id: merchant.id })
+    .select("id")
+    .single();
   if (error) return { error: await dbError(error.message) };
+
+  const file = uploadedFile(formData);
+  if (file) {
+    const stored = await storeFoodImage(supabase, merchant.id, food.id, file);
+    if ("error" in stored) {
+      revalidatePath("/merchant/foods"); // the food itself was saved
+      return { error: stored.error };
+    }
+    await supabase.from("food_items").update({ image_path: stored.path }).eq("id", food.id);
+  }
   revalidatePath("/merchant/foods");
   return undefined;
 }
@@ -118,12 +172,28 @@ export async function updateFood(id: string, _prev: FormState, formData: FormDat
 
   const { supabase, merchant } = await requireMerchant();
   const translations = parseTranslations(formData, ["name", "description"]);
+  const { data: current } = await supabase.from("food_items").select("image_path").eq("id", id).eq("merchant_id", merchant.id).maybeSingle();
+
+  let imagePath: string | null | undefined; // undefined = unchanged
+  const file = uploadedFile(formData);
+  if (file) {
+    const stored = await storeFoodImage(supabase, merchant.id, id, file);
+    if ("error" in stored) return { error: stored.error };
+    imagePath = stored.path;
+  } else if (formData.get("remove_image") === "on") {
+    imagePath = null;
+  }
+
   const { error } = await supabase
     .from("food_items")
-    .update({ ...parsed.data, translations })
+    .update({ ...parsed.data, translations, ...(imagePath !== undefined ? { image_path: imagePath } : {}) })
     .eq("id", id)
     .eq("merchant_id", merchant.id);
-  if (error) return { error: await dbError(error.message) };
+  if (error) {
+    if (imagePath) await removeFoodImage(supabase, imagePath); // don't leave the new file behind
+    return { error: await dbError(error.message) };
+  }
+  if (imagePath !== undefined) await removeFoodImage(supabase, current?.image_path);
   revalidatePath("/merchant/foods");
   return { error: undefined, saved: true };
 }

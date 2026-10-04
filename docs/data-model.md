@@ -9,7 +9,7 @@ Source of truth: `supabase/migrations/*.sql`. Mirror any change in `types/databa
 | `profiles` | One per auth user (trigger `handle_new_user`) | `id` = `auth.users.id`, `display_name`, `avatar_url`, `locale` (en/es/zh-CN/zh-TW, null = not chosen yet) |
 | `merchants` | A business owned by a user | `owner_id`, `country_code` (holiday lookup), `translations` jsonb (optional name/description per language) |
 | `pickup_points` | Merchant's pickup locations (many) | `lat`, `lng`, `timezone` (IANA), `active` |
-| `food_items` | Merchant's menu | `active`, `price_cents` (unused until payments), `translations` jsonb (optional name/description per language) |
+| `food_items` | Merchant's menu | `active`, `price_cents` (unused until payments), `translations` jsonb (optional name/description per language), `image_path` (photo path in the `food-images` bucket) |
 | `offerings` | A sale event: one pickup point on one date | `pickup_date`, `pickup_start/end`, `cutoff_at`, `status` draft/published/closed. Trigger `check_offering_schedule`: cutoff ≤ pickup start in the point's timezone |
 | `offering_items` | Foods in an offering | `quantity_limit` (null = unlimited), unique (offering, food) |
 | `orders` | A customer's order on an offering | `status` placed/cancelled/picked_up, `qr_token` (unique), `picked_up_at`, `payment_status` (default `'none'`), `payment_ref`. **Partial unique** index: one non-cancelled order per (customer, offering) |
@@ -33,6 +33,10 @@ View: `order_lines` (`security_invoker`) — one row per ordered item with merch
 | `offering_stock(offering)` | Remaining quantity for limited items (customers can't read others' orders) |
 
 `items` = `[{"offering_item_id": "<uuid>", "qty": <int>}]`. Helpers: `is_merchant_owner`, `offering_merchant`, `has_order_on`, `can_share_location`, internal `_write_order_items`.
+
+## Food photos (migration `20261007000000_food_photos.sql`)
+
+Storage bucket **`food-images`**: public read, JPEG only, 1 MiB max. Files live at `<merchant_id>/<food_id>-<random>.jpg`; storage RLS (`is_food_image_owner`) lets only that merchant's owner write/list/delete in their own single-level folder (no `..`, no root files, no non-UUID folders). `food_items.image_path` stores the path (not a URL). The browser resizes to ≤1200 px JPEG; the server re-validates (JPEG signature, ≤800 KB) and **strips every metadata segment** (EXIF/GPS, XMP, IPTC, comments — `lib/images.ts`) before uploading with the merchant's own session. Replacing/removing a photo deletes the old file; account deletion removes the merchant's whole folder (`app/account/actions.ts`).
 
 ## Offering edit protection (migration `20261006000000_edit_clone_offerings.sql`)
 

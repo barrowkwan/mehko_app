@@ -25,13 +25,13 @@ export type Database = {
           Tables: {
             "food_items": {
                   Row: {
-                    "active": boolean,"created_at": string,"description": string | null,"id": string,"image_url": string | null,"merchant_id": string,"name": string,"price_cents": number | null,"translations": NonNullable<Json>
+                    "active": boolean,"created_at": string,"description": string | null,"id": string,"image_path": string | null,"merchant_id": string,"name": string,"price_cents": number | null,"translations": NonNullable<Json>
                   }
                   Insert: {
-                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id": string,"name": string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
+                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"merchant_id": string,"name": string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
                   }
                   Update: {
-                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_url"?: string | null,"merchant_id"?: string,"name"?: string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
+                    "active"?: boolean,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"merchant_id"?: string,"name"?: string,"price_cents"?: number | null,"translations"?: NonNullable<Json>
                   }
                   Relationships: [
                     {
@@ -314,6 +314,9 @@ isOneToOne: false
                            },
 "has_order_on":
 { Args: { "o": string }; Returns: boolean
+                           },
+"is_food_image_owner":
+{ Args: { "object_name": string }; Returns: boolean
                            },
 "is_merchant_owner":
 { Args: { "m": string }; Returns: boolean

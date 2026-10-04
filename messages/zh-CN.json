@@ -139,7 +139,11 @@
     "nameRequired": "请填写名称",
     "editTitle": "编辑菜品",
     "original": "原文：{name}",
-    "translatedIn": "已翻译：{languages}"
+    "translatedIn": "已翻译：{languages}",
+    "photo": "照片（可选）",
+    "photoHelp": "照片会被缩小，并且会删除图片中的所有位置信息。",
+    "removePhoto": "删除照片",
+    "photoUnsupported": "无法读取这张图片。请尝试 JPEG 或 PNG。"
   },
   "offerings": {
     "title": "售卖场次",
@@ -254,7 +258,11 @@
     "limitBelowOrdered": "商品的限量不能低于已订购的数量。",
     "newDatePast": "请选择今天或之后的日期。",
     "offeringNotFound": "未找到该场次。",
-    "emptyOffering": "一个场次至少要包含一个菜品。"
+    "emptyOffering": "一个场次至少要包含一个菜品。",
+    "imageType": "请选择 JPEG 或 PNG 照片。",
+    "imageTooLarge": "照片太大，请换一张小一点的。",
+    "imageInvalid": "该文件不是有效的照片。",
+    "imageUploadFailed": "菜品已保存，但照片上传失败。请重试。"
   },
   "account": {
     "title": "账户",
@@ -263,7 +271,7 @@
     "dangerIntro": "删除账户是永久性的，无法撤销。这将删除：",
     "deletesProfile": "您的个人资料和登录信息",
     "deletesOrders": "您的所有订单",
-    "deletesMerchant": "如果您是商家：您的菜品、自取点和售卖场次，以及其下的所有订单（您的顾客将失去这些订单记录）",
+    "deletesMerchant": "如果您是商家：您的菜品及其照片、自取点和售卖场次，以及其下的所有订单（您的顾客将失去这些订单记录）",
     "blocked": "暂时无法删除账户：有顾客在您这里有未完成的订单。请先取消或完成这些订单。",
     "confirmLabel": "输入 DELETE 以确认",
     "confirmMismatch": "请准确输入 DELETE 以确认。",

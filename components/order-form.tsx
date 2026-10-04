@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import { FoodPhoto } from "@/components/food-photo";
 import type { FormState } from "@/app/orders/actions";
 
 export type OrderFormItem = {
@@ -10,6 +11,7 @@ export type OrderFormItem = {
   description: string | null;
   remaining: number | null; // null = unlimited
   qty: number;
+  imageUrl?: string | null;
 };
 
 export function OrderForm({
@@ -28,6 +30,7 @@ export function OrderForm({
       <ul className="divide-y divide-neutral-200 rounded-lg border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
         {items.map((it) => (
           <li key={it.offeringItemId} className="flex items-center gap-3 p-3">
+            <FoodPhoto url={it.imageUrl} alt={it.name} />
             <div className="mr-auto">
               <p className="font-medium">{it.name}</p>
               {it.description && <p className="text-sm text-neutral-500">{it.description}</p>}

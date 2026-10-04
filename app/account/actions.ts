@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { FOOD_IMAGE_BUCKET } from "@/lib/images";
 import type { FormState } from "@/app/orders/actions";
 
 // Permanently deletes the signed-in user's account (store requirement). Order of checks matters:
@@ -21,7 +22,9 @@ export async function deleteAccount(_prev: FormState, formData: FormData): Promi
   if (blockerError) return { error: tErrors("generic") };
   if (blocker === "merchant_active_orders") return { error: tErrors("merchantHasActiveOrders") };
 
-  const { error } = await createAdminClient().auth.admin.deleteUser(user.id);
+  const admin = createAdminClient();
+  await removeMerchantPhotos(admin, user.id);
+  const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) {
     console.error("Account deletion failed:", error.message);
     return { error: tErrors("generic") };
@@ -34,4 +37,18 @@ export async function deleteAccount(_prev: FormState, formData: FormData): Promi
     // ignore
   }
   redirect("/login?deleted=1");
+}
+
+// Deleting the account removes the database rows by cascade, but files in Storage are not touched by that:
+// delete the merchant's photo folder first. Best effort: a failure is logged and does not block the deletion.
+async function removeMerchantPhotos(admin: ReturnType<typeof createAdminClient>, userId: string): Promise<void> {
+  try {
+    const { data: merchants } = await admin.from("merchants").select("id").eq("owner_id", userId);
+    for (const m of merchants ?? []) {
+      const { data: files } = await admin.storage.from(FOOD_IMAGE_BUCKET).list(m.id, { limit: 1000 });
+      if (files?.length) await admin.storage.from(FOOD_IMAGE_BUCKET).remove(files.map((f) => `${m.id}/${f.name}`));
+    }
+  } catch (e) {
+    console.error("Removing merchant photos failed:", e instanceof Error ? e.message : e);
+  }
 }

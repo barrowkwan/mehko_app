@@ -139,7 +139,11 @@
     "nameRequired": "El nombre es obligatorio",
     "editTitle": "Editar comida",
     "original": "Original: {name}",
-    "translatedIn": "Traducido a: {languages}"
+    "translatedIn": "Traducido a: {languages}",
+    "photo": "Foto (opcional)",
+    "photoHelp": "Se cambia de tamaño y se elimina cualquier dato de ubicación de la imagen.",
+    "removePhoto": "Quitar foto",
+    "photoUnsupported": "No se pudo leer esta imagen. Prueba con un JPEG o PNG."
   },
   "offerings": {
     "title": "Ofertas",
@@ -254,7 +258,11 @@
     "limitBelowOrdered": "El límite de un artículo no puede ser menor que la cantidad ya pedida.",
     "newDatePast": "Elige una fecha de hoy o posterior.",
     "offeringNotFound": "Oferta no encontrada.",
-    "emptyOffering": "Una oferta debe incluir al menos una comida."
+    "emptyOffering": "Una oferta debe incluir al menos una comida.",
+    "imageType": "Elige una foto JPEG o PNG.",
+    "imageTooLarge": "Esa foto es demasiado grande. Prueba con una más pequeña.",
+    "imageInvalid": "Ese archivo no es una foto válida.",
+    "imageUploadFailed": "La comida se guardó, pero no se pudo subir la foto. Inténtalo de nuevo."
   },
   "account": {
     "title": "Cuenta",
@@ -263,7 +271,7 @@
     "dangerIntro": "Eliminar tu cuenta es permanente y no se puede deshacer. Se eliminará:",
     "deletesProfile": "tu perfil y tu acceso",
     "deletesOrders": "todos tus pedidos",
-    "deletesMerchant": "si eres comerciante: tus comidas, puntos de recogida y ofertas, y todos los pedidos de ellas (tus clientes pierden ese historial de pedidos)",
+    "deletesMerchant": "si eres comerciante: tus comidas y sus fotos, puntos de recogida y ofertas, y todos los pedidos de ellas (tus clientes pierden ese historial de pedidos)",
     "blocked": "Todavía no puedes eliminar tu cuenta: hay clientes con pedidos próximos contigo. Cancela o completa esos pedidos primero.",
     "confirmLabel": "Escribe DELETE para confirmar",
     "confirmMismatch": "Escribe DELETE exactamente para confirmar.",

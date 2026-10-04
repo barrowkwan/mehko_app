@@ -139,7 +139,11 @@
     "nameRequired": "請填寫名稱",
     "editTitle": "編輯餐點",
     "original": "原文：{name}",
-    "translatedIn": "已翻譯：{languages}"
+    "translatedIn": "已翻譯：{languages}",
+    "photo": "照片（選填）",
+    "photoHelp": "照片會被縮小，並且會刪除圖片中的所有位置資訊。",
+    "removePhoto": "刪除照片",
+    "photoUnsupported": "無法讀取這張圖片。請嘗試 JPEG 或 PNG。"
   },
   "offerings": {
     "title": "販售場次",
@@ -254,7 +258,11 @@
     "limitBelowOrdered": "品項的限量不能低於已訂購的數量。",
     "newDatePast": "請選擇今天或之後的日期。",
     "offeringNotFound": "找不到該場次。",
-    "emptyOffering": "一個場次至少要包含一道餐點。"
+    "emptyOffering": "一個場次至少要包含一道餐點。",
+    "imageType": "請選擇 JPEG 或 PNG 照片。",
+    "imageTooLarge": "照片太大，請換一張小一點的。",
+    "imageInvalid": "該檔案不是有效的照片。",
+    "imageUploadFailed": "餐點已儲存，但照片上傳失敗。請再試一次。"
   },
   "account": {
     "title": "帳戶",
@@ -263,7 +271,7 @@
     "dangerIntro": "刪除帳戶是永久性的，無法復原。這將刪除：",
     "deletesProfile": "您的個人資料與登入資訊",
     "deletesOrders": "您的所有訂單",
-    "deletesMerchant": "若您是商家：您的餐點、自取點與販售場次，以及其下的所有訂單（您的顧客將失去這些訂單紀錄）",
+    "deletesMerchant": "若您是商家：您的餐點及其照片、自取點與販售場次，以及其下的所有訂單（您的顧客將失去這些訂單紀錄）",
     "blocked": "目前無法刪除帳戶：有顧客在您這裡有未完成的訂單。請先取消或完成這些訂單。",
     "confirmLabel": "輸入 DELETE 以確認",
     "confirmMismatch": "請準確輸入 DELETE 以確認。",

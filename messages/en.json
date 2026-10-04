@@ -139,7 +139,11 @@
     "nameRequired": "Name is required",
     "editTitle": "Edit food",
     "original": "Original: {name}",
-    "translatedIn": "Translated: {languages}"
+    "translatedIn": "Translated: {languages}",
+    "photo": "Photo (optional)",
+    "photoHelp": "It is resized, and any location data inside the picture is removed.",
+    "removePhoto": "Remove photo",
+    "photoUnsupported": "This picture couldn't be read. Try a JPEG or PNG."
   },
   "offerings": {
     "title": "Offerings",
@@ -254,7 +258,11 @@
     "limitBelowOrdered": "An item's limit can't be lower than the quantity already ordered.",
     "newDatePast": "Choose a date that is today or later.",
     "offeringNotFound": "Offering not found.",
-    "emptyOffering": "An offering must include at least one food."
+    "emptyOffering": "An offering must include at least one food.",
+    "imageType": "Please choose a JPEG or PNG photo.",
+    "imageTooLarge": "That photo is too large. Try a smaller one.",
+    "imageInvalid": "That file isn't a valid photo.",
+    "imageUploadFailed": "The food was saved, but the photo couldn't be uploaded. Please try again."
   },
   "account": {
     "title": "Account",
@@ -263,7 +271,7 @@
     "dangerIntro": "Deleting your account is permanent and cannot be undone. This will remove:",
     "deletesProfile": "your profile and sign-in",
     "deletesOrders": "all your orders",
-    "deletesMerchant": "if you are a merchant: your foods, pickup points and offerings, and all orders on them (your customers lose that order history)",
+    "deletesMerchant": "if you are a merchant: your foods and their photos, pickup points and offerings, and all orders on them (your customers lose that order history)",
     "blocked": "You can't delete your account yet: customers have upcoming orders with you. Cancel or complete those orders first.",
     "confirmLabel": "Type DELETE to confirm",
     "confirmMismatch": "Please type DELETE exactly to confirm.",

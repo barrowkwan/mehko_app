@@ -2,6 +2,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { LOCALE_LABELS, localized, translatedLocales } from "@/lib/locale";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
+import { FoodPhoto, foodPhotoUrl } from "@/components/food-photo";
+import { ImageInput } from "@/components/image-input";
 import { TranslationFields } from "@/components/translation-fields";
 import { addFood, setFoodActive, updateFood } from "../actions";
 
@@ -27,6 +29,7 @@ export default async function FoodsPage() {
           return (
           <li key={f.id} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
             <div className="flex items-center gap-3">
+              <FoodPhoto url={foodPhotoUrl(f.image_path)} alt={shown} />
               <div className="mr-auto">
                 <p className={`font-medium ${f.active ? "" : "text-neutral-400 line-through"}`}>{shown}</p>
                 {shown !== f.name && <p className="text-xs text-neutral-500">{t("original", { name: f.name })}</p>}
@@ -47,6 +50,7 @@ export default async function FoodsPage() {
                   <Field label={t("description")}>
                     <input name="description" defaultValue={f.description ?? ""} className={inputClass} />
                   </Field>
+                  <ImageInput currentUrl={foodPhotoUrl(f.image_path)} alt={shown} />
                   <TranslationFields translations={f.translations} fields={["name", "description"]} />
                 </ActionForm>
               </div>
@@ -64,6 +68,7 @@ export default async function FoodsPage() {
           <Field label={t("description")}>
             <input name="description" className={inputClass} />
           </Field>
+          <ImageInput alt="" />
           <TranslationFields fields={["name", "description"]} />
         </ActionForm>
       </section>

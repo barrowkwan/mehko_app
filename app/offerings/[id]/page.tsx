@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { isPastCutoff } from "@/lib/cutoff";
 import { formatDate, formatInstant, formatTime } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
 import { placeOrder } from "@/app/orders/actions";
 
@@ -19,7 +20,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
       `id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        merchant:merchants(name, description, translations),
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item:food_items(name, description, translations))`,
+       offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -73,6 +74,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
               : null,
             remaining: remaining.get(i.id) ?? null,
             qty: 0,
+            imageUrl: foodPhotoUrl(i.food_item?.image_path),
           }))}
         />
       )}

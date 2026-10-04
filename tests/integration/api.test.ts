@@ -330,4 +330,47 @@ describe.skipIf(!process.env.SUPABASE_INTEGRATION)("live Supabase", () => {
     expect((await m.client.from("offerings").delete().eq("id", copyId)).error).toBeNull();
     expect(must(await admin.from("orders").select("id").eq("id", orderId))).toHaveLength(0);
   }, 40_000);
+  it("food photos: storage policies, bucket limits and public reads work on the real Storage API", async () => {
+    const m = await signUp("photomerchant");
+    const other = await signUp("photoother");
+    const c = await signUp("photocustomer");
+    const mid = must(await m.client.from("merchants").insert({ owner_id: m.id, name: `Photos ${run}` }).select("id").single()).id;
+    const omid = must(await other.client.from("merchants").insert({ owner_id: other.id, name: `Other ${run}` }).select("id").single()).id;
+
+    // A minimal valid JPEG (SOI, APP0, EOI is enough for the storage layer; it checks the declared type and size).
+    const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0xff, 0xd9]);
+    const bucket = (client: Client) => client.storage.from("food-images");
+    const path = `${mid}/photo-${run}.jpg`;
+
+    // The owner can upload into their own folder; anyone (even anonymous) can read it via the public URL.
+    expect((await bucket(m.client).upload(path, jpeg, { contentType: "image/jpeg", cacheControl: "31536000" })).error).toBeNull();
+    const publicUrl = bucket(m.client).getPublicUrl(path).data.publicUrl;
+    const res = await fetch(publicUrl);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("image/jpeg");
+    expect(new Uint8Array(await res.arrayBuffer())).toEqual(jpeg);
+
+    // Other merchants, customers and anonymous callers cannot write into this merchant's folder (or anywhere else).
+    for (const [who, client] of [["other merchant", other.client], ["customer", c.client]] as const) {
+      const r = await bucket(client).upload(`${mid}/intruder-${run}.jpg`, jpeg, { contentType: "image/jpeg" });
+      expect(r.error, who).not.toBeNull();
+    }
+    const anon = createClient<Database>(URL, ANON, { auth: { persistSession: false } });
+    expect((await anon.storage.from("food-images").upload(`${mid}/anon-${run}.jpg`, jpeg, { contentType: "image/jpeg" })).error).not.toBeNull();
+    expect((await bucket(m.client).upload(`${omid}/not-mine-${run}.jpg`, jpeg, { contentType: "image/jpeg" })).error).not.toBeNull();
+    expect((await bucket(m.client).upload(`root-${run}.jpg`, jpeg, { contentType: "image/jpeg" })).error).not.toBeNull();
+
+    // Bucket limits: only JPEG, at most 1 MiB.
+    expect((await bucket(m.client).upload(`${mid}/png-${run}.png`, new Uint8Array([0x89, 0x50, 0x4e, 0x47]), { contentType: "image/png" })).error).not.toBeNull();
+    expect((await bucket(m.client).upload(`${mid}/big-${run}.jpg`, new Uint8Array(1024 * 1024 + 1024), { contentType: "image/jpeg" })).error).not.toBeNull();
+
+    // The owner can list and remove their files; others cannot remove them.
+    const listed = await bucket(m.client).list(mid);
+    expect(listed.data?.map((f) => f.name)).toContain(`photo-${run}.jpg`);
+    const foreignRemove = await bucket(other.client).remove([path]);
+    expect(foreignRemove.data ?? []).toHaveLength(0);
+    expect((await fetch(publicUrl)).status).toBe(200); // still there
+    expect((await bucket(m.client).remove([path])).error).toBeNull();
+    expect((await fetch(publicUrl)).status).not.toBe(200);
+  }, 40_000);
 });

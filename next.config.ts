@@ -3,6 +3,8 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  // Food photos are posted with the form (resized in the browser, at most ~800 KB); the default limit is 1 MB.
+  experimental: { serverActions: { bodySizeLimit: "2mb" } },
   env: {
     // Render exposes the deployed commit; used to group Sentry errors by release (optional).
     NEXT_PUBLIC_SENTRY_RELEASE: process.env.RENDER_GIT_COMMIT ?? "",

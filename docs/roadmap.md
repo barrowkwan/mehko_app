@@ -88,7 +88,7 @@ CI step: apply migrations, run `supabase gen types typescript --local`, fail if 
 **Why:** merchants can only publish/close. Repeating last week's menu is the most common action.
 **Do:** `updateOffering`, "Duplicate to new date", delete drafts. **Rules:** schedule trigger already validates cutoff; do not orphan `order_items` (FK to `offering_items`, no cascade) — block removing items that have orders, or define behavior in a migration. Add DB tests.
 
-### FEAT-2 · Food photos — P1 · M
+### FEAT-2 · Food photos — P1 · M — **implemented (web)**; plan: [plans/feat-2-food-photos.md](plans/feat-2-food-photos.md)
 Supabase Storage bucket `food-images`, policy limiting writes to the merchant's own folder, use existing `food_items.image_url`; upload on Foods page; show in order form/home. Resize on upload (free tier storage 1 GB).
 
 ### FEAT-3 · Order notes, allergies & pickup instructions — P1 · S
