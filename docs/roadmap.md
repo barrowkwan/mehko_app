@@ -138,7 +138,7 @@ Webhook route using the admin client, idempotent; refunds only before cutoff; ga
 
 ## Quality
 
-### QA-1 · Browser end-to-end tests (Playwright) — P2 · L
+### QA-1 · Browser end-to-end tests (Playwright) — P2 · L — **started: 2 journeys run in CI** (customer order → edit → Spanish → cancel; merchant map picker). Run locally: `supabase start`, `npm run build`, `npm run test:e2e`. Still to add: merchant publishes offering through the form, cutoff/sold-out errors, QR scan (needs a camera stub)
 Run in CI against `supabase start`. Log in without OAuth via admin-created password users (cookie injection works — done manually for smoke tests). Cover: merchant creates offering → customer orders/edits/cutoff → QR scan → language switch.
 
 ### QA-2 · Real-device verification — P1 · S (manual)

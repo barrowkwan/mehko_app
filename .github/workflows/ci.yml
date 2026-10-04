@@ -85,6 +85,23 @@ jobs:
         run: npx vitest run tests/integration
         env:
           SUPABASE_INTEGRATION: "1"
+      - name: Install browser for end-to-end tests
+        run: npx playwright install --with-deps chromium
+      - name: Build the app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3100
+      - name: Browser end-to-end tests
+        run: npx playwright test
+        env:
+          CRON_SECRET: ci
+      - name: Upload Playwright traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          if-no-files-found: ignore
       - name: Supabase logs on failure
         if: failure()
         run: docker ps -a && docker logs supabase_realtime_neighborhood-eats --tail 100 || true
