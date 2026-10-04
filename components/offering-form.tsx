@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { CutoffInput } from "@/components/cutoff-input";
+import { OfferingReview } from "@/components/offering-review";
 import { ExtraSlots } from "@/components/extra-slots";
 import { TranslationFields } from "@/components/translation-fields";
 import type { FormState } from "@/app/orders/actions";
@@ -41,6 +42,12 @@ export async function OfferingForm({
 
   return (
     <ActionForm action={action} submitLabel={submitLabel}>
+      {allowExtraSlots && (
+        <OfferingReview
+          points={Object.fromEntries(points.map((p) => [p.id, p.name]))}
+          foods={Object.fromEntries(foods.map((f) => [f.id, f.name]))}
+        />
+      )}
       {lockMove && values ? (
         <>
           <input type="hidden" name="pickup_point_id" value={values.pickupPointId} />

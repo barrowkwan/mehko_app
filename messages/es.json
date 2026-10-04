@@ -198,7 +198,21 @@
     "extraSlotsTitle": "Más franjas de recogida (opcional)",
     "extraSlotsHelp": "Ofrece los mismos productos en otros lugares u horarios. Todas las franjas comparten el cierre, los productos y los límites; el cliente elige una.",
     "addSlot": "Añadir una franja de recogida",
-    "removeSlot": "Quitar esta franja"
+    "removeSlot": "Quitar esta franja",
+    "reviewAndPublish": "Revisar y publicar",
+    "review": {
+      "title": "Revisa tu oferta",
+      "intro": "Los clientes la verán en cuanto la publiques. Comprueba los detalles.",
+      "foods": "Productos",
+      "limitN": "límite {count}",
+      "unlimited": "sin límite",
+      "sharedLimits": "Los límites se comparten entre todas las franjas de recogida.",
+      "pickup": "{count, plural, one {Recogida} other {Franjas de recogida}}",
+      "cutoff": "Cierre de pedidos (tu hora)",
+      "instructions": "Instrucciones de recogida",
+      "back": "Volver a editar",
+      "publish": "Publicar oferta"
+    }
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",

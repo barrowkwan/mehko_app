@@ -8,6 +8,7 @@ Each feature → where it lives → how it's tested. Status: ✅ built, 🔌 hoo
 | 2 | Merchant registration | ✅ | `/merchant/setup` | `createMerchant` | `merchants` | — |
 | 3 | Multiple pickup points (click-to-place map picker, typed coordinates, "use my location") | ✅ | `/merchant/pickup-points` (+`geo-fill.tsx`, `map-picker.tsx`) | `addPickupPoint`, `setPickupPointActive` | `pickup_points` | RLS cross-merchant test |
 | 4 | Foods | ✅ | `/merchant/foods` | `addFood`, `setFoodActive` | `food_items` | — |
+| 5c | Review step before publishing a new offering (foods/limits, slots, cutoff in the merchant's time, instructions) | ✅ | `components/offering-review.tsx` | – | – | e2e |
 | 5b | Several pickup slots per offering (shared cutoff/foods/limits; customer picks and can move their order) | ✅ | new-offering form, offering pages, `/orders/[id]` | `createOffering`, `addOfferingSlot`, `changeOrderSlot` | `offerings.group_id`, `add_offering_slot`, `change_order_slot`, `offering_pool` | `tests/db/pickup-slots.test.ts`, e2e |
 | 5 | Offerings (food, date, pickup, cutoff) — create, **edit, duplicate to a new date, delete** | ✅ | `/merchant/offerings`, `/new` (+`cutoff-input.tsx`), `/[id]` | `createOffering`, `setOfferingStatus` | `offerings`, `offering_items`, `check_offering_schedule` | schedule trigger test |
 | 6 | Browse & order | ✅ | `/`, `/offerings/[id]` | `placeOrder`, `OrderForm` | `place_order`, `offering_stock` | ordering tests |

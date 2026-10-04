@@ -198,7 +198,21 @@
     "extraSlotsTitle": "More pickup slots (optional)",
     "extraSlotsHelp": "Offer the same foods at other places or times. All slots share the cutoff, foods and limits; customers choose one.",
     "addSlot": "Add a pickup slot",
-    "removeSlot": "Remove this slot"
+    "removeSlot": "Remove this slot",
+    "reviewAndPublish": "Review & publish",
+    "review": {
+      "title": "Review your offering",
+      "intro": "Customers will see this as soon as you publish. Check the details.",
+      "foods": "Foods",
+      "limitN": "limit {count}",
+      "unlimited": "no limit",
+      "sharedLimits": "Limits are shared across all pickup slots.",
+      "pickup": "{count, plural, one {Pickup} other {Pickup slots}}",
+      "cutoff": "Order cutoff (your time)",
+      "instructions": "Pickup instructions",
+      "back": "Back to edit",
+      "publish": "Publish offering"
+    }
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",

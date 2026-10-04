@@ -198,7 +198,21 @@
     "extraSlotsTitle": "更多取餐时段（可选）",
     "extraSlotsHelp": "在其他地点或时间提供相同的食品。所有时段共用截止时间、食品和限量；顾客选择其中一个。",
     "addSlot": "添加取餐时段",
-    "removeSlot": "移除此时段"
+    "removeSlot": "移除此时段",
+    "reviewAndPublish": "预览并发布",
+    "review": {
+      "title": "预览您的优惠",
+      "intro": "发布后顾客会立即看到。请核对详情。",
+      "foods": "食品",
+      "limitN": "限量 {count}",
+      "unlimited": "不限量",
+      "sharedLimits": "限量由所有取餐时段共用。",
+      "pickup": "{count, plural, other {取餐时段}}",
+      "cutoff": "订单截止时间（您的当地时间）",
+      "instructions": "取餐说明",
+      "back": "返回修改",
+      "publish": "发布"
+    }
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",

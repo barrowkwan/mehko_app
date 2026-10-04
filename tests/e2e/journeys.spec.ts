@@ -93,6 +93,7 @@ test("merchant publishes an offering through the form; stock limit stops a secon
   await mp.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
   await mp.getByRole("checkbox", { name: /Form Buns/ }).check();
   await mp.locator('input[name^="limit_"]').fill("2");
+  await mp.getByRole("button", { name: "Review & publish" }).click();
   await mp.getByRole("button", { name: "Publish offering" }).click();
   await mp.waitForURL(/\/merchant\/offerings(\/|$)/);
   await merCtx.close();
@@ -148,6 +149,17 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await mp.locator('input[name="slot_0_end"]').fill("13:00");
   await mp.getByRole("checkbox", { name: /Slot Buns/ }).check();
   await mp.locator('input[name^="limit_"]').fill("2");
+  await mp.getByRole("button", { name: "Review & publish" }).click();
+  // The review shows what customers will see before anything is saved.
+  const review = mp.getByRole("dialog");
+  await expect(review.getByText("Slot Buns — limit 2")).toBeVisible();
+  await expect(review.getByText("North Gate")).toBeVisible();
+  await expect(review.getByText("South Gate")).toBeVisible();
+  await expect(review.getByText("Order cutoff (your time)")).toBeVisible();
+  await review.getByRole("button", { name: "Back to edit" }).click();
+  await expect(review).toBeHidden();
+  expect(mp.url()).toMatch(/\/offerings\/new/);
+  await mp.getByRole("button", { name: "Review & publish" }).click();
   await mp.getByRole("button", { name: "Publish offering" }).click();
   await mp.waitForURL(/\/merchant\/offerings\/[0-9a-f-]{36}$/);
   await expect(mp.getByRole("heading", { name: "Pickup slots" })).toBeVisible();

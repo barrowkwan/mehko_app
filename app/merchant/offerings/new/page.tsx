@@ -41,7 +41,7 @@ export default async function NewOfferingPage() {
       <h1 className="mb-4 text-xl font-bold">{t("newTitle")}</h1>
       <OfferingForm
         action={createOffering}
-        submitLabel={t("publish")}
+        submitLabel={t("reviewAndPublish")}
         allowExtraSlots
         points={points}
         foods={foods.map((f) => ({ id: f.id, name: localized(f.name, f.translations, locale, "name") }))}
