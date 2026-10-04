@@ -288,7 +288,10 @@
     "notSupported": "La geolocalización no es compatible con este dispositivo.",
     "banner": "Estás compartiendo tu ubicación en vivo con los clientes que tienen un pedido.",
     "privacyNote": "La ubicación deja de compartirse cuando pulsas Detener, sales de esta página o la cierras, y automáticamente tras 4 horas. Los clientes dejan de verla en 2 minutos si se detienen las actualizaciones.",
-    "autoStopped": "La ubicación se desactivó automáticamente tras 4 horas."
+    "autoStopped": "La ubicación se desactivó automáticamente tras 4 horas.",
+    "denied": "El acceso a la ubicación está bloqueado para este sitio. Permítelo en la configuración del sitio de tu navegador (el icono de candado o ajustes junto a la dirección) y comprueba que los Servicios de ubicación estén activados para tu navegador en los ajustes del dispositivo. Luego recarga esta página e inténtalo de nuevo.",
+    "unavailable": "Tu dispositivo no pudo determinar su ubicación. Comprueba que los Servicios de ubicación estén activados y que tengas señal, e inténtalo de nuevo.",
+    "timeout": "Obtener tu ubicación tardó demasiado. Comprueba tu señal e inténtalo de nuevo."
   },
   "scan": {
     "title": "Confirmar recogida",

@@ -288,7 +288,10 @@
     "notSupported": "Geolocation isn't supported on this device.",
     "banner": "You are sharing your live location with customers who have an order.",
     "privacyNote": "Sharing stops when you tap Stop, leave this page or close it, and by itself after 4 hours. Customers stop seeing it within 2 minutes if updates stop.",
-    "autoStopped": "Sharing was switched off automatically after 4 hours."
+    "autoStopped": "Sharing was switched off automatically after 4 hours.",
+    "denied": "Location access is blocked for this site. Allow it in your browser's site settings (the lock or settings icon next to the address), and make sure Location Services is on for your browser in your device settings. Then reload this page and try again.",
+    "unavailable": "Your device couldn't determine its location. Check that Location Services is on and you have a signal, then try again.",
+    "timeout": "Finding your location took too long. Check your signal and try again."
   },
   "scan": {
     "title": "Confirm pickup",

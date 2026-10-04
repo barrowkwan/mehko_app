@@ -514,3 +514,21 @@ test("live location: banner while sharing, off when the merchant leaves the page
   await expect(c.getByText("The merchant isn't sharing their location right now.")).toBeVisible();
   await cctx.close();
 });
+
+test("denied location permission gives clear instructions instead of a raw browser message", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant14");
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Deny Kitchen ${run}` }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Deny Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Deny Buns" }).select("id").single()).id;
+  const off = must(await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: new Date().toISOString().slice(0, 10), pickup_start: "23:00", pickup_end: "23:59", cutoff_at: new Date(Date.now() - 3_600_000).toISOString(), status: "published" }).select("id").single()).id;
+  must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single());
+
+  const ctx = await browser.newContext({ timezoneId: "UTC" }); // no geolocation permission: the browser denies the request
+  await signIn(ctx, baseURL!, mer.email);
+  const p = await ctx.newPage();
+  await p.goto(`/merchant/offerings/${off}`);
+  await p.getByRole("button", { name: "Share my location with customers" }).click();
+  await expect(p.getByText("Location access is blocked for this site.")).toBeVisible();
+  await expect(p.getByRole("status")).toHaveCount(0); // not sharing
+  await ctx.close();
+});

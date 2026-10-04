@@ -70,7 +70,8 @@ export function LocationToggle({ offeringId, enabled }: { offeringId: string; en
         if (Date.now() - lastSent.current >= SEND_EVERY_MS) void send(lastPos.current);
       },
       (e) => {
-        setError(e.message);
+        // 1 = permission denied, 2 = position unavailable, 3 = timed out
+        setError(e.code === 1 ? t("denied") : e.code === 2 ? t("unavailable") : e.code === 3 ? t("timeout") : e.message);
         stop();
       },
       { enableHighAccuracy: true },
