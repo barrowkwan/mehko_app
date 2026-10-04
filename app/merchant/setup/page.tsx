@@ -20,7 +20,9 @@ export default async function SetupPage() {
           <textarea name="description" rows={3} className={inputClass} />
         </Field>
         <Field label={t("country")}>
-          <input name="country_code" defaultValue="US" maxLength={2} required className={inputClass} />
+          <select name="country_code" defaultValue="US" className={inputClass}>
+            <option value="US">{(await getTranslations("profile"))("countryUS")}</option>
+          </select>
         </Field>
       </ActionForm>
     </main>

@@ -22,12 +22,12 @@ export function TranslationFields({
           <fieldset key={l} className="flex flex-col gap-1">
             <legend className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">{LOCALE_LABELS[l]}</legend>
             {fields.map((f) =>
-              f === "instructions" ? (
+              f === "instructions" || f === "description" ? (
                 <textarea
                   key={f}
                   name={`tr_${l}_${f}`}
-                  rows={2}
-                  maxLength={500}
+                  rows={f === "description" ? 3 : 2}
+                  maxLength={f === "instructions" ? 500 : undefined}
                   defaultValue={existing[l]?.[f] ?? ""}
                   placeholder={t(f)}
                   aria-label={`${LOCALE_LABELS[l]} – ${t(f)}`}

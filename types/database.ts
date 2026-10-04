@@ -69,13 +69,13 @@ isOneToOne: true
                   ]
                 },"merchants": {
                   Row: {
-                    "country_code": string,"created_at": string,"description": string | null,"id": string,"name": string,"owner_id": string,"translations": NonNullable<Json>
+                    "contact_email": string | null,"contact_phone": string | null,"country_code": string,"created_at": string,"description": string | null,"id": string,"logo_path": string | null,"name": string,"owner_id": string,"translations": NonNullable<Json>,"website": string | null
                   }
                   Insert: {
-                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name": string,"owner_id": string,"translations"?: NonNullable<Json>
+                    "contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name": string,"owner_id": string,"translations"?: NonNullable<Json>,"website"?: string | null
                   }
                   Update: {
-                    "country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name"?: string,"owner_id"?: string,"translations"?: NonNullable<Json>
+                    "contact_email"?: string | null,"contact_phone"?: string | null,"country_code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"logo_path"?: string | null,"name"?: string,"owner_id"?: string,"translations"?: NonNullable<Json>,"website"?: string | null
                   }
                   Relationships: [
                     {

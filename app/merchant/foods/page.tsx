@@ -33,7 +33,7 @@ export default async function FoodsPage() {
               <div className="mr-auto">
                 <p className={`font-medium ${f.active ? "" : "text-neutral-400 line-through"}`}>{shown}</p>
                 {shown !== f.name && <p className="text-xs text-neutral-500">{t("original", { name: f.name })}</p>}
-                {shownDescription && <p className="text-sm text-neutral-500">{shownDescription}</p>}
+                {shownDescription && <p className="whitespace-pre-line text-sm text-neutral-500">{shownDescription}</p>}
                 {languages.length > 0 && <p className="text-xs text-neutral-500">{t("translatedIn", { languages: languages.join(" · ") })}</p>}
               </div>
               <form action={setFoodActive.bind(null, f.id, !f.active)}>
@@ -48,7 +48,7 @@ export default async function FoodsPage() {
                     <input name="name" defaultValue={f.name} required className={inputClass} />
                   </Field>
                   <Field label={t("description")}>
-                    <input name="description" defaultValue={f.description ?? ""} className={inputClass} />
+                    <textarea name="description" rows={3} defaultValue={f.description ?? ""} className={inputClass} />
                   </Field>
                   <ImageInput currentUrl={foodPhotoUrl(f.image_path)} alt={shown} />
                   <TranslationFields translations={f.translations} fields={["name", "description"]} />
@@ -66,7 +66,7 @@ export default async function FoodsPage() {
             <input name="name" required className={inputClass} />
           </Field>
           <Field label={t("description")}>
-            <input name="description" className={inputClass} />
+            <textarea name="description" rows={3} className={inputClass} />
           </Field>
           <ImageInput alt="" />
           <TranslationFields fields={["name", "description"]} />

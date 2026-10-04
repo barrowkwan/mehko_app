@@ -116,7 +116,19 @@
   },
   "profile": {
     "title": "商家資料",
-    "submit": "儲存資料"
+    "submit": "儲存資料",
+    "logo": "標誌（選填）",
+    "logoHelp": "會顯示在您的名稱旁邊供顧客查看。圖片會被縮小，並移除其中的位置資訊。",
+    "removeLogo": "移除標誌",
+    "logoUnsupported": "無法讀取此圖片。請嘗試 JPEG 或 PNG。",
+    "website": "網站（選填）",
+    "contactEmail": "聯絡電子郵件（選填）",
+    "contactPhone": "聯絡電話（選填）",
+    "contactHelp": "網站、聯絡電子郵件和電話會在您的頁面上顯示給已登入的顧客。留空即可保密。",
+    "countryUS": "美國 (US)",
+    "websiteInvalid": "請輸入有效的網址，例如 https://example.com",
+    "emailInvalid": "請輸入有效的電子郵件地址。",
+    "phoneInvalid": "請輸入有效的電話號碼（僅限數字、空格以及 + ( ) - .）。"
   },
   "translations": {
     "title": "翻譯（選填）",
@@ -395,6 +407,7 @@
   },
   "merchantPage": {
     "back": "← 所有商家",
-    "empty": "此商家目前沒有可下單的優惠。"
+    "empty": "此商家目前沒有可下單的優惠。",
+    "logoAlt": "商家標誌"
   }
 }

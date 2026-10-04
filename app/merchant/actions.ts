@@ -32,7 +32,7 @@ export async function createMerchant(_prev: FormState, formData: FormData): Prom
     .object({
       name: text.min(1, t("nameRequired")),
       description: optionalText,
-      country_code: text.length(2, t("countryInvalid")).transform((v) => v.toUpperCase()),
+      country_code: z.enum(["US"], t("countryInvalid")), // only the US for now
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return await firstError(parsed.error);
@@ -45,19 +45,45 @@ export async function createMerchant(_prev: FormState, formData: FormData): Prom
 
 export async function updateMerchantProfile(_prev: FormState, formData: FormData): Promise<FormState> {
   const t = await getTranslations("setup");
+  const tp = await getTranslations("profile");
   const parsed = z
     .object({
       name: text.min(1, t("nameRequired")),
       description: optionalText,
-      country_code: text.length(2, t("countryInvalid")).transform((v) => v.toUpperCase()),
+      country_code: z.enum(["US"], t("countryInvalid")), // only the US for now (public-holiday lookup)
+      website: optionalText.refine((v) => v === null || /^(https?:\/\/)?[^\s/$.?#][^\s]*\.[^\s]{2,}$/i.test(v), tp("websiteInvalid")),
+      contact_email: optionalText.refine((v) => v === null || z.email().safeParse(v).success, tp("emailInvalid")),
+      contact_phone: optionalText.refine((v) => v === null || /^[0-9+()./ -]{5,30}$/.test(v), tp("phoneInvalid")),
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return await firstError(parsed.error);
+  // "example.com" is accepted and stored as https://example.com
+  const website = parsed.data.website && !/^https?:\/\//i.test(parsed.data.website) ? `https://${parsed.data.website}` : parsed.data.website;
+  if (website && website.length > 200) return { error: tp("websiteInvalid") };
 
   const { supabase, merchant } = await requireMerchant();
   const translations = parseTranslations(formData, ["name", "description"]);
-  const { error } = await supabase.from("merchants").update({ ...parsed.data, translations }).eq("id", merchant.id);
-  if (error) return { error: await dbError(error.message) };
+
+  // Optional logo: a new file replaces the old one; the checkbox removes it. undefined = unchanged.
+  let logoPath: string | null | undefined;
+  const file = uploadedFile(formData);
+  if (file) {
+    const stored = await storeFoodImage(supabase, merchant.id, "logo", file);
+    if ("error" in stored) return { error: stored.error };
+    logoPath = stored.path;
+  } else if (formData.get("remove_image") === "on") {
+    logoPath = null;
+  }
+
+  const { error } = await supabase
+    .from("merchants")
+    .update({ ...parsed.data, website, translations, ...(logoPath !== undefined ? { logo_path: logoPath } : {}) })
+    .eq("id", merchant.id);
+  if (error) {
+    if (logoPath) await removeFoodImage(supabase, logoPath); // do not leave the just-uploaded file orphaned
+    return { error: await dbError(error.message) };
+  }
+  if (logoPath !== undefined && merchant.logo_path) await removeFoodImage(supabase, merchant.logo_path);
   revalidatePath("/merchant", "layout");
   return { error: undefined, saved: true };
 }

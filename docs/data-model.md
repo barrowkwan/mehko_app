@@ -48,6 +48,9 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 ## Pickup slots (migration `20261011000000_multiple_pickup_slots.sql`)
 `offerings.group_id`: slots of one offering share it (null = single slot). Stock is pooled per food across the group (`offering_pool`). `add_offering_slot` (must be the same date as the offering), `change_order_slot`; `update_offering` syncs cutoff/instructions/translations/foods/limits to upcoming siblings. See [plans/feat-12-multiple-pickup-slots.md](plans/feat-12-multiple-pickup-slots.md).
 
+## Merchant profile extras (migration `20261015000000_merchant_profile_extras.sql`)
+`merchants.logo_path` (file `<merchant_id>/logo-<random>.jpg` in the public `food-images` bucket, so the existing per-merchant storage policies and account-deletion cleanup cover it), `website` (http/https URL), `contact_email`, `contact_phone`; all optional and validated by CHECK constraints. Shown to signed-in customers on `/merchants/[id]`; logo also on the Browse card. Country is US-only for now (select in the UI, enum in the actions).
+
 ## Order history visibility (migration `20261010000000_customers_keep_their_offerings.sql`)
 `offerings`/`offering_items` are readable while `published`, by the owning merchant, **and by any customer who has an order in that offering** (`has_order_in()`), whatever its status. Without this, closing or un-publishing an offering after pickup blanked the customer's order history and made the order page 404.
 

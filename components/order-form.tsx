@@ -36,7 +36,7 @@ export function OrderForm({
             <FoodPhoto url={it.imageUrl} alt={it.name} />
             <div className="mr-auto">
               <p className="font-medium">{it.name}</p>
-              {it.description && <p className="text-sm text-neutral-500">{it.description}</p>}
+              {it.description && <p className="whitespace-pre-line text-sm text-neutral-500">{it.description}</p>}
               {it.remaining !== null && <p className="text-xs text-neutral-500">{t("orderForm.left", { count: it.remaining })}</p>}
             </div>
             <input

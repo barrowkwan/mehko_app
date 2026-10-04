@@ -116,7 +116,19 @@
   },
   "profile": {
     "title": "Merchant profile",
-    "submit": "Save profile"
+    "submit": "Save profile",
+    "logo": "Logo (optional)",
+    "logoHelp": "Shown to customers next to your name. It is resized, and any location data inside the picture is removed.",
+    "removeLogo": "Remove logo",
+    "logoUnsupported": "This picture couldn't be read. Try a JPEG or PNG.",
+    "website": "Website (optional)",
+    "contactEmail": "Contact email (optional)",
+    "contactPhone": "Contact phone (optional)",
+    "contactHelp": "Website, contact email and phone are shown to signed-in customers on your page. Leave them blank to keep them private.",
+    "countryUS": "United States (US)",
+    "websiteInvalid": "Enter a valid website address, e.g. https://example.com",
+    "emailInvalid": "Enter a valid email address.",
+    "phoneInvalid": "Enter a valid phone number (digits, spaces and + ( ) - . only)."
   },
   "translations": {
     "title": "Translations (optional)",
@@ -395,6 +407,7 @@
   },
   "merchantPage": {
     "back": "← All merchants",
-    "empty": "This merchant has nothing open for ordering right now."
+    "empty": "This merchant has nothing open for ordering right now.",
+    "logoAlt": "Merchant logo"
   }
 }

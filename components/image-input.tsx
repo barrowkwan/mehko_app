@@ -32,8 +32,18 @@ async function toJpeg(file: File): Promise<File> {
 
 // Optional photo field for a food. Posts `image` (the processed JPEG) and, when a photo already exists,
 // `remove_image` (checkbox). `currentUrl` is the existing photo's public URL.
-export function ImageInput({ currentUrl, alt }: { currentUrl?: string | null; alt: string }) {
-  const t = useTranslations("foods");
+export function ImageInput({
+  currentUrl,
+  alt,
+  labels,
+}: {
+  currentUrl?: string | null;
+  alt: string;
+  labels?: { photo: string; help: string; remove: string; unsupported: string }; // defaults to the food-photo wording
+}) {
+  const tFoods = useTranslations("foods");
+  const t = (key: "photo" | "photoHelp" | "removePhoto" | "photoUnsupported") =>
+    labels ? { photo: labels.photo, photoHelp: labels.help, removePhoto: labels.remove, photoUnsupported: labels.unsupported }[key] : tFoods(key);
   const input = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

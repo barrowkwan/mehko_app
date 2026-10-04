@@ -212,7 +212,7 @@ test("merchant offers two pickup slots; customer picks one and later moves the o
   await expect(m.getByRole("heading", { name: "Orders (1)" })).toBeVisible();
   // Dashboard: one card for the offering, with orders per slot.
   await m.goto("/merchant");
-  const dash = m.locator("ul.grid > li", { hasText: "Gate" });
+  const dash = m.locator("main ul > li", { hasText: "Gate" });
   await expect(dash).toHaveCount(1);
   await expect(dash.getByText("1 order · 0 picked up")).toBeVisible();
   await mctx.close();
@@ -309,7 +309,7 @@ test("Dashboard hides closed offerings; History lists everything with status fil
   const p = await ctx.newPage();
 
   await p.goto("/merchant");
-  await expect(p.locator("ul.grid > li")).toHaveCount(2); // draft + published, not the closed one
+  await expect(p.locator("main ul > li")).toHaveCount(2); // draft + published, not the closed one
   await expect(p.getByRole("link", { name: "New offering" })).toHaveCount(1); // the one "New offering" button is on the Dashboard
 
   await p.goto("/merchant/offerings");
@@ -322,5 +322,71 @@ test("Dashboard hides closed offerings; History lists everything with status fil
   await expect(p.getByText("Closed").nth(1)).toBeVisible();
   await p.getByRole("link", { name: "Published (1)" }).click();
   await expect(p.locator("main ul > li")).toHaveCount(1);
+  await ctx.close();
+});
+
+test("merchant profile: logo, website, contact details, US-only country; customers see them", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant8");
+  const cust = await createUser("e2ecust6");
+  const kitchen = `E2E Profile Kitchen ${run}`;
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: kitchen }).select("id").single()).id;
+  const pointId = must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Profile Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single()).id;
+  const foodId = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Profile Buns" }).select("id").single()).id;
+  const off = must(await admin.from("offerings").insert({ merchant_id: merchantId, pickup_point_id: pointId, pickup_date: ymd(3), pickup_start: "17:00", pickup_end: "19:00", cutoff_at: new Date(Date.now() + 2 * 86_400_000).toISOString(), status: "published" }).select("id").single()).id;
+  must(await admin.from("offering_items").insert({ offering_id: off, food_item_id: foodId }).select("id").single());
+
+  const mctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(mctx, baseURL!, mer.email);
+  const m = await mctx.newPage();
+  await m.goto("/merchant/profile");
+
+  // Country is a drop-down with only the United States.
+  await expect(m.locator('select[name="country_code"] option')).toHaveCount(1);
+
+  // A bad website is refused with a clear message; nothing is saved.
+  await m.getByLabel("Website (optional)").fill("not a website");
+  await m.getByRole("button", { name: "Save profile" }).click();
+  await expect(m.getByText("Enter a valid website address")).toBeVisible();
+
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAIAAAB7QOjdAAAADUlEQVR4nGP438AARAAMfgL/LyTkkgAAAABJRU5ErkJggg==", "base64");
+  await m.locator('input[name="image"]').setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: png });
+  await expect(m.locator('img[alt="Logo (optional)"]')).toBeVisible(); // the picture was read and resized
+  await m.getByLabel("Website (optional)").fill("example.com/menu");
+  await m.getByLabel("Contact email (optional)").fill("hello@example.com");
+  await m.getByLabel("Contact phone (optional)").fill("+1 (408) 555-0100");
+  await m.getByRole("button", { name: "Save profile" }).click();
+  await expect(m.getByText("Saved")).toBeVisible();
+  await mctx.close();
+
+  const { data: saved } = await admin.from("merchants").select("website, logo_path").eq("id", merchantId).single();
+  expect(saved?.website).toBe("https://example.com/menu"); // a missing scheme is added
+  expect(saved?.logo_path).toMatch(new RegExp(`^${merchantId}/logo-[a-z0-9]+\\.jpg$`));
+
+  const cctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(cctx, baseURL!, cust.email);
+  const p = await cctx.newPage();
+  await p.goto("/");
+  await expect(p.locator("li", { hasText: kitchen }).locator("img")).toHaveCount(1); // logo on the Browse card
+  await p.locator("li", { hasText: kitchen }).getByRole("link").click();
+  await expect(p.getByRole("link", { name: "example.com/menu" })).toHaveAttribute("href", "https://example.com/menu");
+  await expect(p.getByRole("link", { name: "hello@example.com" })).toHaveAttribute("href", "mailto:hello@example.com");
+  await expect(p.getByRole("link", { name: "+1 (408) 555-0100" })).toHaveAttribute("href", "tel:+14085550100");
+  await cctx.close();
+});
+
+test("food description is a multi-line box and keeps its line breaks", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant9");
+  must(await admin.from("merchants").insert({ owner_id: mer.id, name: `E2E Food Kitchen ${run}` }).select("id").single());
+  const ctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(ctx, baseURL!, mer.email);
+  const p = await ctx.newPage();
+  await p.goto("/merchant/foods");
+  await expect(p.locator('textarea[name="description"]')).toHaveCount(1);
+  await p.getByLabel("Name", { exact: true }).fill("Layered Cake");
+  await p.locator('textarea[name="description"]').fill("Line one\nLine two");
+  await p.getByRole("button", { name: "Add food" }).click();
+  const shown = p.getByText("Line one", { exact: false }).first();
+  await expect(shown).toBeVisible();
+  await expect(shown).toHaveCSS("white-space", /pre-line/);
   await ctx.close();
 });

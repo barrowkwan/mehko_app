@@ -116,7 +116,19 @@
   },
   "profile": {
     "title": "商家资料",
-    "submit": "保存资料"
+    "submit": "保存资料",
+    "logo": "标志（可选）",
+    "logoHelp": "会显示在您的名称旁边供顾客查看。图片会被缩小，并移除其中的位置信息。",
+    "removeLogo": "移除标志",
+    "logoUnsupported": "无法读取此图片。请尝试 JPEG 或 PNG。",
+    "website": "网站（可选）",
+    "contactEmail": "联系邮箱（可选）",
+    "contactPhone": "联系电话（可选）",
+    "contactHelp": "网站、联系邮箱和电话会在您的页面上显示给已登录的顾客。留空即可保密。",
+    "countryUS": "美国 (US)",
+    "websiteInvalid": "请输入有效的网址，例如 https://example.com",
+    "emailInvalid": "请输入有效的邮箱地址。",
+    "phoneInvalid": "请输入有效的电话号码（仅限数字、空格以及 + ( ) - .）。"
   },
   "translations": {
     "title": "翻译（可选）",
@@ -395,6 +407,7 @@
   },
   "merchantPage": {
     "back": "← 所有商家",
-    "empty": "该商家目前没有可下单的优惠。"
+    "empty": "该商家目前没有可下单的优惠。",
+    "logoAlt": "商家标志"
   }
 }

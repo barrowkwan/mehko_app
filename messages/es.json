@@ -116,7 +116,19 @@
   },
   "profile": {
     "title": "Perfil del comerciante",
-    "submit": "Guardar perfil"
+    "submit": "Guardar perfil",
+    "logo": "Logotipo (opcional)",
+    "logoHelp": "Se muestra a los clientes junto a tu nombre. Se cambia de tamaño y se elimina cualquier dato de ubicación de la imagen.",
+    "removeLogo": "Quitar logotipo",
+    "logoUnsupported": "No se pudo leer esta imagen. Prueba con un JPEG o PNG.",
+    "website": "Sitio web (opcional)",
+    "contactEmail": "Correo de contacto (opcional)",
+    "contactPhone": "Teléfono de contacto (opcional)",
+    "contactHelp": "El sitio web, el correo y el teléfono se muestran a los clientes con sesión iniciada en tu página. Déjalos en blanco para mantenerlos privados.",
+    "countryUS": "Estados Unidos (US)",
+    "websiteInvalid": "Introduce una dirección web válida, p. ej. https://example.com",
+    "emailInvalid": "Introduce un correo electrónico válido.",
+    "phoneInvalid": "Introduce un teléfono válido (solo dígitos, espacios y + ( ) - .)."
   },
   "translations": {
     "title": "Traducciones (opcional)",
@@ -395,6 +407,7 @@
   },
   "merchantPage": {
     "back": "← Todos los comerciantes",
-    "empty": "Este comerciante no tiene nada abierto para pedidos ahora."
+    "empty": "Este comerciante no tiene nada abierto para pedidos ahora.",
+    "logoAlt": "Logotipo del comerciante"
   }
 }

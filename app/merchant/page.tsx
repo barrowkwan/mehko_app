@@ -31,7 +31,7 @@ export default async function MerchantDashboard() {
         </Link>
       </div>
       {!offerings?.length && <p className="text-neutral-500">{t("none")}</p>}
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="divide-y divide-neutral-200 overflow-hidden rounded-lg border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
         {groupOfferings(offerings ?? []).map((slots) => {
           const o = slots[0];
           const count = (list: typeof slots) => {
@@ -44,29 +44,23 @@ export default async function MerchantDashboard() {
             <li key={o.group_id ?? o.id}>
               <Link
                 href={`/merchant/offerings/${o.id}`}
-                className="block rounded-lg border border-neutral-200 p-4 hover:border-orange-500 dark:border-neutral-800"
+                className="flex flex-col gap-1 px-4 py-3 hover:bg-orange-50 sm:flex-row sm:items-center sm:gap-4 dark:hover:bg-neutral-900"
               >
-                <p className="font-semibold">
-                  {formatDate(o.pickup_date, locale)}
-                  {slots.length === 1 ? `, ${formatTime(o.pickup_start, locale)}` : ""}
-                </p>
-                {slots.length === 1 ? (
-                  <p className="text-sm text-neutral-500">{o.pickup_point?.name}</p>
-                ) : (
-                  <ul className="text-sm text-neutral-500">
-                    {slots.map((s) => {
-                      const c = count([s]);
-                      return (
-                        <li key={s.id}>
-                          {formatTime(s.pickup_start, locale)} · {s.pickup_point?.name} — {t("slotStats", { orders: c.orders, picked: c.picked })}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-                <p className="mt-1 text-sm">
+                <span className="font-semibold sm:w-48 sm:shrink-0">{formatDate(o.pickup_date, locale)}</span>
+                <span className="min-w-0 flex-1 text-sm">
+                  {slots.map((s) => {
+                    const c = count([s]);
+                    return (
+                      <span key={s.id} className="block">
+                        {formatTime(s.pickup_start, locale)}–{formatTime(s.pickup_end, locale)} · {s.pickup_point?.name}
+                        {slots.length > 1 && <span className="text-neutral-500"> — {t("slotStats", { orders: c.orders, picked: c.picked })}</span>}
+                      </span>
+                    );
+                  })}
+                </span>
+                <span className="text-sm sm:text-right">
                   {t("stats", { orders: total.orders, picked: total.picked, status: statuses.map((st) => tStatus(st)).join(" / ") })}
-                </p>
+                </span>
               </Link>
             </li>
           );

@@ -61,7 +61,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
           {offering.merchant && localized(offering.merchant.name, offering.merchant.translations, locale, "name")}
         </h1>
         {offering.merchant?.description && (
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="whitespace-pre-line text-sm text-neutral-600 dark:text-neutral-400">
             {localized(offering.merchant.description, offering.merchant.translations, locale, "description")}
           </p>
         )}
