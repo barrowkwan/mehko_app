@@ -6,7 +6,7 @@ git push to main
         ├─ test         lint · typecheck · unit + DB tests · build
         ├─ integration  tests against a throwaway local Supabase stack
         └─ deploy       (needs both above, main only, needs DEPLOY_ENABLED=true)
-             1. supabase db push   → migrations applied to the hosted Supabase project
+             1. supabase db push   → migrations applied to the hosted Supabase project (via the IPv4 session pooler)
              2. Render deploy hook → Render builds & starts exactly this commit
    .github/workflows/scheduled.yml  daily → GET /api/cron/fetch-context (weather/holiday data,
                                             also keeps Supabase awake)
@@ -32,7 +32,6 @@ Backend: **Supabase free** — 500 MB DB, ~200 concurrent Realtime connections, 
 1. <https://supabase.com/dashboard> → **New project** (remember the **database password**). Note the **Project ref** (the `xxxx` in `xxxx.supabase.co`).
 2. **Project Settings → API:** copy the **Project URL**, **anon (public) key** and **service_role key**.
 3. *(Done later in step 2.5, once you know the Render URL: Site URL, Redirect URLs, login providers.)*
-4. Account → **Access Tokens:** create a token for CI (`SUPABASE_ACCESS_TOKEN`) — see step 3.
 
 Migrations are applied with `supabase db push` (step 2.0 once by hand, then automatically by CI). The dev seed is **not** applied to hosted projects.
 
@@ -89,9 +88,7 @@ Open <https://github.com/barrowkwan/mehko_app/settings/secrets/actions> (repo �
 
 | Name | Value / where to get it |
 | --- | --- |
-| `SUPABASE_ACCESS_TOKEN` | <https://supabase.com/dashboard/account/tokens> → **Generate new token**, name it `github-ci`, copy it (shown once) |
-| `SUPABASE_DB_PASSWORD` | The database password you chose when creating the project. Forgot it? Project Settings → **Database** → *Reset database password* (then use the new one everywhere) |
-| `SUPABASE_PROJECT_REF` | Project Settings → General → **Reference ID** |
+| `SUPABASE_DB_URL` | Supabase dashboard → click **Connect** (top bar) → **Session pooler** (not *Direct connection*, not *Transaction pooler*) → copy the URI and replace `[YOUR-PASSWORD]` with your database password. Looks like `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres`. **If the password contains special characters** (`@ : / ? # %` …), percent-encode them (e.g. `@` → `%40`) — or reset the password to letters and digits |
 | `RENDER_DEPLOY_HOOK_URL` | The whole URL from step 2.6 |
 | `CRON_SECRET` | The same string you used in Render (step 2.1) |
 
@@ -102,7 +99,7 @@ Open <https://github.com/barrowkwan/mehko_app/settings/secrets/actions> (repo �
 | `SITE_URL` | Your Render URL, no trailing slash needed |
 | `DEPLOY_ENABLED` | `true` — **add this last**; it switches the deploy and daily jobs on |
 
-*(Optional shortcut after `gh auth login`: `gh secret set SUPABASE_ACCESS_TOKEN` etc., and `gh variable set DEPLOY_ENABLED --body true`.)*
+*(Optional shortcut after `gh auth login`: `gh secret set SUPABASE_DB_URL` etc., and `gh variable set DEPLOY_ENABLED --body true`.)*
 
 ### 4. Go — first automated deploy
 
@@ -122,8 +119,9 @@ Open <https://github.com/barrowkwan/mehko_app/settings/secrets/actions> (repo �
 | Symptom | Cause / fix |
 | --- | --- |
 | `deploy` job shows **Skipped** | `DEPLOY_ENABLED` isn't exactly `true` (Variables tab, not Secrets), or the run wasn't a push to `main` |
-| `supabase link` / `db push`: *access token* or *unauthorized* | `SUPABASE_ACCESS_TOKEN` wrong/expired |
-| `db push`: *password authentication failed* | `SUPABASE_DB_PASSWORD` wrong (reset it in Supabase, update the secret) |
+| `db push`: *IPv6 is not supported* / *network is unreachable* | You used the **Direct connection** string. GitHub runners are IPv4-only; use the **Session pooler** string (host `…pooler.supabase.com`, user `postgres.<ref>`, port 5432) |
+| `db push`: *password authentication failed* / *invalid URL* | Wrong password, or special characters in the password not percent-encoded in `SUPABASE_DB_URL` |
+| `db push`: *Tenant or user not found* | Username must be `postgres.<project-ref>` for the pooler; copy the string from **Connect** again |
 | Render hook step: `curl: (22) … 401/404` | `RENDER_DEPLOY_HOOK_URL` incomplete — it must include `?key=…` |
 | Render build fails | Open Render **Logs**; most common: a missing `NEXT_PUBLIC_SUPABASE_*` variable |
 | Site loads but pages show errors | Migrations not applied (do 2.0), or wrong Supabase URL/key in Render |
