@@ -1,5 +1,7 @@
 # Architecture
 
+> **This is the short layer map.** For the full explanation, with diagrams, reasons for each choice, pros/cons and alternatives, read the [Design & architecture guide](design/README.md) (start with [01 System overview](design/01-system-overview.md)). Parts of this page predate later features (slots, prices, sharing, notifications); the guide and [data-model.md](data-model.md) are current.
+
 ## Stack
 
 Next.js 16 (App Router, TypeScript, Tailwind 4) · Supabase (Postgres, Auth, Realtime) · Zod · Leaflet/OpenStreetMap · `qrcode` + `html5-qrcode` · Vitest + PGlite. PWA via `app/manifest.ts`. No payments yet.

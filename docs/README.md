@@ -1,9 +1,12 @@
 # Docs index
 
+**New to the project? Read the [Design & architecture guide](design/README.md) first.** It explains every component (Supabase, OAuth, Render, CI/CD, integrations, testing…), why it was chosen, its pros and cons and the alternatives, written for junior engineers.
+
 Start here when fixing a bug or adding a feature. Read in this order, stopping when you have enough.
 
 | Doc | Use it to |
 | --- | --- |
+| [design/README.md](design/README.md) | **Teaching guide** (11 documents): overview, tech stack, Supabase/database, authentication/OAuth, security & privacy, hosting/CI/CD, core flows, integrations, testing, code patterns, operations, with pros/cons and alternatives |
 | [architecture.md](architecture.md) | Understand the layers, request flow, auth, and where logic lives |
 | [data-model.md](data-model.md) | Look up tables, constraints, RPCs, RLS rules, the reporting view |
 | [features.md](features.md) | Find the exact routes/files/DB objects/tests behind a feature (the fastest way to locate code) |
