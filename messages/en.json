@@ -294,7 +294,8 @@
     "noOrdersYet": "no orders yet",
     "offeringNumber": "Offering {number}",
     "ordersTotal": "Total ordered: {total}",
-    "ordersTotalPartial": "(some items have no price)"
+    "ordersTotalPartial": "(some items have no price)",
+    "priceEach": "{price} each"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",

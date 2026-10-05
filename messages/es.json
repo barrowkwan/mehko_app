@@ -294,7 +294,8 @@
     "noOrdersYet": "aún no hay pedidos",
     "offeringNumber": "Oferta {number}",
     "ordersTotal": "Total pedido: {total}",
-    "ordersTotalPartial": "(algunos artículos no tienen precio)"
+    "ordersTotalPartial": "(algunos artículos no tienen precio)",
+    "priceEach": "{price} c/u"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",

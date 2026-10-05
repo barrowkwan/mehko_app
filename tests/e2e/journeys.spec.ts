@@ -682,6 +682,8 @@ test("prices belong to the offering: merchant sets them, customer sees the total
   await expect(c.getByText("Total: $50.00")).toBeVisible();
   await m.goto(offeringUrl);
   await expect(m.getByText("$50.00").first()).toBeVisible();
+  // the prep list shows each food's current price and what has been ordered at the prices customers paid
+  await expect(m.locator("ul.list-disc li", { hasText: "4× Price Buns" })).toContainText("$20.00 each · $50.00");
   expect((await admin.from("order_items").select("unit_price_cents").eq("offering_item_id", (await admin.from("offering_items").select("id").eq("food_item_id", foodA).single()).data!.id).single()).data?.unit_price_cents).toBe(1250);
   await cctx.close();
   await mctx.close();

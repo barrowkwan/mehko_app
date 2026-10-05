@@ -294,7 +294,8 @@
     "noOrdersYet": "暂无订单",
     "offeringNumber": "场次编号 {number}",
     "ordersTotal": "订单总额：{total}",
-    "ordersTotalPartial": "（部分商品未标价）"
+    "ordersTotalPartial": "（部分商品未标价）",
+    "priceEach": "每份 {price}"
   },
   "location": {
     "onlyPickupDay": "自取当天才能开启实时位置共享。",

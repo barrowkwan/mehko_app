@@ -71,6 +71,13 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     return m;
   };
   const totals = totalsByFood(orders ?? []);
+  // what each food has brought in so far, at the prices customers ordered it at
+  const soldCents = new Map<string, number>();
+  for (const ord of orders ?? [])
+    for (const it of ord.order_items) {
+      const food = foodOf.get(it.offering_item_id);
+      if (food && it.unit_price_cents !== null) soldCents.set(food, (soldCents.get(food) ?? 0) + it.qty * it.unit_price_cents);
+    }
   const notes = (orders ?? []).filter((ord) => ord.note);
   const offeringTotal = orderTotal((orders ?? []).flatMap((ord) => ord.order_items.map((i) => ({ qty: i.qty, unitPriceCents: i.unit_price_cents }))));
   const foodNames = new Map(
@@ -215,6 +222,8 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
           {o.offering_items.map((i) => (
             <li key={i.id}>
               {totals.get(i.food_item_id) ?? 0}× {foodNames.get(i.food_item_id)}
+              {i.price_cents !== null && ` · ${t("priceEach", { price: formatMoney(i.price_cents, locale) })}`}
+              {soldCents.has(i.food_item_id) && ` · ${formatMoney(soldCents.get(i.food_item_id) ?? 0, locale)}`}
               {i.quantity_limit ? ` ${t("limit", { count: i.quantity_limit })}` : ""}
             </li>
           ))}

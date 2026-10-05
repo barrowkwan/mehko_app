@@ -294,7 +294,8 @@
     "noOrdersYet": "尚無訂單",
     "offeringNumber": "場次編號 {number}",
     "ordersTotal": "訂單總額：{total}",
-    "ordersTotalPartial": "（部分餐點未標價）"
+    "ordersTotalPartial": "（部分餐點未標價）",
+    "priceEach": "每份 {price}"
   },
   "location": {
     "onlyPickupDay": "自取當天才能開啟即時位置分享。",
