@@ -46,6 +46,29 @@ describe("escapeHtml", () => {
   });
 });
 
+describe.each(LOCALES)("order totals in emails (%s)", (locale) => {
+  const priced: OrderEmailData = { ...order, items: [{ name: "Pork dumplings", qty: 2, unitPriceCents: 1200 }, { name: "Elote", qty: 1, unitPriceCents: 450 }] };
+
+  it("shows each line's price and the total when everything is priced", () => {
+    for (const type of ["order_confirmed", "pickup_reminder"] as const) {
+      const e = render(type, locale, priced);
+      for (const s of [e.html, e.text]) {
+        expect(s).toMatch(/24[.,]00/); // 2 x 12.00
+        expect(s).toMatch(/28[.,]50/); // the total
+        expect(s).not.toMatch(/\{\w+\}/);
+      }
+    }
+  });
+
+  it("says the total only covers priced items when some have no price, and shows no money when nothing is priced", () => {
+    const partial = render("order_confirmed", locale, { ...priced, items: [priced.items[0], { name: "Elote", qty: 1, unitPriceCents: null }] });
+    expect(partial.text).toMatch(/24[.,]00/);
+    const none = render("order_confirmed", locale, order);
+    expect(none.text).not.toMatch(/\$|US\$|USD/);
+    expect(none.text).not.toMatch(/\d[.,]\d{2}/);
+  });
+});
+
 describe.each(LOCALES)("emails in %s", (locale) => {
   it("order confirmation: subject, items, pickup details, instructions, links and unsubscribe", () => {
     const e = render("order_confirmed", locale, order);

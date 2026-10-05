@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate, formatInstant, formatTime } from "@/lib/format";
+import { formatMoney, parsePrice } from "@/lib/money";
 
 type Slot = { point: string; date: string; start: string; end: string };
-type Summary = { duplicate?: string;  slots: Slot[]; foods: { name: string; limit: number | null }[]; cutoffIso: string; instructions: string };
+type Summary = { duplicate?: string;  slots: Slot[]; foods: { name: string; limit: number | null; price: number | null }[]; cutoffIso: string; instructions: string };
 
 // "Review before publishing": placed inside the new-offering form. The first submit is intercepted and shows a
 // plain summary (what, when, where, cutoff); "Publish offering" there submits for real. The browser has already
@@ -51,7 +52,8 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
         if (!key.startsWith("food_") || value !== "on") continue;
         const id = key.slice(5);
         const lim = Number.parseInt(String(d.get(`limit_${id}`) ?? ""), 10);
-        chosen.push({ name: foods[id] ?? "", limit: Number.isFinite(lim) && lim > 0 ? lim : null });
+        const price = parsePrice(String(d.get(`price_${id}`) ?? ""));
+        chosen.push({ name: foods[id] ?? "", limit: Number.isFinite(lim) && lim > 0 ? lim : null, price: price.ok ? price.cents : null });
       }
       setSummary({ duplicate, slots, foods: chosen, cutoffIso: String(d.get("cutoff_at") ?? ""), instructions: String(d.get("instructions") ?? "").trim() });
     };
@@ -96,7 +98,7 @@ export function OfferingReview({ points, foods }: { points: Record<string, strin
                   <ul className="list-disc pl-5">
                     {summary.foods.map((f) => (
                       <li key={f.name}>
-                        {f.name} — {f.limit ? t("limitN", { count: f.limit }) : t("unlimited")}
+                        {f.name} — {f.price !== null ? `${formatMoney(f.price, locale)}, ` : ""}{f.limit ? t("limitN", { count: f.limit }) : t("unlimited")}
                       </li>
                     ))}
                   </ul>

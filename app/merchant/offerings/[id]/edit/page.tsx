@@ -16,7 +16,7 @@ export default async function EditOfferingPage({ params }: PageProps<"/merchant/
 
   const { data: offering } = await supabase
     .from("offerings")
-    .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations, pickup_point:pickup_points(timezone), offering_items(food_item_id, quantity_limit)")
+    .select("id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations, pickup_point:pickup_points(timezone), offering_items(food_item_id, quantity_limit, price_cents)")
     .eq("id", id)
     .eq("merchant_id", merchant.id)
     .maybeSingle();
@@ -55,7 +55,7 @@ export default async function EditOfferingPage({ params }: PageProps<"/merchant/
             pickupStart: offering.pickup_start,
             pickupEnd: offering.pickup_end,
             cutoffAt: offering.cutoff_at,
-            items: Object.fromEntries(offering.offering_items.map((i) => [i.food_item_id, i.quantity_limit])),
+            items: Object.fromEntries(offering.offering_items.map((i) => [i.food_item_id, { limit: i.quantity_limit, priceCents: i.price_cents }])),
             instructions: offering.instructions,
             translations: offering.translations,
           }}

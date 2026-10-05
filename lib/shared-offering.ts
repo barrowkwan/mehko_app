@@ -13,7 +13,7 @@ export type SharedSlot = {
   address: string | null; // only when the merchant allowed showing it publicly
   open: boolean;
 };
-export type SharedFood = { name: string; description: string | null; translations: unknown; image_path: string | null; limit: number | null };
+export type SharedFood = { name: string; description: string | null; translations: unknown; image_path: string | null; limit: number | null; price_cents?: number | null };
 export type SharedOffering = {
   offering_no: string;
   cutoff_at: string;

@@ -1,12 +1,13 @@
 import { createTranslator } from "next-intl";
 import { formatDate, formatInstant, formatTime } from "../format";
+import { formatMoney, orderTotal } from "../money";
 import type { Locale } from "../locale";
 
 // Plain, accessible HTML + text emails. Every piece of user-supplied text is HTML-escaped; the subject is forced
 // onto a single line (no header injection). Strings live in messages/*.json under "email" (all four languages).
 
 export type PickupPoint = { name: string; address: string | null };
-export type Line = { name: string; qty: number };
+export type Line = { name: string; qty: number; unitPriceCents?: number | null };
 
 export type OrderEmailData = {
   orderNo: string;
@@ -56,7 +57,14 @@ export function renderEmail(input: RenderInput & { locale: Locale; messages: Rec
   const when = (d: { pickupDate: string; pickupStart: string; pickupEnd: string }) =>
     t("common.when", { date: formatDate(d.pickupDate, locale), start: formatTime(d.pickupStart, locale), end: formatTime(d.pickupEnd, locale) });
   const place = (p: PickupPoint) => [p.name, p.address].filter(Boolean).join(" · ");
-  const lines = (items: Line[]) => items.map((i) => `${i.qty}× ${i.name}`);
+  const lines = (items: Line[]) =>
+    items.map((i) => (i.unitPriceCents != null ? `${i.qty}× ${i.name} — ${formatMoney(i.qty * i.unitPriceCents, locale)}` : `${i.qty}× ${i.name}`));
+  // The order total, only when something has a price (the merchant summary does not show money).
+  const totalLine = (items: Line[]) => {
+    const total = orderTotal(items.map((i) => ({ qty: i.qty, unitPriceCents: i.unitPriceCents ?? null })));
+    if (!total.anyPriced) return null;
+    return total.complete ? t("orderConfirmed.total", { total: formatMoney(total.cents, locale) }) : t("orderConfirmed.totalPartial", { total: formatMoney(total.cents, locale) });
+  };
   const e = escapeHtml;
 
   // Collects parallel HTML and text so they cannot drift apart.
@@ -115,10 +123,12 @@ export function renderEmail(input: RenderInput & { locale: Locale; messages: Rec
     if (input.type === "order_confirmed") {
       h(t("orderConfirmed.yourOrder"));
       list(lines(d.items));
+      { const tl = totalLine(d.items); if (tl) p(tl); }
       p(t("orderConfirmed.changeUntil", { time: formatInstant(d.cutoffAt, locale, d.timezone) }));
     } else {
       h(t("orderConfirmed.yourOrder"));
       list(lines(d.items));
+      { const tl = totalLine(d.items); if (tl) p(tl); }
       p(t("pickupReminder.showQr"));
     }
     if (d.instructions) block(t("orderConfirmed.instructions"), [d.instructions]);

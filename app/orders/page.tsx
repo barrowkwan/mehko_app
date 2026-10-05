@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { formatDate, formatTime } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { formatMoney, orderTotal } from "@/lib/money";
 
 export default async function OrdersPage() {
   const { supabase, user } = await requireUser();
@@ -13,7 +14,7 @@ export default async function OrdersPage() {
     .select(
       `id, order_no, status, created_at,
        offering:offerings(pickup_date, pickup_start, merchant:merchants(name, translations), pickup_point:pickup_points(name)),
-       order_items(qty, offering_item:offering_items(food_item:food_items(name, translations)))`,
+       order_items(qty, unit_price_cents, offering_item:offering_items(food_item:food_items(name, translations)))`,
     )
     .eq("customer_id", user.id)
     .order("created_at", { ascending: false });
@@ -47,6 +48,10 @@ export default async function OrdersPage() {
                   .map((i) => `${i.qty}× ${i.offering_item?.food_item ? localized(i.offering_item.food_item.name, i.offering_item.food_item.translations, locale, "name") : ""}`)
                   .join(", ")}
               </p>
+              {(() => {
+                const total = orderTotal(o.order_items.map((i) => ({ qty: i.qty, unitPriceCents: i.unit_price_cents })));
+                return total.anyPriced ? <p className="mt-1 text-sm font-semibold">{t("rowTotal", { total: formatMoney(total.cents, locale) })}</p> : null;
+              })()}
             </Link>
           </li>
         ))}

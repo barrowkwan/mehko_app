@@ -45,6 +45,9 @@ Triggers enforce these for every client: **moving** an offering (pickup point or
 ## Email notifications (migration `20261009000000_email_notifications.sql`)
 `profiles.email_notifications` (opt-out) and `notification_outbox` (RLS on, no policies, no grants to anon/authenticated: server only). A trigger enqueues `order_confirmed`; `enqueue_due_notifications()` enqueues `pickup_reminder` and `merchant_cutoff_summary`; `claim_notifications()` hands rows to the sender with `for update skip locked`. Only `service_role` can execute them. Rows are unique per (user, type, entity) so nothing is sent twice.
 
+## Prices (migration `20261021000000_item_prices.sql`)
+`offering_items.price_cents` (optional, whole US cents, 0–$10,000): **prices belong to the offering item, not the food** (`food_items.price_cents` is unused and has no UI), so the same food can cost different amounts in different offerings. `order_items.unit_price_cents` snapshots the price when a line is first ordered: a later price change does not alter existing orders, an edited order keeps each line's original price, only a newly added food gets the current price, moving an order to another slot keeps it. Prices are copied by duplicate/add-slot and kept in step across the slots of an offering (`update_offering`). Totals are computed in the app (`lib/money.ts`): quantity × unit price, "partial" when some lines have no price. Nothing is charged (payments stay manual: cash/Venmo/Zelle).
+
 ## Public sharing (migration `20261020000000_share_offering.sql`)
 `offerings.share_public` / `share_address` (both default false; all slots of an offering change together via `set_offering_sharing`). Anonymous visitors read offering data **only** through `get_shared_offering(offering_no)`, a whitelist (no coordinates, customers, orders, stock, instructions); it returns null for unknown, unshared and draft offerings. Public page: `/o/<offering_no>?lang=…` (in `lib/public-paths.ts`).
 

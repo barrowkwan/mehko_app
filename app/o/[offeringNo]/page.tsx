@@ -13,6 +13,7 @@ import { shareDescription, shareTitle, type ShareT } from "@/lib/share-text";
 import { groupSlotsByPoint } from "@/lib/slots";
 import { FoodPhoto } from "@/components/food-photo";
 import { foodImageUrl } from "@/lib/images";
+import { formatMoney } from "@/lib/money";
 
 // The public page of a shared offering (no sign-in). It exists so that a link pasted into Facebook, WhatsApp, etc.
 // previews what is on offer: the Open Graph tags below are rendered on the server, where the link-preview robots
@@ -114,7 +115,10 @@ export default async function SharedOfferingPage({ params, searchParams }: Props
             <li key={i} className="flex items-center gap-3 p-3">
               <FoodPhoto url={foodImageUrl(supabaseUrl, f.image_path)} alt={localized(f.name, f.translations, locale, "name")} />
               <div>
-                <p className="font-medium">{localized(f.name, f.translations, locale, "name")}</p>
+                <p className="font-medium">
+                  {localized(f.name, f.translations, locale, "name")}
+                  {f.price_cents != null && <span className="ml-2 text-orange-700">{formatMoney(f.price_cents, locale)}</span>}
+                </p>
                 {f.description && <p className="whitespace-pre-line text-sm text-neutral-500">{localized(f.description, f.translations, locale, "description")}</p>}
                 {f.limit && <p className="text-xs text-neutral-500">{page("limitHint", { count: f.limit })}</p>}
               </div>

@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { requireMerchant } from "@/lib/auth";
 import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
+import { formatMoney, orderTotal } from "@/lib/money";
 import { ActionForm, Field, inputClass } from "@/components/action-form";
 import { LocationToggle } from "@/components/location-toggle";
 import { SlotFields } from "@/components/slot-fields";
@@ -27,7 +28,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
     .select(
       `id, offering_no, share_public, share_address, group_id, merchant_id, pickup_point_id, pickup_date, pickup_start, pickup_end, cutoff_at, status,
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item_id, food_item:food_items(name, description, translations, image_path))`,
+       offering_items(id, quantity_limit, price_cents, food_item_id, food_item:food_items(name, description, translations, image_path))`,
     )
     .eq("id", id)
     .eq("merchant_id", merchant.id)
@@ -51,7 +52,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   const [{ data: orders }, { data: slotItems }] = await Promise.all([
     supabase
       .from("orders")
-      .select("id, order_no, offering_id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty)")
+      .select("id, order_no, offering_id, status, customer_id, note, customer:profiles(display_name), order_items(offering_item_id, qty, unit_price_cents)")
       .in("offering_id", slotIds)
       .neq("status", "cancelled")
       .order("created_at"),
@@ -71,6 +72,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
   };
   const totals = totalsByFood(orders ?? []);
   const notes = (orders ?? []).filter((ord) => ord.note);
+  const offeringTotal = orderTotal((orders ?? []).flatMap((ord) => ord.order_items.map((i) => ({ qty: i.qty, unitPriceCents: i.unit_price_cents }))));
   const foodNames = new Map(
     o.offering_items.map((i) => [i.food_item_id, i.food_item ? localized(i.food_item.name, i.food_item.translations, locale, "name") : tc("item")]),
   );
@@ -111,6 +113,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
       translations: i.food_item?.translations ?? {},
       image_path: i.food_item?.image_path ?? null,
       limit: i.quantity_limit,
+      price_cents: i.price_cents,
     })),
   };
   if (shareData.slots.length === 0) shareData.slots.push({ id: o.id, pickup_date: o.pickup_date, pickup_start: o.pickup_start, pickup_end: o.pickup_end, timezone: o.pickup_point?.timezone ?? "UTC", place: o.pickup_point?.name ?? "", address: null, open: false });
@@ -256,6 +259,7 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
 
       <section>
         <h2 className="mb-2 font-semibold">{t("orders", { count: orders?.length ?? 0 })}</h2>
+        {offeringTotal.anyPriced && <p className="mb-2 text-sm font-medium">{t("ordersTotal", { total: formatMoney(offeringTotal.cents, locale) })}{offeringTotal.complete ? "" : ` ${t("ordersTotalPartial")}`}</p>}
         <ul className="flex flex-col gap-2">
           {orders?.map((ord) => (
             <li key={ord.id} className="rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
@@ -267,6 +271,10 @@ export default async function MerchantOfferingPage({ params }: PageProps<"/merch
                 </span>
               </p>
               {multi && <p className="text-xs text-neutral-500">{slotLabel.get(ord.offering_id)}</p>}
+              {(() => {
+                const total = orderTotal(ord.order_items.map((i) => ({ qty: i.qty, unitPriceCents: i.unit_price_cents })));
+                return total.anyPriced ? <p className="text-sm font-semibold">{formatMoney(total.cents, locale)}</p> : null;
+              })()}
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 {ord.order_items.map((i) => `${i.qty}× ${foodNames.get(foodOf.get(i.offering_item_id) ?? "")}`).join(", ")}
               </p>

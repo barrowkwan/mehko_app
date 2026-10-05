@@ -4,6 +4,7 @@ import { CutoffInput } from "@/components/cutoff-input";
 import { OfferingReview } from "@/components/offering-review";
 import { ExtraSlots } from "@/components/extra-slots";
 import { TranslationFields } from "@/components/translation-fields";
+import { centsToInput } from "@/lib/money";
 import type { FormState } from "@/app/orders/actions";
 
 export type OfferingFormValues = {
@@ -12,7 +13,7 @@ export type OfferingFormValues = {
   pickupStart: string; // HH:MM[:SS]
   pickupEnd: string;
   cutoffAt: string; // ISO instant
-  items: Record<string, number | null>; // foodId -> limit (null = unlimited); presence = selected
+  items: Record<string, { limit: number | null; priceCents: number | null }>; // foodId -> limit (null = unlimited) and price (null = none); presence = selected
   instructions?: string | null;
   translations?: unknown;
 };
@@ -88,14 +89,25 @@ export async function OfferingForm({
       {allowExtraSlots && <ExtraSlots points={points} />}
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-sm font-medium">{t("foodsOnSale")}</legend>
+        <p className="mb-1 text-xs text-neutral-500">{t("priceHelp")}</p>
         {foods.map((f) => {
           const selected = values ? f.id in values.items : false;
-          const limit = values?.items[f.id];
+          const limit = values?.items[f.id]?.limit;
+          const price = values?.items[f.id]?.priceCents;
           return (
             <div key={f.id} className="flex items-center gap-3">
               <label className="mr-auto flex items-center gap-2">
                 <input type="checkbox" name={`food_${f.id}`} defaultChecked={selected} /> {f.name}
               </label>
+              <input
+                type="text"
+                inputMode="decimal"
+                name={`price_${f.id}`}
+                defaultValue={centsToInput(price)}
+                placeholder={t("price")}
+                aria-label={`${f.name} – ${t("price")}`}
+                className="w-24 rounded border border-neutral-300 bg-transparent p-1 dark:border-neutral-700"
+              />
               <input
                 type="number"
                 min={1}

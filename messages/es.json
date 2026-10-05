@@ -63,7 +63,11 @@
     "chooseOneOrCancel": "Elige al menos un artículo, o cancela el pedido.",
     "note": "Nota para el comerciante (opcional)",
     "noteHelp": "Indica alergias o peticiones especiales. Solo tú y el comerciante pueden verla.",
-    "notePlaceholder": "p. ej. Sin frutos secos, por favor: alergia grave"
+    "notePlaceholder": "p. ej. Sin frutos secos, por favor: alergia grave",
+    "each": "{price} c/u",
+    "total": "Total: {total}",
+    "totalPartial": "Total de los artículos con precio: {total}",
+    "totalNote": "Solo a título informativo. El pago se acuerda directamente con el comerciante. Los artículos sin precio no están incluidos."
   },
   "orders": {
     "title": "Mis pedidos",
@@ -72,7 +76,8 @@
       "placed": "Realizado",
       "cancelled": "Cancelado",
       "picked_up": "Recogido"
-    }
+    },
+    "rowTotal": "Total: {total}"
   },
   "order": {
     "statusLabel": "Estado:",
@@ -89,7 +94,9 @@
     "changeSlotTitle": "Cambiar la franja de recogida",
     "changeSlotHelp": "Mueve este pedido a otra franja de recogida antes del cierre.",
     "changeSlotSubmit": "Mover mi pedido",
-    "orderNumber": "Número de pedido: {number}"
+    "orderNumber": "Número de pedido: {number}",
+    "total": "Total: {total}",
+    "totalPartial": "Total de los artículos con precio: {total} (algunos artículos no tienen precio)"
   },
   "map": {
     "sharing": "El comerciante está compartiendo su ubicación en vivo.",
@@ -253,7 +260,10 @@
     "filterLabel": "Filtrar por estado",
     "filterAll": "Todas",
     "historyEmpty": "Nada coincide con este filtro.",
-    "ordersCount": "Pedidos: {count}"
+    "ordersCount": "Pedidos: {count}",
+    "price": "Precio (USD)",
+    "priceHelp": "El precio y el límite son opcionales y pertenecen a esta oferta: la misma comida puede costar algo distinto en otra oferta.",
+    "priceInvalid": "Introduce un precio como 12,50, o déjalo en blanco."
   },
   "offeringDetail": {
     "cutoffLine": "Cierre: {time} · Estado: {status}",
@@ -282,7 +292,9 @@
     "prepAllSlots": "Los totales incluyen las {count} franjas de recogida.",
     "prepBySlot": "Por franja de recogida",
     "noOrdersYet": "aún no hay pedidos",
-    "offeringNumber": "Oferta {number}"
+    "offeringNumber": "Oferta {number}",
+    "ordersTotal": "Total pedido: {total}",
+    "ordersTotalPartial": "(algunos artículos no tienen precio)"
   },
   "location": {
     "onlyPickupDay": "La ubicación en vivo se puede activar el día de la recogida.",
@@ -400,7 +412,9 @@
       "pickup": "Recogida",
       "changeUntil": "Puedes modificar o cancelar tu pedido hasta {time}.",
       "instructions": "Instrucciones de recogida",
-      "button": "Ver tu pedido y el código QR"
+      "button": "Ver tu pedido y el código QR",
+      "total": "Total: {total}",
+      "totalPartial": "Total de los artículos con precio: {total}"
     },
     "pickupReminder": {
       "subject": "Recogida pronto: {merchant}, {date} a las {start}",

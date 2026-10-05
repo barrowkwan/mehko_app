@@ -137,8 +137,7 @@ Works on desktop Chrome/Edge/Firefox, desktop Safari, Android Chrome; **iPhone/i
 
 Context: most merchants will take **cash, Venmo or Zelle** to avoid card fees, so start with *manual* tracking; no processor.
 
-### PAY-2 · Prices on foods and order totals — P2 · M  (prerequisite)
-Use `food_items.price_cents` (exists, unused) or per-offering price; compute order total in SQL inside `place_order`/`update_order`; show totals to customer and merchant.
+### PAY-2 · Prices on offering items and order totals — **done (2026-10-05)**: per-offering-item optional prices (not on foods), order-line price snapshot, totals for customers and merchants ([data-model.md](data-model.md#prices-migration-20261021000000_item_pricessql)). Remaining for later: revenue in reports, other currencies, discounts/tax/tips.
 
 ### PAY-1 · Manual payment tracking (cash / Venmo / Zelle) — P2 · M
 Merchant lists accepted methods + handles (Venmo username, Zelle email/phone) in the merchant profile (translatable); customer sees instructions on the order; merchant marks **paid** (and method); `orders.payment_status` (`none → unpaid → paid`) / `payment_ref` already exist; unpaid-orders view for pickup day; DB tests for who may mark paid.

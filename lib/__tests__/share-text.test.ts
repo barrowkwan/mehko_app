@@ -41,6 +41,14 @@ describe("share text", () => {
     expect(text.trim().endsWith(URL_)).toBe(true);
   });
 
+  it("shows prices in the post and the preview description when set", () => {
+    const priced = { ...offering, foods: [{ ...offering.foods[0], price_cents: 1250 }, offering.foods[1]] };
+    const text = sharePostText(priced, "en", tFor("en"), URL_);
+    expect(text).toContain("• Fish ball — $12.50 (limit 10)");
+    expect(text).toContain("• Egg waffle"); // no price: just the name
+    expect(shareDescription(priced, "en", tFor("en"))).toContain("Fish ball $12.50, Egg waffle");
+  });
+
   it("uses translated names when the post language has them", () => {
     const text = sharePostText(offering, "zh-TW", tFor("zh-TW"), URL_);
     expect(text).toContain("香港茶餐廳");

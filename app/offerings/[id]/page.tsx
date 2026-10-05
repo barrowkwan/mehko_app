@@ -22,7 +22,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
       `id, offering_no, group_id, pickup_date, pickup_start, pickup_end, cutoff_at, status, instructions, translations,
        merchant:merchants(name, description, translations),
        pickup_point:pickup_points(name, address, timezone),
-       offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))`,
+       offering_items(id, quantity_limit, price_cents, food_item:food_items(name, description, translations, image_path))`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -101,6 +101,7 @@ export default async function OfferingPage({ params }: PageProps<"/offerings/[id
               : null,
             remaining: remaining.get(i.id) ?? null,
             qty: 0,
+            priceCents: i.price_cents,
             imageUrl: foodPhotoUrl(i.food_item?.image_path),
           }))}
         />

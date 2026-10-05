@@ -96,7 +96,7 @@ export function createSupabaseStore(admin: Admin, siteUrl: string): Store {
                merchant:merchants(name, translations),
                pickup_point:pickup_points(name, address, timezone),
                offering_items(id, food_item:food_items(name, translations))),
-             order_items(offering_item_id, qty)`,
+             order_items(offering_item_id, qty, unit_price_cents)`,
           )
           .eq("id", row.entity_id)
           .maybeSingle(),
@@ -115,7 +115,7 @@ export function createSupabaseStore(admin: Admin, siteUrl: string): Store {
             orderNo: order.order_no,
             recipientName: who.name,
             merchantName: localized(o.merchant!.name, o.merchant!.translations, locale, "name"),
-            items: order.order_items.map((i) => ({ name: names.get(i.offering_item_id) ?? "?", qty: i.qty })),
+            items: order.order_items.map((i) => ({ name: names.get(i.offering_item_id) ?? "?", qty: i.qty, unitPriceCents: i.unit_price_cents })),
             pickupDate: o.pickup_date,
             pickupStart: o.pickup_start,
             pickupEnd: o.pickup_end,

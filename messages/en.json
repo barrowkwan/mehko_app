@@ -63,7 +63,11 @@
     "chooseOneOrCancel": "Choose at least one item, or cancel the order instead.",
     "note": "Note for the merchant (optional)",
     "noteHelp": "Mention allergies or special requests. Only you and the merchant can see this.",
-    "notePlaceholder": "e.g. No nuts please — severe allergy"
+    "notePlaceholder": "e.g. No nuts please — severe allergy",
+    "each": "{price} each",
+    "total": "Total: {total}",
+    "totalPartial": "Total of priced items: {total}",
+    "totalNote": "For your information. Payment is arranged directly with the merchant. Items without a listed price are not included."
   },
   "orders": {
     "title": "My orders",
@@ -72,7 +76,8 @@
       "placed": "Placed",
       "cancelled": "Cancelled",
       "picked_up": "Picked up"
-    }
+    },
+    "rowTotal": "Total: {total}"
   },
   "order": {
     "statusLabel": "Status:",
@@ -89,7 +94,9 @@
     "changeSlotTitle": "Change pickup slot",
     "changeSlotHelp": "Move this order to another pickup slot before the cutoff.",
     "changeSlotSubmit": "Move my order",
-    "orderNumber": "Order number: {number}"
+    "orderNumber": "Order number: {number}",
+    "total": "Total: {total}",
+    "totalPartial": "Total of priced items: {total} (some items have no listed price)"
   },
   "map": {
     "sharing": "Merchant is sharing their live location.",
@@ -253,7 +260,10 @@
     "filterLabel": "Filter by status",
     "filterAll": "All",
     "historyEmpty": "Nothing matches this filter.",
-    "ordersCount": "Orders: {count}"
+    "ordersCount": "Orders: {count}",
+    "price": "Price (USD)",
+    "priceHelp": "Price and limit are optional and belong to this offering: the same food can cost something different in another offering.",
+    "priceInvalid": "Enter a price like 12.50, or leave it blank."
   },
   "offeringDetail": {
     "cutoffLine": "Cutoff: {time} · Status: {status}",
@@ -282,7 +292,9 @@
     "prepAllSlots": "Totals include all {count} pickup slots.",
     "prepBySlot": "By pickup slot",
     "noOrdersYet": "no orders yet",
-    "offeringNumber": "Offering {number}"
+    "offeringNumber": "Offering {number}",
+    "ordersTotal": "Total ordered: {total}",
+    "ordersTotalPartial": "(some items have no price)"
   },
   "location": {
     "onlyPickupDay": "Live location can be turned on during the pickup date.",
@@ -400,7 +412,9 @@
       "pickup": "Pickup",
       "changeUntil": "You can change or cancel your order until {time}.",
       "instructions": "Pickup instructions",
-      "button": "View your order and QR code"
+      "button": "View your order and QR code",
+      "total": "Total: {total}",
+      "totalPartial": "Total of priced items: {total}"
     },
     "pickupReminder": {
       "subject": "Pickup soon: {merchant}, {date} at {start}",

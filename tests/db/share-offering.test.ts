@@ -44,7 +44,7 @@ describe("get_shared_offering", () => {
     expect(Object.keys(r).sort()).toEqual(["cutoff_at", "foods", "merchant", "offering_no", "open", "slots"]);
     expect(Object.keys(r.merchant).sort()).toEqual(["description", "logo_path", "name", "translations", "website"]);
     expect(Object.keys(r.slots[0]).sort()).toEqual(["address", "id", "open", "pickup_date", "pickup_end", "pickup_start", "place", "timezone"]);
-    expect(Object.keys(r.foods[0]).sort()).toEqual(["description", "image_path", "limit", "name", "translations"]);
+    expect(Object.keys(r.foods[0]).sort()).toEqual(["description", "image_path", "limit", "name", "price_cents", "translations"]);
     const text = JSON.stringify(r);
     for (const secret of ["\"lat\"", "\"lng\"", "-73.97", "allergic", "qr_token", "customer", "c1@example.com"]) expect(text).not.toContain(secret);
     expect(r.merchant.name).toBe("Mei's Dumplings");

@@ -1,5 +1,6 @@
 import { formatDate, formatInstant, formatTime } from "./format";
 import { localized, type Locale } from "./locale";
+import { formatMoney } from "./money";
 import type { SharedOffering } from "./shared-offering";
 
 // A translator for the "share" message namespace (next-intl's createTranslator or getTranslations result).
@@ -8,7 +9,10 @@ export type ShareT = (key: string, values?: Record<string, string | number>) => 
 const MAX_DESCRIPTION = 200;
 
 function foodNames(d: SharedOffering, locale: Locale): string[] {
-  return d.foods.map((f) => localized(f.name, f.translations, locale, "name"));
+  return d.foods.map((f) => {
+    const name = localized(f.name, f.translations, locale, "name");
+    return f.price_cents != null ? `${name} ${formatMoney(f.price_cents, locale)}` : name;
+  });
 }
 
 function slotTime(s: SharedOffering["slots"][number], locale: Locale, withDate: boolean): string {
@@ -39,7 +43,8 @@ export function sharePostText(d: SharedOffering, locale: Locale, t: ShareT, url:
   lines.push(t("foodsHeading"));
   for (const f of d.foods) {
     const name = localized(f.name, f.translations, locale, "name");
-    lines.push(f.limit ? `• ${t("foodLimit", { name, count: f.limit })}` : `• ${name}`);
+    const priced = f.price_cents != null ? `${name} — ${formatMoney(f.price_cents, locale)}` : name;
+    lines.push(f.limit ? `• ${t("foodLimit", { name: priced, count: f.limit })}` : `• ${priced}`);
   }
   lines.push("", t("pickupHeading"));
   for (const s of d.slots) {

@@ -151,13 +151,13 @@ isOneToOne: true
                   ]
                 },"offering_items": {
                   Row: {
-                    "food_item_id": string,"id": string,"offering_id": string,"quantity_limit": number | null
+                    "food_item_id": string,"id": string,"offering_id": string,"price_cents": number | null,"quantity_limit": number | null
                   }
                   Insert: {
-                    "food_item_id": string,"id"?: string,"offering_id": string,"quantity_limit"?: number | null
+                    "food_item_id": string,"id"?: string,"offering_id": string,"price_cents"?: number | null,"quantity_limit"?: number | null
                   }
                   Update: {
-                    "food_item_id"?: string,"id"?: string,"offering_id"?: string,"quantity_limit"?: number | null
+                    "food_item_id"?: string,"id"?: string,"offering_id"?: string,"price_cents"?: number | null,"quantity_limit"?: number | null
                   }
                   Relationships: [
                     {
@@ -232,13 +232,13 @@ isOneToOne: false
                   ]
                 },"order_items": {
                   Row: {
-                    "offering_item_id": string,"order_id": string,"qty": number
+                    "offering_item_id": string,"order_id": string,"qty": number,"unit_price_cents": number | null
                   }
                   Insert: {
-                    "offering_item_id": string,"order_id": string,"qty": number
+                    "offering_item_id": string,"order_id": string,"qty": number,"unit_price_cents"?: number | null
                   }
                   Update: {
-                    "offering_item_id"?: string,"order_id"?: string,"qty"?: number
+                    "offering_item_id"?: string,"order_id"?: string,"qty"?: number,"unit_price_cents"?: number | null
                   }
                   Relationships: [
                     {

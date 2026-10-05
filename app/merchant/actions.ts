@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { requireMerchant, requireUser } from "@/lib/auth";
 import { timezoneAt } from "@/lib/timezone";
+import { parsePrice } from "@/lib/money";
 import { translateDbError } from "@/lib/db-errors";
 import { parseTranslations } from "@/lib/locale";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -267,7 +268,7 @@ type OfferingInput = {
   schedule: { pickup_point_id: string; pickup_date: string; pickup_start: string; pickup_end: string; cutoff_at: string };
   instructions: string | null; // null = none
   translations: ReturnType<typeof parseTranslations>;
-  items: { food_item_id: string; quantity_limit: number | null }[];
+  items: { food_item_id: string; quantity_limit: number | null; price_cents: number | null }[];
 };
 
 async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value: OfferingInput } | { ok: false; error: FormState }> {
@@ -290,7 +291,9 @@ async function parseOfferingForm(formData: FormData): Promise<{ ok: true; value:
     if (!key.startsWith("food_") || value !== "on") continue;
     const id = key.slice(5);
     const lim = Number.parseInt(String(formData.get(`limit_${id}`) ?? ""), 10);
-    items.push({ food_item_id: id, quantity_limit: Number.isFinite(lim) && lim > 0 ? lim : null });
+    const price = parsePrice(String(formData.get(`price_${id}`) ?? ""));
+    if (!price.ok) return { ok: false, error: { error: t("priceInvalid") } };
+    items.push({ food_item_id: id, quantity_limit: Number.isFinite(lim) && lim > 0 ? lim : null, price_cents: price.cents });
   }
   if (items.length === 0) return { ok: false, error: { error: t("selectFood") } };
   return { ok: true, value: { schedule, instructions, translations: parseTranslations(formData, ["instructions"]), items } };

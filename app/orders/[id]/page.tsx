@@ -7,6 +7,7 @@ import { isPastCutoff } from "@/lib/cutoff";
 import { formatDate, formatTime, todayIn } from "@/lib/format";
 import { localized } from "@/lib/locale";
 import { groupSlotsByPoint } from "@/lib/slots";
+import { formatMoney, orderTotal } from "@/lib/money";
 import { foodPhotoUrl } from "@/components/food-photo";
 import { OrderForm } from "@/components/order-form";
 import { LiveMapLoader } from "@/components/live-map-loader";
@@ -28,8 +29,8 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
        offering:offerings(group_id, pickup_date, pickup_start, pickup_end, cutoff_at, instructions, translations,
          merchant:merchants(name, translations),
          pickup_point:pickup_points(name, address, lat, lng, timezone),
-         offering_items(id, quantity_limit, food_item:food_items(name, description, translations, image_path))),
-       order_items(offering_item_id, qty)`,
+         offering_items(id, quantity_limit, price_cents, food_item:food_items(name, description, translations, image_path))),
+       order_items(offering_item_id, qty, unit_price_cents)`,
     )
     .eq("id", id)
     .eq("customer_id", user.id)
@@ -51,6 +52,9 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
           .order("pickup_start")
       : { data: null };
   const mine = new Map(order.order_items.map((i) => [i.offering_item_id, i.qty]));
+  // each line keeps the price it was ordered at; the total is what the customer sees after ordering
+  const unitPrice = new Map(order.order_items.map((i) => [i.offering_item_id, i.unit_price_cents]));
+  const total = orderTotal(order.order_items.map((i) => ({ qty: i.qty, unitPriceCents: i.unit_price_cents })));
   const foodName = (f: { name: string; translations: unknown } | null) =>
     f ? localized(f.name, f.translations, locale, "name") : tc("item");
 
@@ -75,6 +79,11 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
           {off.pickup_point?.address ? ` · ${off.pickup_point.address}` : ""}
         </p>
         <p className="mt-1 text-sm text-neutral-500">{t("orderNumber", { number: order.order_no })}</p>
+        {total.anyPriced && (
+          <p className="mt-1 text-base font-semibold">
+            {total.complete ? t("total", { total: formatMoney(total.cents, locale) }) : t("totalPartial", { total: formatMoney(total.cents, locale) })}
+          </p>
+        )}
         <p className="text-sm">
           {t("statusLabel")} <strong>{tStatus(order.status as "placed" | "cancelled" | "picked_up")}</strong>
         </p>
@@ -146,6 +155,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
                 // You can raise your own quantity by what is still left (your current quantity is already yours).
                 max: remaining.has(i.id) ? (remaining.get(i.id) ?? 0) + (mine.get(i.id) ?? 0) : null,
                 qty: mine.get(i.id) ?? 0,
+                priceCents: unitPrice.get(i.id) ?? i.price_cents,
                 imageUrl: foodPhotoUrl(i.food_item?.image_path),
               }))}
             />
@@ -161,6 +171,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[id]">) {
                 .map((i) => (
                   <li key={i.id}>
                     {mine.get(i.id)}× {foodName(i.food_item)}
+                    {unitPrice.get(i.id) != null && ` — ${formatMoney((unitPrice.get(i.id) ?? 0) * (mine.get(i.id) ?? 0), locale)}`}
                   </li>
                 ))}
             </ul>

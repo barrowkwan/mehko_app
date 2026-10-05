@@ -63,7 +63,11 @@
     "chooseOneOrCancel": "请至少选择一件商品，或者取消订单。",
     "note": "给商家的备注（可选）",
     "noteHelp": "请注明过敏或特殊要求。只有您和商家能看到。",
-    "notePlaceholder": "例如：请不要放坚果，严重过敏"
+    "notePlaceholder": "例如：请不要放坚果，严重过敏",
+    "each": "每份 {price}",
+    "total": "合计：{total}",
+    "totalPartial": "已标价商品合计：{total}",
+    "totalNote": "仅供参考。付款请直接与商家商定。未标价的商品不计入。"
   },
   "orders": {
     "title": "我的订单",
@@ -72,7 +76,8 @@
       "placed": "已下单",
       "cancelled": "已取消",
       "picked_up": "已取餐"
-    }
+    },
+    "rowTotal": "合计：{total}"
   },
   "order": {
     "statusLabel": "状态：",
@@ -89,7 +94,9 @@
     "changeSlotTitle": "更改取餐时段",
     "changeSlotHelp": "在截止时间前，将此订单改到其他取餐时段。",
     "changeSlotSubmit": "移动我的订单",
-    "orderNumber": "订单号：{number}"
+    "orderNumber": "订单号：{number}",
+    "total": "合计：{total}",
+    "totalPartial": "已标价商品合计：{total}（部分商品未标价）"
   },
   "map": {
     "sharing": "商家正在共享实时位置。",
@@ -253,7 +260,10 @@
     "filterLabel": "按状态筛选",
     "filterAll": "全部",
     "historyEmpty": "没有符合此筛选的内容。",
-    "ordersCount": "订单：{count}"
+    "ordersCount": "订单：{count}",
+    "price": "价格（美元）",
+    "priceHelp": "价格和限量都是可选的，且只属于本场次：同一种食品在另一个场次可以是不同的价格。",
+    "priceInvalid": "请输入价格，例如 12.50，或留空。"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 状态：{status}",
@@ -282,7 +292,9 @@
     "prepAllSlots": "合计包含全部 {count} 个取餐时段。",
     "prepBySlot": "按取餐时段",
     "noOrdersYet": "暂无订单",
-    "offeringNumber": "场次编号 {number}"
+    "offeringNumber": "场次编号 {number}",
+    "ordersTotal": "订单总额：{total}",
+    "ordersTotalPartial": "（部分商品未标价）"
   },
   "location": {
     "onlyPickupDay": "自取当天才能开启实时位置共享。",
@@ -400,7 +412,9 @@
       "pickup": "自取",
       "changeUntil": "您可以在 {time} 前修改或取消订单。",
       "instructions": "取餐说明",
-      "button": "查看订单和二维码"
+      "button": "查看订单和二维码",
+      "total": "合计：{total}",
+      "totalPartial": "已标价商品合计：{total}"
     },
     "pickupReminder": {
       "subject": "即将取餐：{merchant}，{date} {start}",

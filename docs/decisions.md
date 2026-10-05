@@ -56,6 +56,9 @@
 - **`next build` type-checks `tests/`** — run `npm run typecheck` after editing tests.
 - **Verified against a live local Supabase** (migration, seed, RLS, RPCs, QR, Realtime, SSR pages with a session cookie, cron route with real Open-Meteo/Nager). **Still unverified**: real OAuth logins (need provider credentials), camera QR scanning and the Leaflet map in a real browser, geolocation on a phone.
 
+## Forms must not wipe what was typed when validation fails (found 2026-10-05)
+React 19 resets a `<form action={fn}>` after the action finishes, **even on an error**, so a bad price (or website, or any server-side validation message) cleared every field. `components/use-action-form.ts` submits through `onSubmit` + `startTransition` and resets only when the action succeeded; `ActionForm` and `OrderForm` use it. Use it for any new form with a server action that can return an error.
+
 ## Times and stock shown to customers (found in the first real-device test, 2026-10-04)
 - **Cutoff times are shown in the viewer's browser timezone** (`components/local-instant.tsx`; the server renders the pickup point's timezone first, the browser then swaps in its own). Pickup *date/time* stays wall-clock at the pickup place. Emails have no browser, so they use the pickup point's timezone.
 - **Pickup-point timezone defaults to the merchant's browser.** The server page used `Intl...resolvedOptions().timeZone`, which is the *server's* zone (UTC on Render), so every point was saved as UTC. Existing points can be fixed with "Change timezone" on the pickup-points page.

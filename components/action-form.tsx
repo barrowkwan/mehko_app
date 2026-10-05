@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import type { FormState } from "@/app/orders/actions";
+import { useActionForm } from "@/components/use-action-form";
 
 export function ActionForm({
   action,
@@ -20,15 +21,9 @@ export function ActionForm({
   confirmMessage?: string; // asks before submitting (e.g. destructive actions)
 }) {
   const t = useTranslations("common");
-  const [state, formAction, pending] = useActionState(action, undefined);
+  const { state, pending, onSubmit, formRef } = useActionForm(action, confirmMessage ? () => window.confirm(confirmMessage) : undefined);
   return (
-    <form
-      action={formAction}
-      className={className}
-      onSubmit={(e) => {
-        if (confirmMessage && !window.confirm(confirmMessage)) e.preventDefault();
-      }}
-    >
+    <form ref={formRef} onSubmit={onSubmit} className={className}>
       {children}
       {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
       {state?.saved && !state.error && <p className="text-sm text-green-700">{t("saved")}</p>}

@@ -608,3 +608,81 @@ test("sharing: opt-in public page with link-preview tags; address hidden unless 
   await anon.close();
   await mctx.close();
 });
+
+test("prices belong to the offering: merchant sets them, customer sees the total, a later price change leaves the order alone", async ({ browser, baseURL }) => {
+  const mer = await createUser("e2emerchant16");
+  const cust = await createUser("e2ecust9");
+  const kitchen = `E2E Price Kitchen ${run}`;
+  const merchantId = must(await admin.from("merchants").insert({ owner_id: mer.id, name: kitchen }).select("id").single()).id;
+  must(await admin.from("pickup_points").insert({ merchant_id: merchantId, name: "Price Park", lat: 40.8, lng: -73.97, timezone: "UTC" }).select("id").single());
+  const foodA = must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Price Buns" }).select("id").single()).id;
+  must(await admin.from("food_items").insert({ merchant_id: merchantId, name: "Price Tea" }).select("id").single());
+
+  // The FOOD has no price field at all.
+  const mctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(mctx, baseURL!, mer.email);
+  const m = await mctx.newPage();
+  await m.goto("/merchant/foods");
+  await expect(m.getByLabel(/price/i)).toHaveCount(0);
+
+  // The OFFERING does: price per item, optional.
+  await m.goto("/merchant/offerings/new");
+  await m.getByLabel("Pickup date").first().fill(ymd(3));
+  await m.getByLabel("Pickup from").first().fill("17:00");
+  await m.getByLabel("Pickup until").first().fill("19:00");
+  const cutoff = new Date(Date.now() + 2 * 86_400_000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  await m.getByLabel("Order cutoff").fill(`${cutoff.getFullYear()}-${pad(cutoff.getMonth() + 1)}-${pad(cutoff.getDate())}T${pad(cutoff.getHours())}:${pad(cutoff.getMinutes())}`);
+  await m.getByRole("checkbox", { name: /Price Buns/ }).check();
+  await m.getByRole("checkbox", { name: /Price Tea/ }).check();
+  await m.getByLabel("Price Buns – Price (USD)").fill("abc");
+  await m.getByRole("button", { name: "Review & publish" }).click();
+  await m.getByRole("button", { name: "Publish offering" }).click();
+  await expect(m.getByText("Enter a price like 12.50")).toBeVisible(); // a bad price is refused
+  // ...and the rest of the form is still filled in (an error must not wipe what was typed)
+  await expect(m.getByRole("checkbox", { name: /Price Buns/ })).toBeChecked();
+  await expect(m.getByLabel("Pickup date").first()).toHaveValue(ymd(3));
+
+  await m.getByLabel("Price Buns – Price (USD)").fill("12.50");
+  await m.getByLabel("Price Tea – Price (USD)").fill(""); // no price for the tea
+  await m.getByRole("button", { name: "Review & publish" }).click();
+  await expect(m.getByRole("dialog").getByText(/Price Buns — \$12\.50/)).toBeVisible(); // the review shows prices
+  await m.getByRole("dialog").getByRole("button", { name: "Publish offering" }).click();
+  await m.waitForURL(/\/merchant\/offerings\/[0-9a-f-]{36}$/);
+  const offeringUrl = m.url();
+
+  // Customer: price on the item, live total while typing, total after ordering.
+  const cctx = await browser.newContext({ timezoneId: "UTC" });
+  await signIn(cctx, baseURL!, cust.email);
+  const c = await cctx.newPage();
+  await c.goto("/");
+  await c.locator("li", { hasText: kitchen }).getByRole("link").click();
+  await c.getByRole("link", { name: /Price Park/ }).click();
+  await expect(c.getByText("$12.50 each")).toBeVisible();
+  await c.getByLabel("Quantity of Price Buns").fill("3");
+  await expect(c.getByText("Total: $37.50")).toBeVisible(); // 3 x 12.50, updates as you type
+  await c.getByRole("button", { name: "Place order" }).click();
+  await expect(c).toHaveURL(/\/orders\/[0-9a-f-]{36}/);
+  await expect(c.getByText("Total: $37.50").first()).toBeVisible(); // shown after submitting
+  const orderUrl = c.url();
+
+  // The merchant raises the price afterwards: the existing order keeps its total.
+  await m.goto(offeringUrl + "/edit");
+  await m.getByLabel("Price Buns – Price (USD)").fill("20");
+  await m.getByRole("button", { name: "Save changes" }).click();
+  await m.waitForURL(offeringUrl);
+  await c.goto(orderUrl);
+  await expect(c.getByText("Total: $37.50").first()).toBeVisible();
+  await c.getByLabel("Quantity of Price Buns").fill("4"); // editing the quantity keeps the ordered price
+  await c.getByRole("button", { name: "Save changes" }).click();
+  await expect(c.getByText("Total: $50.00").first()).toBeVisible();
+
+  // My orders and the merchant's order list show it too.
+  await c.goto("/orders");
+  await expect(c.getByText("Total: $50.00")).toBeVisible();
+  await m.goto(offeringUrl);
+  await expect(m.getByText("$50.00").first()).toBeVisible();
+  expect((await admin.from("order_items").select("unit_price_cents").eq("offering_item_id", (await admin.from("offering_items").select("id").eq("food_item_id", foodA).single()).data!.id).single()).data?.unit_price_cents).toBe(1250);
+  await cctx.close();
+  await mctx.close();
+});

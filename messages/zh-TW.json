@@ -63,7 +63,11 @@
     "chooseOneOrCancel": "請至少選擇一個品項，或取消訂單。",
     "note": "給商家的備註（選填）",
     "noteHelp": "請註明過敏或特殊需求。只有您和商家看得到。",
-    "notePlaceholder": "例如：請不要放堅果，嚴重過敏"
+    "notePlaceholder": "例如：請不要放堅果，嚴重過敏",
+    "each": "每份 {price}",
+    "total": "合計：{total}",
+    "totalPartial": "已標價餐點合計：{total}",
+    "totalNote": "僅供參考。付款請直接與商家商定。未標價的餐點不計入。"
   },
   "orders": {
     "title": "我的訂單",
@@ -72,7 +76,8 @@
       "placed": "已下單",
       "cancelled": "已取消",
       "picked_up": "已取餐"
-    }
+    },
+    "rowTotal": "合計：{total}"
   },
   "order": {
     "statusLabel": "狀態：",
@@ -89,7 +94,9 @@
     "changeSlotTitle": "變更取餐時段",
     "changeSlotHelp": "在截止時間前，將此訂單改到其他取餐時段。",
     "changeSlotSubmit": "移動我的訂單",
-    "orderNumber": "訂單編號：{number}"
+    "orderNumber": "訂單編號：{number}",
+    "total": "合計：{total}",
+    "totalPartial": "已標價餐點合計：{total}（部分餐點未標價）"
   },
   "map": {
     "sharing": "商家正在分享即時位置。",
@@ -253,7 +260,10 @@
     "filterLabel": "依狀態篩選",
     "filterAll": "全部",
     "historyEmpty": "沒有符合此篩選的項目。",
-    "ordersCount": "訂單：{count}"
+    "ordersCount": "訂單：{count}",
+    "price": "價格（美元）",
+    "priceHelp": "價格和限量都是選填的，且只屬於本場次：同一種餐點在另一個場次可以是不同的價格。",
+    "priceInvalid": "請輸入價格，例如 12.50，或留空。"
   },
   "offeringDetail": {
     "cutoffLine": "截止：{time} · 狀態：{status}",
@@ -282,7 +292,9 @@
     "prepAllSlots": "合計包含全部 {count} 個取餐時段。",
     "prepBySlot": "依取餐時段",
     "noOrdersYet": "尚無訂單",
-    "offeringNumber": "場次編號 {number}"
+    "offeringNumber": "場次編號 {number}",
+    "ordersTotal": "訂單總額：{total}",
+    "ordersTotalPartial": "（部分餐點未標價）"
   },
   "location": {
     "onlyPickupDay": "自取當天才能開啟即時位置分享。",
@@ -400,7 +412,9 @@
       "pickup": "自取",
       "changeUntil": "您可以在 {time} 前修改或取消訂單。",
       "instructions": "取餐說明",
-      "button": "查看訂單和 QR 碼"
+      "button": "查看訂單和 QR 碼",
+      "total": "合計：{total}",
+      "totalPartial": "已標價餐點合計：{total}"
     },
     "pickupReminder": {
       "subject": "即將取餐：{merchant}，{date} {start}",
