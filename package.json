@@ -12,12 +12,12 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@sentry/nextjs": "^11.4.0",
+    "@sentry/nextjs": "^11.5.0",
     "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.117.2",
+    "@supabase/supabase-js": "^2.117.3",
     "html5-qrcode": "^2.3.8",
     "leaflet": "^1.9.4",
-    "next": "16.3.8",
+    "next": "16.4.0",
     "next-intl": "^4.14.9",
     "qrcode": "^1.5.4",
     "react": "19.3.0",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.22",
     "@types/node": "^24.19.1",
@@ -37,7 +37,7 @@
     "@types/react-dom": "^19",
     "@types/tz-lookup": "^6.1.2",
     "eslint": "^9",
-    "eslint-config-next": "16.3.8",
+    "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.3"
